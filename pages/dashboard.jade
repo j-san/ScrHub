@@ -1,0 +1,23 @@
+doctype 5
+html
+    title Scrum Hub Dashboard
+    head
+        link(rel="stylesheet", href="/css/style.css")
+        script(src="http://code.jquery.com/jquery-1.7.2.min.js")
+        script
+            var params = {
+                project: "#{project}"
+            };
+        script(src="/js/dashboard.js")
+    body
+        h1 Dashboard
+        
+        #todo.story-state
+            h2 Todo
+        #progress.story-state
+            h2 Progress
+        #testing.story-state
+            h2 Testing
+        #closed.story-state
+        
+

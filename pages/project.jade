@@ -1,0 +1,9 @@
+doctype 5
+html
+    head
+        script(src="http://code.jquery.com/jquery-1.7.2.min.js")
+    body
+        h1 Select a project
+        each p, i in projects
+            h2: a(href="/#{p.full_name}/dashboard/")= p.full_name
+            p= p.description

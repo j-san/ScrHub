@@ -1,0 +1,13 @@
+doctype 5
+html
+    title Scrum Hub Dashboard
+    head
+        link(rel="stylesheet", href="/css/style.css")
+        script(src="http://code.jquery.com/jquery-1.7.2.min.js")
+        script
+            var params = {
+                project: "#{project}"
+            };
+        script(src="/js/backlog.js")
+    body
+        h1 Product Backlog
