@@ -8,6 +8,7 @@ app.configure(function () {
     app.use(express.cookieParser());
     app.use(express.session({ secret: "d507cf3cef62295ab983310fabb8736b27e7046d" }));
     app.use(app.router);
+    app.use(express.static(__dirname + '/files'));
 
     process.client_id = '78e3e8c40b1ca4c64828';
     process.client_secret = 'd507cf3cef62295ab983310fabb8736b27e7046d';
@@ -19,8 +20,7 @@ app.configure(function () {
 
 // run with NODE_ENV=dev for debug config
 app.configure('dev', function () {
-    console.log('use dev config');
-    app.use(express.static(__dirname + '/files'));
+    console.log('Using dev configuration');
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
     app.get('*', function logging (req, res, next) {
         console.log(req.method, req.path);
@@ -64,7 +64,6 @@ app.get('/', function home (req, res) {
 
 app.get('/project/', private, function project (req, res) {
     new GithubApi(req.session.state).listProjects(function(projects) {
-        console.log('got projects:', projects);
         res.render('project', { projects: projects });
     });
 });
@@ -110,7 +109,6 @@ app.get('/api/:user/:name/stories/', function allStories (req, res) {
 
 
 
-app.listen(1337, function () {
-    console.log('Server ready for connection');
-});
+app.listen(process.env.PORT || 1337);
+console.log('Server running at port', process.env.PORT || 1337);
 

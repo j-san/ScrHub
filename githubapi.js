@@ -52,14 +52,12 @@ GithubApi.prototype.getToken = function (cb) {
         };
 
     http.get({
-        hostname: "api.github.com",
+        hostname: "github.com",
         path: "/login/oauth/access_token?" + querystring.stringify(params),
         headers: headers
     }, function(res) {
-        console.log("Got response: ", res.statusCode);
 
         res.on("data", function (data) {
-            console.log("token data: " + data);
             cb(JSON.parse(data).access_token);
         });
     }).on('error', function(e) {
@@ -73,7 +71,6 @@ GithubApi.prototype.call = function (path, cb) {
 
     console.log('-call:', path);
     if (this.state && this.state.token) {
-        console.log(this.state.token);
         headers.Authorization = "token " + this.state.token;
     }
 
@@ -82,13 +79,11 @@ GithubApi.prototype.call = function (path, cb) {
         path: path,
         headers: headers
     }, function(res) {
-        console.log("Got response: ", res.statusCode);
         var data = "";
         res.on("data", function (buff) {
             data += buff;
         });
         res.on("end", function () {
-            console.log("content: " + data);
             if(cb) {
                 cb(JSON.parse(data));
             }
