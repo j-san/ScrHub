@@ -2,9 +2,7 @@
 var express = require('express'),
     GithubApi = require('./githubapi'),
     app = express.createServer(),
-    host = 'localhost',
-    port = process.env.PORT || 1337,
-    main_url = host=="localhost"?"http://localhost:"+port:"http://"+host;
+    port = process.env.PORT || 1337;
 
 app.configure(function () {
     app.use(express.bodyParser());
@@ -22,9 +20,9 @@ app.configure(function () {
 app.configure('dev', function () {
     console.log('Using dev configuration');
 
+    process.host = 'localhost';
     process.client_id = '78e3e8c40b1ca4c64828';
     process.client_secret = 'd507cf3cef62295ab983310fabb8736b27e7046d';
-    host = "http://scrhub.herokuapp.com/";
 
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
     app.get('*', function logging (req, res, next) {
@@ -36,10 +34,12 @@ app.configure('dev', function () {
 app.configure('sta', function () {
     console.log('Using sta configuration');
     
+    process.host = "http://scrhub.herokuapp.com/";
     process.client_id = 'f48190b0a23185d38240';
     process.client_secret = '1fb743a81c15bd41836f02686bd529674d90de9c';
 });
 
+var main_url = process.host=="localhost"?"http://localhost:"+port:"http://"+process.host;
 
 function private (req, res, next) {
     console.log("-private request");
