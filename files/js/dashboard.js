@@ -10,7 +10,7 @@ $(function () {
             var todo = $("#todo"), progress = $("#progress"), story, ticket;
             for (var i in stories) {
                 story = stories[i];
-                ticket = $("<div class='story-ticket'><h3>" + story.number + ". " + story.title + "</h3></div>");
+                ticket = $("<div class='dashboard-ticket'><h3>" + story.number + ". " + story.title + "</h3></div>");
                 if (!story.assignee) {
                     todo.append(ticket);
                 } else { // if not testing label

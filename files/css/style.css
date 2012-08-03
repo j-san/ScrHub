@@ -13,7 +13,7 @@
     padding: 20px;
 }
 
-.story-ticket {
+.dashboard-ticket {
     display: inline-block;
     border: 1px solid black;
     width: 200px;
@@ -24,14 +24,22 @@
     padding: 10px;
 }
 
-.story-ticket pre {
+.dashboard-ticket pre {
     white-space: pre-wrap;
     text-overflow: ellipsis;
 }
-.story-ticket h3 {
+
+.dashboard-ticket h3 {
 }
 
-.story-ticket img {
+.dashboard-ticket img {
     float: left;
     padding: 5px;
+}
+
+.backlog-line {
+}
+
+.backlog-line.hightlight {
+    background: #CCC;
 }
