@@ -1,7 +1,10 @@
 
 var express = require('express'),
     GithubApi = require('./githubapi'),
-    app = express.createServer();
+    app = express.createServer(),
+    host = 'localhost',
+    port = process.env.PORT || 1337,
+    main_url = host=="localhost"?"http://localhost:"+port:"http://"+host;
 
 app.configure(function () {
     app.use(express.bodyParser());
@@ -9,9 +12,6 @@ app.configure(function () {
     app.use(express.session({ secret: "d507cf3cef62295ab983310fabb8736b27e7046d" }));
     app.use(app.router);
     app.use(express.static(__dirname + '/files'));
-
-    process.client_id = '78e3e8c40b1ca4c64828';
-    process.client_secret = 'd507cf3cef62295ab983310fabb8736b27e7046d';
 
     app.engine('jade', require('jade').__express);
     app.set('view engine', 'jade');
@@ -21,11 +21,23 @@ app.configure(function () {
 // run with NODE_ENV=dev for debug config
 app.configure('dev', function () {
     console.log('Using dev configuration');
+
+    process.client_id = '78e3e8c40b1ca4c64828';
+    process.client_secret = 'd507cf3cef62295ab983310fabb8736b27e7046d';
+    host = "http://scrhub.herokuapp.com/";
+
     app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
     app.get('*', function logging (req, res, next) {
         console.log(req.method, req.path);
         next();
     });
+});
+
+app.configure('sta', function () {
+    console.log('Using sta configuration');
+    
+    process.client_id = 'f48190b0a23185d38240';
+    process.client_secret = '1fb743a81c15bd41836f02686bd529674d90de9c';
 });
 
 
@@ -39,7 +51,8 @@ function private (req, res, next) {
     }
 
     if(!req.session.state.code) {
-        var url = "https://github.com/login/oauth/authorize?client_id=" + process.client_id + "&redirect_uri=http://localhost:1337" + req.path + "&scope=repo";
+        var redirect_uri = main_url + req.path;
+        var url = "https://github.com/login/oauth/authorize?client_id=" + process.client_id + "&redirect_uri=" + redirect_uri + "&scope=repo";
         console.log("-redirect to github auth", url);
         res.redirect(url);
         return;
@@ -57,7 +70,6 @@ function private (req, res, next) {
 
 app.get('/', function home (req, res) {
     res.render('home', {
-        redirect_uri: 'http://localhost:1337/connect/',
         client_id: process.client_id
     });
 });
@@ -107,8 +119,6 @@ app.get('/api/:user/:name/stories/', function allStories (req, res) {
     });
 });
 
-
-
-app.listen(process.env.PORT || 1337);
-console.log('Server running at port', process.env.PORT || 1337);
+app.listen(port);
+console.log("Server running at " + main_url);
 
