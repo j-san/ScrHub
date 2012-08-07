@@ -3,7 +3,10 @@ html
     title Scrum Hub Dashboard
     head
         link(rel="stylesheet", href="/css/style.css")
+        link(rel="stylesheet", href="/bootstrap/css/bootstrap.css")
+        link(rel="stylesheet", href="/bootstrap/css/bootstrap-responsive.css")
         script(src="http://code.jquery.com/jquery-1.7.2.min.js")
+        script(src="http://underscorejs.org/underscore.js")
         script(src="http://backbonejs.org/backbone.js")
         script
             var params = {
@@ -11,8 +14,20 @@ html
             };
         script(src="/js/backlog.js")
     body
-        h1 Product Backlog
-        p: a(href="/#{project}/dashboard/") Dashboard
+        header
+            ul#spaces
+                li: a(href="/#{project}/dashboard/") Dashboard
+                li.current: a(href="/#{project}/backlog/") Product Backlog
+                - if (!connected)
+                    a(href="#{path}?connect=true") Connect
+                - else
+                    a(href="#{path}?disconnect=true") Disconnect
 
-        #backlog-options
-        #backlog-content
+        #backlog-config
+            ul#config-menu
+                li: a backlog edit
+                li: a.current sprint assignment
+            #sprint-assing
+                span assign stories to sprint: 
+                ul#sprints
+        ul#backlog-content

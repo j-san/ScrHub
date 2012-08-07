@@ -3,22 +3,29 @@ html
     title Scrum Hub Dashboard
     head
         link(rel="stylesheet", href="/css/style.css")
+        link(rel="stylesheet", href="/bootstrap/css/bootstrap.css")
+        link(rel="stylesheet", href="/bootstrap/css/bootstrap-responsive.css")
         script(src="http://code.jquery.com/jquery-1.7.2.min.js")
+        script(src="http://underscorejs.org/underscore.js")
+        script(src="http://backbonejs.org/backbone.js")
         script
             var params = {
                 project: "#{project}"
             };
         script(src="/js/dashboard.js")
     body
-        h1 Dashboard
-        p: a(href="/#{project}/backlog/") Product Backlog
-        
-        #todo.story-state
-            h2 Todo
-        #progress.story-state
-            h2 Progress
-        #testing.story-state
-            h2 Testing
-        #closed.story-state
-        
-
+        header
+            ul#spaces
+                li.current: a(href="/#{project}/dashboard/") Dashboard
+                li: a(href="/#{project}/backlog/") Product Backlog
+                - if (!connected)
+                    a(href="#{path}?connect=true") Connect
+                - else
+                    a(href="#{path}?disconnect=true") Disconnect
+        #dashboard.row-fluid
+                #todo.span4.column
+                    h2 Todo
+                #progress.span4.column
+                    h2 Progress
+                #testing.span4.column
+                    h2 Testing

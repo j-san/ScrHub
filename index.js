@@ -31,6 +31,7 @@ app.configure('dev', function () {
     });
 });
 
+
 app.configure('sta', function () {
     console.log('Using sta configuration');
     
@@ -40,29 +41,51 @@ app.configure('sta', function () {
 });
 
 var main_url = process.host=="localhost"?"http://localhost:"+port:"http://"+process.host;
+app.locals.url = main_url;
 
-function private (req, res, next) {
-    console.log("-private request");
+
+app.get('*', function getToken (req, res, next) {
     if (!req.session.state) {
         req.session.state = {};
     }
+
     if (req.param('code')) {
         req.session.state.code = req.param('code');
     }
 
-    if(!req.session.state.code) {
+    if (req.session.state.code && !req.session.state.token) {
+        console.log('-get token from github');
+        new GithubApi(req.session.state).getToken(function (data) {
+            req.session.state.token = data.access_token;
+            next();
+        }).on("error", function () {
+            console.log("error while getting new token...");
+            req.session.state = {};
+            next();
+        });
+    } else {
+        next();
+    }
+});
+app.get('*', function loadUser (req, res, next) {
+    if (req.param("connect")) {
+        private(req, res, next);
+    }
+    if (req.param("disconnect")) {
+        req.session.state = {};
+    }
+    res.locals.connected = Boolean(req.session.state.token);
+    res.locals.path = req.path;
+    next();
+});
+
+function private (req, res, next) {
+    console.log("-private request");
+    if(!req.session.state.token && !req.param('error')) {
         var redirect_uri = main_url + req.path;
         var url = "https://github.com/login/oauth/authorize?client_id=" + process.client_id + "&redirect_uri=" + redirect_uri + "&scope=repo";
         console.log("-redirect to github auth", url);
         res.redirect(url);
-        return;
-    }
-    if(!req.session.state.token) {
-        console.log('-get token from github');
-        new GithubApi(req.session.state).getToken(function (token) {
-            req.session.state.token = token;
-            next()
-        });
     } else {
         next();
     }
@@ -98,24 +121,39 @@ app.get('/api/:user/:name/sprints/', function sprints (req, res) {
     var project = req.params.user + '/' + req.params.name,
         sprint = null;
 
-    new GithubApi(req.session.state).listSpints(project, function(sprints) {
+    new GithubApi(req.session.state).listSpints(project, function (sprints) {
         var sprint = GithubApi.findCurrentSprint(sprints);
         sprint.current = true;
         res.json(sprints);
+    }).on("error", function (code, message) {
+        res.json(code, message);
     });
 });
 
 app.get('/api/:user/:name/sprint/:sprint/stories/', function sprintStories (req, res) {
     var project = req.params.user + '/' + req.params.name;
-    new GithubApi(req.session.state).dashboardStories(project, req.params.sprint, function(sprints) {
+    new GithubApi(req.session.state).dashboardStories(project, req.params.sprint, function (sprints) {
         res.json(sprints);
+    }).on("error", function (code, message) {
+        res.json(code, message);
     });
 });
 
 app.get('/api/:user/:name/stories/', function allStories (req, res) {
     var project = req.params.user + '/' + req.params.name;
-    new GithubApi(req.session.state).allStories(project, function(stories) {
+    new GithubApi(req.session.state).allStories(project, function (stories) {
         res.json(stories);
+    }).on("error", function (code, message) {
+        res.json(code, message);
+    });
+});
+
+app.put('/api/:user/:name/story/:story', function updateStory (req, res) {
+    var project = req.params.user + '/' + req.params.name;
+    new GithubApi(req.session.state).updateStory(project, req.params.story, req.body, function (story) {
+        res.json(story);
+    }).on("error", function (code, message) {
+        res.json(code, message);
     });
 });
 

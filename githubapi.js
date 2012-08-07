@@ -1,25 +1,14 @@
 
-var http = require("https");
-var querystring = require("querystring");
+var http = require("https"),
+    querystring = require("querystring"),
+    EventEmitter = require('events').EventEmitter;
 
 var GithubApi = function (state) {
+    EventEmitter.call(this);
     this.state = state;
 };
 
-GithubApi.prototype.listProjects = function (cb) {
-    this.call("/user/repos", cb);
-    return this;
-};
-
-GithubApi.prototype.allStories = function (project, cb) {
-    this.call("/repos/" + project + "/issues", cb);
-    return this;
-};
-
-GithubApi.prototype.listSpints = function (project, cb) {
-    this.call("/repos/" + project + "/milestones?state=open", cb);
-    return this;
-};
+GithubApi.prototype = Object.create(EventEmitter.prototype);
 
 GithubApi.findCurrentSprint = function (sprints) {
     var nearest = null;
@@ -31,67 +20,91 @@ GithubApi.findCurrentSprint = function (sprints) {
     return nearest;
 };
 
-GithubApi.prototype.dashboardStories = function (project, sprint, cb) {
-    this.call("/repos/" + project + "/issues" + (sprint?"?milestone="+sprint:""), cb);
-    return this;
+GithubApi.prototype.listProjects = function (cb) {
+    return this.load("/user/repos", cb);
 };
 
+GithubApi.prototype.allStories = function (project, cb) {
+    return this.load("/repos/" + project + "/issues", cb);
+};
+
+GithubApi.prototype.listSpints = function (project, cb) {
+    return this.load("/repos/" + project + "/milestones?state=open", cb);
+};
+
+GithubApi.prototype.dashboardStories = function (project, sprint, cb) {
+    return this.load("/repos/" + project + "/issues" + (sprint?"?milestone="+sprint:""), cb);
+};
+
+GithubApi.prototype.updateStory = function (project, story, data, cb) {
+    return this.update("/repos/" + project + "/issues/" + story, data, cb);
+};
+
+GithubApi.prototype.load = function (path, cb) {
+    return this.request("GET", path).on("success", cb);
+};
+
+GithubApi.prototype.update = function (path, data, cb) {
+    return this.request("PATCH", path, JSON.stringify(data)).on("success", cb);
+};
 
 GithubApi.prototype.getToken = function (cb) {
     if(!this.state.code) {
         throw new Error('Not connected');
     }
-    
-    var params = {
+
+    return this.request("POST", "/login/oauth/access_token", querystring.stringify({
             code: this.state.code,
             client_id: process.client_id,
             client_secret: process.client_secret
-        },
-        headers = {
-            Accept: "application/json"
-        };
-
-    http.get({
-        hostname: "github.com",
-        path: "/login/oauth/access_token?" + querystring.stringify(params),
-        headers: headers
-    }, function(res) {
-
-        res.on("data", function (data) {
-            cb(JSON.parse(data).access_token);
-        });
-    }).on('error', function(e) {
-        console.log("Got error:", e.message);
-    });
-    return this;
+        }), {
+            hostname: "github.com"
+        }).on("success", cb);
 };
 
-GithubApi.prototype.call = function (path, cb) {
-    var request, headers = {}, self = this;
 
-    console.log('-call:', path);
+GithubApi.prototype.request = function (method, uri, data, options, headers, cb) {
+    var request, self = this;
+
+    console.log('-call', method, uri);
+
+    options = options || {};
+    options.headers = headers || {};
+    options.path = uri;
+    options.method = method;
+
+    if (!options.hostname) {
+        options.hostname = "api.github.com";
+    }
+    if (!options.headers.Accept) {
+        options.headers.Accept = "application/json";
+    }
+    if (data) {
+        options.headers["Content-Length"] = data.length;
+    }
     if (this.state && this.state.token) {
-        headers.Authorization = "token " + this.state.token;
+        options.headers.Authorization = "token " + this.state.token;
     }
 
-    request = http.request({
-        hostname: "api.github.com",
-        path: path,
-        headers: headers
-    }, function(res) {
+    request = http.request(options, function(res) {
         var data = "";
         res.on("data", function (buff) {
             data += buff;
         });
         res.on("end", function () {
-            if(cb) {
-                cb(JSON.parse(data));
+            if (res.statusCode == 200) {
+                self.emit("success", JSON.parse(data));
+            } else {
+                self.emit("error", res.statusCode, JSON.parse(data));
             }
         });
 
     }).on('error', function(e) {
-        console.log("Got error:", e.message);
+        self.emit("error", e);
     });
+    if (data) {
+        request.write(data);
+    }
     request.end();
     return this;
 };
