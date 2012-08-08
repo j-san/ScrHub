@@ -157,6 +157,15 @@ app.put('/api/:user/:name/story/:story', function updateStory (req, res) {
     });
 });
 
+app.post('/api/:user/:name/story/new', function createStory (req, res) {
+    var project = req.params.user + '/' + req.params.name;
+    new GithubApi(req.session.state).createStory(project, req.body, function (story) {
+        res.json(story);
+    }).on("error", function (code, message) {
+        res.json(code, message);
+    });
+});
+
 app.listen(port);
 console.log("Server running at " + main_url);
 

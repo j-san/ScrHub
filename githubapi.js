@@ -40,12 +40,20 @@ GithubApi.prototype.updateStory = function (project, story, data, cb) {
     return this.update("/repos/" + project + "/issues/" + story, data, cb);
 };
 
+GithubApi.prototype.createStory = function (project, data, cb) {
+    return this.create("/repos/" + project + "/issues", data, cb);
+};
+
 GithubApi.prototype.load = function (path, cb) {
     return this.request("GET", path).on("success", cb);
 };
 
 GithubApi.prototype.update = function (path, data, cb) {
     return this.request("PATCH", path, JSON.stringify(data)).on("success", cb);
+};
+
+GithubApi.prototype.create = function (path, data, cb) {
+    return this.request("POST", path, JSON.stringify(data)).on("success", cb);
 };
 
 GithubApi.prototype.getToken = function (cb) {

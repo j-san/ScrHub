@@ -25,9 +25,12 @@ html
 
         #backlog-config
             ul#config-menu
-                li: a backlog edit
-                li: a.current sprint assignment
-            #sprint-assing
+                li#menu-edit backlog edit
+                li#menu-assignment sprint assignment
+            #assignment-config.config-pane
                 span assign stories to sprint: 
                 ul#sprints
+            #edit-config.config-pane
+                button#add-story add story
+                p click on your stories to edit
         ul#backlog-content
