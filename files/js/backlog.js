@@ -89,7 +89,7 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
             },
             error: function () {
                 self.$el.removeClass("loading");
-                this.$el.addClass("error");
+                self.$el.addClass("error");
                 alert('error while saving');
             }
         });
@@ -172,7 +172,7 @@ ScrHub.view.Backlog = Backbone.View.extend({
             view.save({
                 milestone: this.sprint
             }, function () {
-                target.removeClass("hightlight");
+                target.addClass("hightlight");
             });
         } else {
             alert("story already assigned");
