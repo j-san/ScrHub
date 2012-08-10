@@ -12,6 +12,7 @@ html
             var params = {
                 project: "#{project}"
             };
+        script(src="/js/model.js")
         script(src="/js/backlog.js")
     body
         header
@@ -32,5 +33,6 @@ html
                 ul#sprints
             #edit-config.config-pane
                 button#add-story add story
+                span  fill a title to save new row on github
                 p click on your stories to edit
         ul#backlog-content

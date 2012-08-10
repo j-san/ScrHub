@@ -1,6 +1,7 @@
 
-
-
+body {
+    background: #DDD !important;
+}
 header {
     min-height: 100px;
     margin: 0 10px;
@@ -8,6 +9,10 @@ header {
 
 .loading {
     opacity: .5;
+}
+.error {
+    color: red !important;
+    border: red !important;
 }
 
 #spaces {
@@ -25,6 +30,7 @@ header {
     text-align: center;
 
     padding: .5em;
+    background: white;
     
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
@@ -55,6 +61,7 @@ header {
     box-sizing: border-box;
     height: 100%;
     border: 1px solid black;
+    background: white;
 }
 
 
@@ -95,6 +102,7 @@ header {
     position: relative;
     padding: 5px 9px;
     border: 1px solid #CCC;
+    background: white;
 }
 .backlog-line:first-child {
     border-top-left-radius: 6px;
@@ -106,8 +114,18 @@ header {
 }
 
 
-.sprint-assign .backlog-line:hover {
+.assignment .backlog-line:hover {
     border: 1px solid black;
+}
+.backlog-line .story-body {
+    display: none;
+    width: 100%;
+    height: 120px;
+    box-sizing: border-box;
+    margin: 10px 0;
+}
+.backlog-line.edit-form .story-body {
+    display: block;
 }
 
 .story-id {
@@ -137,17 +155,20 @@ header {
 }
 
 #backlog-config {
-    height: 95px;
+    min-height: 95px;
+    position: relative;
+    margin: 10px;
 }
 
 #config-menu {
     font-size: 1.3em;
     display: inline-block;
-    width: 220px;
+    width: 30%;
     margin: 0;
     padding: 5px 0 5px 5px;
     box-sizing: border-box;
     list-style: none;
+    vertical-align: top;
 }
 
 #config-menu li {
@@ -160,6 +181,7 @@ header {
     text-align: right;
     border: 1px solid black;
     border-right: none;
+    background: white;
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
 }
@@ -167,24 +189,21 @@ header {
     font-size: 1.2em;
     position: relative;
     left: 1px;
-    background: white;
     z-index: 1;
 }
 
 .config-pane {
     display: none;
-    position: absolute;
-    left: 220px;
-    top: 100px;
-    right: 10px;
-    height: 80px;
+    min-height: 100px;
+    width: 70%;
     padding: 10px;
     border-top: 1px solid black; 
     border-left: 1px solid black; 
     box-sizing: border-box;
+    background: white;
 }
 .config-pane.current {
-    display: block;
+    display: inline-block;
 }
 
 #sprints {

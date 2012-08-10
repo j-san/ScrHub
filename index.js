@@ -121,10 +121,10 @@ app.get('/api/:user/:name/sprints/', function sprints (req, res) {
     var project = req.params.user + '/' + req.params.name,
         sprint = null;
 
-    new GithubApi(req.session.state).listSpints(project, function (sprints) {
-        var sprint = GithubApi.findCurrentSprint(sprints);
+    new GithubApi(req.session.state).listSpints(project, function (data) {
+        var sprint = GithubApi.findCurrentSprint(data);
         sprint.current = true;
-        res.json(sprints);
+        res.json(data);
     }).on("error", function (code, message) {
         res.json(code, message);
     });
@@ -132,17 +132,30 @@ app.get('/api/:user/:name/sprints/', function sprints (req, res) {
 
 app.get('/api/:user/:name/sprint/:sprint/stories/', function sprintStories (req, res) {
     var project = req.params.user + '/' + req.params.name;
-    new GithubApi(req.session.state).dashboardStories(project, req.params.sprint, function (sprints) {
-        res.json(sprints);
-    }).on("error", function (code, message) {
-        res.json(code, message);
-    });
+    function loadStories (sprint) {
+        new GithubApi(req.session.state).dashboardStories(project, sprint, function (data) {
+            res.json(data);
+        }).on("error", function (code, message) {
+            res.json(code, message);
+        });
+    }
+    
+    if (req.params.sprint == "current") {
+        new GithubApi(req.session.state).listSpints(project, function (data) {
+            loadStories(GithubApi.findCurrentSprint(data).number);
+        }).on("error", function (code, message) {
+            res.json(code, message);
+        });
+    } else {
+        loadStories(req.params.sprint);
+    }
+
 });
 
 app.get('/api/:user/:name/stories/', function allStories (req, res) {
     var project = req.params.user + '/' + req.params.name;
-    new GithubApi(req.session.state).allStories(project, function (stories) {
-        res.json(stories);
+    new GithubApi(req.session.state).allStories(project, function (data) {
+        res.json(data);
     }).on("error", function (code, message) {
         res.json(code, message);
     });
@@ -150,8 +163,8 @@ app.get('/api/:user/:name/stories/', function allStories (req, res) {
 
 app.put('/api/:user/:name/story/:story', function updateStory (req, res) {
     var project = req.params.user + '/' + req.params.name;
-    new GithubApi(req.session.state).updateStory(project, req.params.story, req.body, function (story) {
-        res.json(story);
+    new GithubApi(req.session.state).updateStory(project, req.params.story, req.body, function (data) {
+        res.json(data);
     }).on("error", function (code, message) {
         res.json(code, message);
     });
@@ -159,8 +172,8 @@ app.put('/api/:user/:name/story/:story', function updateStory (req, res) {
 
 app.post('/api/:user/:name/story/new', function createStory (req, res) {
     var project = req.params.user + '/' + req.params.name;
-    new GithubApi(req.session.state).createStory(project, req.body, function (story) {
-        res.json(story);
+    new GithubApi(req.session.state).createStory(project, req.body, function (data) {
+        res.json(data);
     }).on("error", function (code, message) {
         res.json(code, message);
     });
