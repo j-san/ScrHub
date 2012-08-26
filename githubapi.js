@@ -20,12 +20,20 @@ GithubApi.findCurrentSprint = function (sprints) {
     return nearest;
 };
 
+GithubApi.prototype.getUser = function (cb) {
+    return this.load("/user", cb);
+};
+
 GithubApi.prototype.listProjects = function (cb) {
     return this.load("/user/repos", cb);
 };
 
 GithubApi.prototype.allStories = function (project, cb) {
     return this.load("/repos/" + project + "/issues", cb);
+};
+
+GithubApi.prototype.allLabels = function (project, cb) {
+    return this.load("/repos/" + project + "/labels", cb);
 };
 
 GithubApi.prototype.listSpints = function (project, cb) {
@@ -103,6 +111,7 @@ GithubApi.prototype.request = function (method, uri, data, options, headers, cb)
             if (res.statusCode == 200) {
                 self.emit("success", JSON.parse(data));
             } else {
+                console.log("error from github", res.statusCode, JSON.parse(data));
                 self.emit("error", res.statusCode, JSON.parse(data));
             }
         });

@@ -11,5 +11,8 @@
   "dependencies": {
       "express": "",
       "jade": ""
+  },
+  "devDependencies": {
+      "supervisor": ""
   }
 }

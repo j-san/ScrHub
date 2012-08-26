@@ -1,31 +1,7 @@
 $(function () {
-    
     new ScrHub.view.Dashboard({
         collection: new ScrHub.model.CurrentSprintStoryList()
     }).render();
-    /*
-    $.getJSON('/api/' + params.project + '/sprints/', function (sprints) {
-        var current;
-        for (var i in sprints) {
-            if (sprints[i].current) {
-                current = sprints[i];
-            }
-        }
-    });
-    $.getJSON('/api/' + params.project + '/sprint/current/stories/', function (stories) {
-        var todo = $("#todo"), progress = $("#progress"), story, ticket;
-        for (var i in stories) {
-            story = stories[i];
-            ticket = $("<div class='dashboard-ticket'><h3>" + story.number + ". " + story.title + "</h3></div>");
-            if (!story.assignee) {
-                todo.append(ticket);
-            } else { // if not testing label
-                progress.append(ticket);
-                ticket.prepend("<img src='" + story.assignee.avatar_url + "' />");
-            }
-        }
-    });
-    */
 });
 
 
@@ -47,23 +23,83 @@ ScrHub.view.Dashboard = Backbone.View.extend({
 
 ScrHub.view.StoryTicket = Backbone.View.extend({
     className: "dashboard-ticket",
+    attributes: {"data-toggle": "modal", "data-target": "#foo"},
     events: {
         "click": "edit",
+        "click #todo #take-in-charge": "takeInChargeStory",
+        "click #progress #give-up": "giveUpStory",
+        "click #progress #test": "readyForTestStory",
+        "click #testing #resume": "resumeStory",
+        "click #testing #close": "closeStory"
     },
     render: function () {
-        var todo = $("#todo"), progress = $("#progress"), self = this;
+        this.todo = $("#todo");
+        this.progress = $("#progress");
+        this.testing = $("#testing");
+        var self = this;
+
         this.$el.append(this.make("h3", {}, this.model.id + ". " + this.model.get("title")));
-        if (this.model.get("assignee")) {
-            this.$el.prepend("<img src='" + this.model.get("assignee").avatar_url + "' />");
-            // if not testing label
-                progress.append(this.$el);
-        } else { 
-            todo.append(this.$el);
-        }
+
+        this.pinOnBoard();
+
+        this.detail = $(this.make("article", {"class": "detail modal hide"})).appendTo(this.$el);
+        $(this.make("div", {"class": "modal-header"})).appendTo(this.detail)
+            .append(this.make("button", {
+                type: "button", 
+                "class": "close"
+            }, "x"))           
+            .append(this.make("h1", {}, this.model.get("title")));
+
+        $(this.make("div", {"class": "modal-body"}, this.model.get("body") || "no content")).appendTo(this.detail);
+        $(this.make("div", {"class": "modal-footer"})).appendTo(this.detail)
+            .append(this.make("button", {"id": "take-in-charge"}, "Take in charge"))
+            .append(this.make("button", {"id": "give-up"}, "Give up"))
+            .append(this.make("button", {"id": "test"}, "Ready for testing"))
+            .append(this.make("button", {"id": "resume"}, "Resume"))
+            .append(this.make("button", {"id": "close"}, "Close"));
+
+        this.model.on("sync", function () {
+            self.pinOnBoard();
+        });
         return this.$el;
     },
+    pinOnBoard: function () {
+        if (this.model.get("assignee")) {
+            if (!this.$el.find("img").length) {
+                this.$el.prepend(this.make("img", {"src": this.model.get("assignee").avatar_url}));
+            }
+            if (this.model.hasLabel("testing")) {
+                this.testing.append(this.$el);
+            } else {
+                this.progress.append(this.$el);
+            }
+        } else {
+            this.$el.find("img").remove();
+            this.todo.append(this.$el);
+        }
+    },
     edit: function () {
-        console.log("edit");
+        this.detail.modal();
+    },
+    save: function (data) {
+        this.model.save(data);
+    },
+    takeInChargeStory: function () {
+        this.save({"assignee": params.me});
+    },
+    giveUpStory: function () {
+        this.save({"assignee": null});
+    },
+    readyForTestStory: function () {
+        this.model.addLabel("testing");
+        this.save();
+    },
+    resumeStory: function () {
+        this.model.removeLabel("testing");
+        this.save();
+    },
+    closeStory: function () {
+        this.save({"state": "closed"});
     }
 });
 
