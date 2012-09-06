@@ -22,10 +22,10 @@ ScrHub.view.Dashboard = Backbone.View.extend({
 });
 
 ScrHub.view.StoryTicket = Backbone.View.extend({
-    className: "dashboard-ticket",
     attributes: {"data-toggle": "modal", "data-target": "#foo"},
     events: {
-        "click": "edit",
+        "click .dashboard-ticket": "edit",
+        "click .close": "closeDialog",
         "click #todo #take-in-charge": "takeInChargeStory",
         "click #progress #give-up": "giveUpStory",
         "click #progress #test": "readyForTestStory",
@@ -38,11 +38,13 @@ ScrHub.view.StoryTicket = Backbone.View.extend({
         this.testing = $("#testing");
         var self = this;
 
-        this.$el.append(this.make("h3", {}, this.model.id + ". " + this.model.get("title")));
+        this.ticket = $(this.make("div", {"class": "dashboard-ticket"}));
+        this.ticket.append(this.make("strong", {}, this.model.id + ". " + this.model.get("title")));
+        this.$el.append(this.ticket);
 
         this.pinOnBoard();
 
-        this.detail = $(this.make("article", {"class": "detail modal hide"})).appendTo(this.$el);
+        this.detail = $(this.make("div", {"class": "detail modal hide"}));
         $(this.make("div", {"class": "modal-header"})).appendTo(this.detail)
             .append(this.make("button", {
                 type: "button", 
@@ -61,6 +63,8 @@ ScrHub.view.StoryTicket = Backbone.View.extend({
         this.model.on("sync", function () {
             self.pinOnBoard();
         });
+        this.$el.append(this.detail);
+        this.detail.modal({show: false});
         return this.$el;
     },
     pinOnBoard: function () {
@@ -79,7 +83,10 @@ ScrHub.view.StoryTicket = Backbone.View.extend({
         }
     },
     edit: function () {
-        this.detail.modal();
+        this.detail.modal("show");
+    },
+    closeDialog: function () {
+        this.detail.modal("hide");
     },
     save: function (data) {
         this.model.save(data);
