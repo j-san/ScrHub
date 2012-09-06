@@ -3,8 +3,6 @@ html
     head
         title Scrum Hub Dashboard
         include head
-        include script
-        script(src="/js/dashboard.js")
     body
         include navigation
         #dashboard.row-fluid
@@ -14,3 +12,7 @@ html
                     h2 Progress
                 #testing.span4.column
                     h2 Testing
+
+        include script
+        script(src="/js/dashboard.js")
+        include ga

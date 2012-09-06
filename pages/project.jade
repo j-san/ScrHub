@@ -8,3 +8,4 @@ html
             each p, i in projects
                 h2: a(href="/#{p.full_name}/dashboard/")= p.full_name
                 p= p.description
+        include ga

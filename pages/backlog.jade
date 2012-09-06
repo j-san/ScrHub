@@ -1,38 +1,24 @@
 doctype 5
 html
-    title Scrum Hub Dashboard
     head
-        link(rel="stylesheet", href="/css/style.css")
-        link(rel="stylesheet", href="/bootstrap/css/bootstrap.css")
-        link(rel="stylesheet", href="/bootstrap/css/bootstrap-responsive.css")
-        script(src="http://code.jquery.com/jquery-1.7.2.min.js")
-        script(src="http://underscorejs.org/underscore.js")
-        script(src="http://backbonejs.org/backbone.js")
-        script
-            var params = {
-                project: "#{project}"
-            };
-        script(src="/js/model.js")
-        script(src="/js/backlog.js")
+        title Scrum Hub Dashboard
+        include head
     body
-        header
-            ul#spaces
-                li: a(href="/#{project}/dashboard/") Dashboard
-                li.current: a(href="/#{project}/backlog/") Product Backlog
-                - if (!connected)
-                    a(href="#{path}?connect=true") Connect
-                - else
-                    a(href="#{path}?disconnect=true") Disconnect
+        include navigation
 
-        #backlog-config
-            ul#config-menu
-                li#menu-edit backlog edit
-                li#menu-assignment sprint assignment
-            #assignment-config.config-pane
-                span assign stories to sprint: 
-                ul#sprints
-            #edit-config.config-pane
-                button#add-story add story
-                span  fill a title to save new row on github
-                p click on your stories to edit
-        ul#backlog-content
+        ul.nav.nav-tabs
+            li.active: a(href="#backlog-stories", data-toggle="tab") Stories
+            li: a(href="#backlog-sprints", data-toggle="tab") Sprints
+        .tab-content
+            #backlog-stories.tab-pane.active
+                .config
+                    p: button#add-story add story
+                    p fill a title to save new row on github
+                    p click on a story to edit
+                ul#stories-container
+            #backlog-sprints.tab-pane
+                ul#sprints-container
+
+        include script
+        script(src="/js/backlog.js")
+        include ga

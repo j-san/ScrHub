@@ -128,13 +128,25 @@ nav {
     padding: 5px;
 }
 
-/*
-.dashboard-ticket .detail {
+#take-in-charge, #give-up, #test, #resume, #close {
     display: none;
 }
-*/
 
-#backlog-content {
+#give-up, #resume {
+    float: left;
+}
+
+#todo #take-in-charge,
+#progress #give-up,
+#progress #test,
+#testing #resume,
+#testing #close {
+    display: inline-block;
+}
+
+/* Backlog */
+
+#sprints-container, #stories-container {
     margin: 0 10px 10px 25px;
     list-style: none;
 }
@@ -154,10 +166,15 @@ nav {
     border-bottom-right-radius: 6px;
 }
 
-
+/*
 .assignment .backlog-line:hover {
     border: 1px solid black;
 }
+.assignment .backlog-line.hightlight {
+    background: #08C;
+    border: 1px solid black;
+}
+*/
 .backlog-line .story-body {
     display: none;
     width: 100%;
@@ -190,97 +207,48 @@ nav {
     border: 1px solid #CCC;
 }
 
-.assignment .backlog-line.hightlight {
-    background: #08C;
-    border: 1px solid black;
+.config {
+    margin: 0 10px 10px 25px;
 }
 
-#backlog-config {
-    min-height: 95px;
-    position: relative;
-    margin: 10px;
-}
-
-#config-menu {
-    font-size: 1.3em;
-    display: inline-block;
-    width: 30%;
-    margin: 0;
-    padding: 5px 0 5px 5px;
-    box-sizing: border-box;
-    list-style: none;
-    vertical-align: top;
-}
-
-#config-menu li {
-    display: inline-block;
-    cursor:pointer;
-    width: 100%;
-    box-sizing: border-box;
-    padding: .3em 1em;
-    margin: 2px 0;
-    text-align: right;
-    border: 1px solid black;
-    border-right: none;
-    background: white;
-    border-bottom-left-radius: 5px;
-    border-top-left-radius: 5px;
-}
-#config-menu li.current {
-    font-size: 1.2em;
-    position: relative;
-    left: 1px;
-    z-index: 1;
-}
-
-.config-pane {
-    display: none;
-    min-height: 100px;
-    width: 70%;
-    padding: 10px;
-    border-top: 1px solid black; 
-    border-left: 1px solid black; 
-    box-sizing: border-box;
-    background: white;
-}
-.config-pane.current {
-    display: inline-block;
-}
-
-#sprints {
+#sprints-container {
     display: inline-block;
     width: 250px;
     list-style: none;
 }
-#sprints li {
+#sprints-container li {
     width: 100%;
     border: 1px solid #CCC;
     border-radius: 5px;
     padding: 2px 6px;
     cursor: pointer;
 }
-#sprints li:hover {
+#sprints-container li:hover {
     border: 1px solid black;
 }
-#sprints li.selected {
+#sprints-container li.selected {
     background: #08C;
     border: 1px solid black;
 }
 
-#take-in-charge, #give-up, #test, #resume, #close {
-    display: none;
+.nav-tabs {
+    margin: 20px 20px;
+    border-bottom: 1px solid white;
+    max-width: 450px;
+}
+.nav-tabs > li {
+    margin: 0 5px;
+    line-height: 1.8em;
+    min-width: 110px;
+    text-align: center;
 }
 
-#give-up, #resume {
-    float: left;
+.nav-tabs .active {
+    font-size: 1.8em;
 }
 
-#todo #take-in-charge,
-#progress #give-up,
-#progress #test,
-#testing #resume,
-#testing #close {
-    display: inline-block;
+.nav-tabs > li > a {
+    border-top: 1px solid white;
+    border-left: 1px solid white;
+    border-right: 1px solid white;
 }
-
-

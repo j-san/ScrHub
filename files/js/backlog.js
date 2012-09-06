@@ -2,14 +2,12 @@ $(function () {
     var backlog;
 
 
-    backlog = new ScrHub.view.Backlog({
+    new ScrHub.view.BacklogStories({
         collection: new ScrHub.model.StoryList()
-    });
-    backlog.render();
+    }).render();
 
-    new ScrHub.view.BacklogConfig({
-        collection: new ScrHub.model.SprintList(),
-        backlog: backlog
+    new ScrHub.view.BacklogSprints({
+        collection: new ScrHub.model.SprintList()
     }).render();
 
 });
@@ -102,36 +100,37 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
     }
 });
 
-ScrHub.view.Backlog = Backbone.View.extend({
-    el: "#backlog-content",
+ScrHub.view.BacklogStories = Backbone.View.extend({
+    el: "#backlog-stories",
     events: {
-        "click .assignment .backlog-line": "selectStory",
-        "click .edit .backlog-line": "editStory"
+        "click #add-story": "addNewStory",
+        "click .backlog-line": "editStory"
     },
     views: {},
     render: function () {
         var self = this;
+        this.stories = $("#stories-container");
         this.collection.fetch({
             success: function (collection) {
                 collection.forEach(function(story) {
                     self.addStory(story);
                 });
-                if (self.sprint) {
-                    self.setSprint(self.sprint);
-                }
             }
         });
         return this.$el;
     },
+    addNewStory: function () {
+        this.addStory(new ScrHub.model.Story(), true);
+    },
     addStory: function (story, before) {
         var view = new ScrHub.view.BacklogRow({model:story});
         if (before) {
-            this.$el.prepend(view.render());
+            this.stories.prepend(view.render());
         } else {
-            this.$el.append(view.render());
+            this.stories.append(view.render());
         }
         this.views[view.id] = view;
-    },
+    },/*
     setSprint: function (sprintNumber) {
         this.sprint = sprintNumber;
         $(".sprint-" + sprintNumber).addClass("hightlight");
@@ -148,7 +147,7 @@ ScrHub.view.Backlog = Backbone.View.extend({
                 $(".backlog-line input").prop("disabled", true);
             }
         }
-    },
+    },*/
     editStory: function (evt) {
         var target = $(evt.currentTarget);
         if (this.editingStory) {
@@ -180,16 +179,15 @@ ScrHub.view.Backlog = Backbone.View.extend({
     }
 });
 
-ScrHub.view.BacklogConfig = Backbone.View.extend({
-    el: "#backlog-config",
+ScrHub.view.BacklogSprints = Backbone.View.extend({
+    el: "#backlog-sprints",
     events: {
-        "click #menu-edit": "editMode",
+        /*"click #menu-edit": "editMode",
         "click #menu-assignment": "assignmentMode",
-        "click .sprint-select": "sprintClick",
-        "click #add-story": "addStory"
+        "click .sprint-select": "sprintClick",*/
     },
     render: function () {
-        var self = this, sprints = $("#sprints");
+        var self = this, sprints = $("#sprints-container");
         this.collection.fetch({
             success: function (collection) {
                 collection.forEach(function (sprint) {
@@ -198,14 +196,12 @@ ScrHub.view.BacklogConfig = Backbone.View.extend({
                         "class": "sprint-select"
                     }, sprint.get("number") + ". " + sprint.get("title"));
                     sprints.append(elem);
-                    if (sprint.get("current")) {
+                    /*if (sprint.get("current")) {
                         self.selectSprint(elem, sprint.get("number"));
-                    }
-                });                    
+                    }*/
+                });
             }
         });
-
-        this.editMode();
         return this.$el;
     },
     sprintClick: function (evt) {
@@ -215,23 +211,6 @@ ScrHub.view.BacklogConfig = Backbone.View.extend({
     selectSprint: function (elem, sprint) {
         $(elem).addClass("selected");
         this.options.backlog.setSprint(sprint);
-    },
-    addStory: function () {
-        this.options.backlog.addStory(new ScrHub.model.Story(), true);
-    },
-    editMode: function () {
-        this.options.backlog.setMode("edit");
-        this.setCurrentMenu("edit");
-    },
-    assignmentMode: function () {
-        this.options.backlog.setMode("assignment");
-        this.setCurrentMenu("assignment");
-    },
-    setCurrentMenu: function (menu) {
-        $("#config-menu li").removeClass("current");
-        $("#menu-" + menu).addClass("current");
-        $(".config-pane").removeClass("current");
-        $("#" + menu + "-config").addClass("current");
     }
 });
 
