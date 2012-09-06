@@ -1,0 +1,7 @@
+nav
+    a(class="navigation" + (path === "/#{project}/dashboard/" ? " active" : ""), href="/#{project}/dashboard/") Dashboard
+    a(class="navigation" + (path === "/#{project}/backlog/" ? " active" : ""), href="/#{project}/backlog/") Product Backlog
+    - if (!connected)
+        a(class="navigation active", href="#{path}?connect=true") Connect
+    - else
+        a(class="navigation", href="#{path}?disconnect=true") Disconnect #{user.name}

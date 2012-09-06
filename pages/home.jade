@@ -1,16 +1,22 @@
 doctype 5
 html
     head
-        script(src="http://code.jquery.com/jquery-1.7.2.min.js")
+        title Welcome to Scrum Hub
+        include head
     body
-        h1 Welcome to Scrum Hub
-        a(href="/project/") select one of you project
-        ul
-         li your code on github
-         li your documentation on github
-         li your issue tracking on github
-         li
-            strong why don't you manage your Scrum Planning on github ?
+        #content.lead
+            h1 Welcome to Scrum Hub
+            ul
+             li your code is on 
+                strong GitHub
+             li your documentation is on 
+                strong GitHub
+             li your issue tracking is on 
+                strong GitHub
+             li: strong why don't you manage your Scrum Planning on GitHub ?
 
-        p Manage your product backlog and your sprint, resolve your stories 
-        | on your dashboard, your data is still in github database.
+            p.center: a.btn.btn-primary(href="/project/") select a project
+
+            p Manage your product backlog and sprints, resolve stories.
+                | Your data is still in GitHub database,
+                | keep links between commits and stories.

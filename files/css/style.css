@@ -2,47 +2,82 @@
 body {
     background: #DDD !important;
 }
-header {
-    min-height: 100px;
-    margin: 0 10px;
-}
 
 .loading {
     opacity: .5;
 }
+
 .error {
     color: red !important;
     border: red !important;
 }
 
-#spaces {
-    margin: 0;
-    list-style: none;
+p {
+    margin: .5em 0;
 }
-#spaces li {
-    display: inline-block;
-    vertical-align: top;
-    margin: 0 5px 5px 5px;
+
+h1 {
+    line-height: 1.2em;
+    font-size: 2em;
+    text-align: center;
+    margin: .5em 0;
 }
-#spaces a {
+.center {
+    text-align:center
+}
+
+li {
+    line-height: 1.2em;
+}
+
+#content {
+    width: 800px;
+    padding: 40px 20px;
+    margin: 20px auto;
+
+    box-sizing: border-box;
+    border-radius: 15px;
+    line-height: 1.2em;
+    font-size: 1.5em;
+    background: white;
+}
+
+
+#content .btn {
+    line-height: 1em;
+    font-size: 1.2em;
+}
+
+
+/* navigation */
+nav {
+    min-height: 100px;
+    margin: 0 10px;
+}
+
+.navigation {
     display: inline-block;
     min-width: 240px;
-    text-align: center;
 
+    margin: 0 5px 5px 5px;
     padding: .5em;
-    background: white;
-    
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     border: 1px solid black;
     border-top: none;
+
+    background: white;
+    text-align: center;
+    vertical-align: top;
 }
 
 
-#spaces .current {
+.navigation.active {
     font-size: 2.5em;
 }
 
+
+/* Dashboard */
 
 #dashboard {
     position:absolute;
