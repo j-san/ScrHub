@@ -39,8 +39,10 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
 
         $(this.make("textarea", {
             "class": "story-body"
-        }, this.model.get("body")))
-            .appendTo(this.$el);
+        }, this.model.get("body"))).appendTo(this.$el);
+        this.sprint = $(this.make("button", {
+            "class": "story-sprint btn"
+        })).appendTo(this.$el);
 
         this.setSprint();
         this.model.on("change:milestone", function () {
@@ -49,13 +51,11 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
         
         return this.$el;
     },
-    setSprint: function (sprint) {
-        if(this.model.previous("milestone")) {
-            this.$el.removeClass("sprint-" + this.model.previous("milestone").number);
-        }
-
+    setSprint: function () {
         if (this.model.has("milestone") && typeof this.model.get("milestone") == "object") {
-            this.$el.addClass("sprint-" + this.model.get("milestone").number);
+            this.sprint.html(this.model.get("milestone").title).removeClass('active');
+        } else if(!this.model.has("milestone")) {
+            this.sprint.html("none").addClass('active');
         }
     },
     saveStoryTitle: function () {
