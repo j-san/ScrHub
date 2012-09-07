@@ -190,7 +190,8 @@ nav {
     width: auto;
     border: 1px solid transparent;
     background: transparent;
-    transition: border easy-in-out;
+    -webkit-transition: border 1s easy-in-out;
+    transition: border 1s easy-in-out;
 }
 
 .backlog-line .story-title:focus {
@@ -199,14 +200,15 @@ nav {
 }
 
 .backlog-line .story-body {
-    display: none;
+    height: 0px;
     width: 100%;
-    height: 120px;
     box-sizing: border-box;
     margin: 10px 0;
 }
 .backlog-line.edit-form .story-body {
-    display: block;
+    height: 120px;
+    -webkit-transition: height 1s easy-in-out;
+    transition: height 1s easy-in-out;
 }
 .backlog-line .story-sprint {
     position: absolute;

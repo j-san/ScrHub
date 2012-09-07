@@ -70,7 +70,7 @@ ScrHub.view.StoryTicket = Backbone.View.extend({
     pinOnBoard: function () {
         if (this.model.get("assignee")) {
             if (!this.$el.find("img").length) {
-                this.$el.prepend(this.make("img", {"src": this.model.get("assignee").avatar_url}));
+                this.ticket.prepend(this.make("img", {"class": "avatar", "src": this.model.get("assignee").avatar_url}));
             }
             if (this.model.hasLabel("testing")) {
                 this.testing.append(this.$el);
