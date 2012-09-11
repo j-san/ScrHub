@@ -26,6 +26,8 @@ ScrHub.model.Story = Backbone.Model.extend({
         }
         if (obj.milestone && obj.milestone.number) {
             obj.milestone = obj.milestone.number;
+        } else if (!obj.milestone) {
+            obj.milestone = null;
         }
         if (obj.labels) {
             var labels = [];

@@ -1,15 +1,17 @@
 $(function () {
-    var backlog;
-
-
-    new ScrHub.view.BacklogStories({
+    var stories = new ScrHub.view.BacklogStories({
         collection: new ScrHub.model.StoryList()
-    }).render();
+    })
+    stories.render();
 
-    new ScrHub.view.BacklogSprints({
+    var sprints = new ScrHub.view.BacklogSprints({
         collection: new ScrHub.model.SprintList()
-    }).render();
+    })
+    sprints.render();
 
+    sprints.on("change", function () {
+        stories.refreshSprints(sprints.collection.models);
+    });
 });
 
 ScrHub.view = {};
@@ -19,8 +21,10 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
     tagName: "li",
     className: "backlog-line",
     events: {
-        "blur .edit .story-title": "saveStoryTitle",
-        "blur .edit .story-body": "saveStoryBody"
+        "blur .story-title": "saveStoryTitle",
+        "blur .story-body": "saveStoryBody",
+        // "clickoutside .edit-form": "hideEdit",
+        "click .select-sprint li": "saveStorySprint"
     },
 
     render: function() {
@@ -40,8 +44,8 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
         $(this.make("textarea", {
             "class": "story-body"
         }, this.model.get("body"))).appendTo(this.$el);
-        this.sprint = $(this.make("button", {
-            "class": "story-sprint btn"
+        this.sprint = $(this.make("span", {
+            "class": "story-sprint"
         })).appendTo(this.$el);
 
         this.setSprint();
@@ -52,11 +56,15 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
         return this.$el;
     },
     setSprint: function () {
+        this.$el.find('.select-sprint li').removeClass("active");
         if (this.model.has("milestone") && typeof this.model.get("milestone") == "object") {
-            this.sprint.html(this.model.get("milestone").title).removeClass('active');
+            this.sprint.html(this.model.get("milestone").title).addClass('active');
+            this.$el.find('#sprint-' + this.model.get("milestone").number).addClass("active");
         } else if(!this.model.has("milestone")) {
-            this.sprint.html("none").addClass('active');
+            this.sprint.html("none").removeClass('active');
+            this.$el.find('#no-sprint').addClass("active");
         }
+
     },
     saveStoryTitle: function () {
         var newValue = this.$el.find(".story-title").val();
@@ -74,6 +82,14 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
             });
         }
     },
+    saveStorySprint: function (evt) {
+        var newValue = $(evt.currentTarget).data("number");
+        if((!this.model.has("milestone") && newValue != 0) || (this.model.has("milestone") && this.model.get("milestone") != newValue)) {
+            this.save({
+                "milestone": newValue
+            });
+        }
+    },
     save: function (attr, success) {
         var self = this;
         this.$el.addClass("loading");
@@ -88,7 +104,7 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
             error: function () {
                 self.$el.removeClass("loading");
                 self.$el.addClass("error");
-                alert('error while saving');
+                alert('error while saving, check if you are connected');
             }
         });
     },
@@ -97,6 +113,7 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
     },
     hideEdit: function () {
         this.$el.removeClass("edit-form");
+        console.log("end edit");
     }
 });
 
@@ -109,6 +126,9 @@ ScrHub.view.BacklogStories = Backbone.View.extend({
     views: {},
     render: function () {
         var self = this;
+        $(document.body).click(function () {
+            self.unselectStory();
+        });
         this.stories = $("#stories-container");
         this.collection.fetch({
             success: function (collection) {
@@ -118,6 +138,19 @@ ScrHub.view.BacklogStories = Backbone.View.extend({
             }
         });
         return this.$el;
+    },
+    refreshSprints: function (sprints) {
+        var self = this;
+        this.sprints = $(this.make("ul", {"class": "nav nav-pills nav-stacked select-sprint"}));
+        $(self.make("li", {"id": "no-sprint"}))
+            .append(self.make("a", {}, "None"))
+            .appendTo(self.sprints);
+        sprints.forEach(function (sprint) {
+            $(self.make("li", {"id": "sprint-" + sprint.get("number")}))
+                .append(self.make("a", {}, sprint.get("title")))
+                .data("number",sprint.get("number"))
+                .appendTo(self.sprints);
+        });
     },
     addNewStory: function () {
         this.addStory(new ScrHub.model.Story(), true);
@@ -130,31 +163,27 @@ ScrHub.view.BacklogStories = Backbone.View.extend({
             this.stories.append(view.render());
         }
         this.views[view.id] = view;
-    },/*
-    setSprint: function (sprintNumber) {
-        this.sprint = sprintNumber;
-        $(".sprint-" + sprintNumber).addClass("hightlight");
     },
-    setMode: function (mode) {
-        if (this.mode != mode) {
-            this.$el.removeClass(this.mode);
-            this.mode = mode;
-            this.$el.addClass(this.mode);
-            
-            if (this.mode == "edit") {
-                $(".backlog-line input").prop("disabled", false);
-            } else {
-                $(".backlog-line input").prop("disabled", true);
-            }
-        }
-    },*/
     editStory: function (evt) {
         var target = $(evt.currentTarget);
+        if(this.editingStory && target.attr("id") == this.editingStory.id) {
+            return;
+        }
+        console.log("edit");
         if (this.editingStory) {
             this.editingStory.hideEdit();
         }
         this.editingStory = this.views[target.attr("id")];
+        this.editingStory.$el.append(this.sprints);
+        this.sprints.children().removeClass('active');
+        if (this.editingStory.model.has("milestone")) {
+            this.sprints.find('#sprint-' + this.editingStory.model.get("milestone").number).addClass("active");
+        } else {
+            this.sprints.find('#no-sprint').addClass("active");
+        }
         this.editingStory.showEdit();
+    },
+    unselectStory: function (evt) {
     },
     selectStory: function (evt) {
         var target = $(evt.currentTarget);
@@ -200,6 +229,7 @@ ScrHub.view.BacklogSprints = Backbone.View.extend({
                         self.selectSprint(elem, sprint.get("number"));
                     }*/
                 });
+                self.trigger("change");
             }
         });
         return this.$el;

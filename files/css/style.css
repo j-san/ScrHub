@@ -9,7 +9,7 @@ body {
 
 .error {
     color: red !important;
-    border: red !important;
+    border: red 1px solid !important;
 }
 
 p {
@@ -156,7 +156,11 @@ nav {
     padding: 5px 9px;
     border: 1px solid #CCC;
     background: white;
+    height: 24px;
+    transition: height .5s linear;
+    -webkit-transition: height .5s linear;
 }
+
 .backlog-line:first-child {
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
@@ -164,6 +168,9 @@ nav {
 .backlog-line:last-child {
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
+}
+.backlog-line.edit-form {
+    height: 150px;
 }
 
 /*
@@ -179,49 +186,63 @@ nav {
 .story-id {
     display: inline-block;
     min-width: 30px;
+    padding: 3px 0;
 }
 
 .backlog-line .story-title {
-    position: absolute;
     display: block;
-    top: 0;
+    position: absolute;
+    top: 3px;
     left: 40px;
     right: 100px;
     width: auto;
     border: 1px solid transparent;
     background: transparent;
-    -webkit-transition: border 1s easy-in-out;
-    transition: border 1s easy-in-out;
 }
 
-.backlog-line .story-title:focus {
+.backlog-line.edit-form .story-title {
     background: white;
     border: 1px solid #CCC;
 }
 
 .backlog-line .story-body {
-    height: 0px;
-    width: 100%;
+    position: absolute;
+    top: 36px;
+    left: 5px;
+    right: 100px;
+    bottom: 5px;
+    width: auto;
+
     box-sizing: border-box;
-    margin: 10px 0;
+    margin: 0;
+    padding: 0;
+    transition: opacity .25s linear;
+    -webkit-transition: opacity .25s linear;
+    opacity: 0;
 }
 .backlog-line.edit-form .story-body {
-    height: 120px;
-    -webkit-transition: height 1s easy-in-out;
-    transition: height 1s easy-in-out;
+    opacity: 1;
+
 }
 .backlog-line .story-sprint {
     position: absolute;
     display: block;
-    top: 2px;
+    top: 5px;
     right: 10px;
     width: 80px;
     height: 21px;
-    color: #ccc;
     line-height: 1em;
+    color: #CCC;
 }
 .backlog-line .story-sprint.active {
     color: black;
+}
+.backlog-line .select-sprint {
+    position: absolute;
+    top: 30px;
+    right: 10px;
+    width: 80px;
+    line-height: 1em;
 }
 
 .config {

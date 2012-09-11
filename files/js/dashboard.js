@@ -22,7 +22,6 @@ ScrHub.view.Dashboard = Backbone.View.extend({
 });
 
 ScrHub.view.StoryTicket = Backbone.View.extend({
-    attributes: {"data-toggle": "modal", "data-target": "#foo"},
     events: {
         "click .dashboard-ticket": "edit",
         "click .close": "closeDialog",
