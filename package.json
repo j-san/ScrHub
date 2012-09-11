@@ -9,10 +9,9 @@
     "node": "0.6.x"
   },
   "dependencies": {
-      "express": "",
-      "jade": ""
+      "express": "3.0.0rc4",
+      "jade": "0.27.2"
   },
   "devDependencies": {
-      "supervisor": ""
   }
 }
