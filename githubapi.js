@@ -27,6 +27,12 @@ GithubApi.prototype.getUser = function (cb) {
 GithubApi.prototype.listProjects = function (cb) {
     return this.load("/user/repos", cb);
 };
+GithubApi.prototype.listOrgProjects = function (name, cb) {
+    return this.load("/orgs/" + name + "/repos", cb);
+};
+GithubApi.prototype.getProject = function (name, cb) {
+    return this.load("/repos/" + name, cb);
+};
 
 GithubApi.prototype.allStories = function (project, cb) {
     return this.load("/repos/" + project + "/issues", cb);

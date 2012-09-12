@@ -120,23 +120,32 @@ app.get('/', function home (req, res) {
     });
 });
 
-app.get('/project/', private, function project (req, res) {
+app.get('/projects/', private, function projects (req, res) {
     requestApi(req, res).listProjects(function(projects) {
+        res.render('project', { projects: projects });
+    });
+});
+app.get('/projects/:name/', function orgProjects (req, res) {
+    requestApi(req, res).listOrgProjects(req.params.name, function(projects) {
         res.render('project', { projects: projects });
     });
 });
 
 app.get('/:user/:name/dashboard/', function dashboard (req, res) {
     var project = req.params.user + '/' + req.params.name;
-    res.render('dashboard', { 
-        project: project
+    requestApi(req, res).getProject(project, function(project) {
+        res.render('dashboard', { 
+            project: project
+        });
     });
 });
 
 app.get('/:user/:name/backlog/', function backlog (req, res) {
     var project = req.params.user + '/' + req.params.name;
-    res.render('backlog', { 
-        project: project
+    requestApi(req, res).getProject(project, function(project) {
+        res.render('backlog', { 
+            project: project
+        });
     });
 });
 

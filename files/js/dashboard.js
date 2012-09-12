@@ -10,11 +10,13 @@ ScrHub.view.Dashboard = Backbone.View.extend({
     el: "#dashboard",
     render: function () {
         var self = this;
+        this.$el.addClass("loading");
         this.collection.fetch({
             success: function (collection) {
                 collection.forEach(function (story) {
                     new ScrHub.view.StoryTicket({model: story}).render();
                 });
+                self.$el.removeClass("loading");
             }
         });
         return this.$el;
@@ -59,7 +61,7 @@ ScrHub.view.StoryTicket = Backbone.View.extend({
             .append(this.make("button", {"id": "resume"}, "Resume"))
             .append(this.make("button", {"id": "close"}, "Close"));
 
-        this.model.on("sync", function () {
+        this.model.on("change:assignee change:labels change:state", function () {
             self.pinOnBoard();
         });
         this.$el.append(this.detail);
@@ -88,7 +90,18 @@ ScrHub.view.StoryTicket = Backbone.View.extend({
         this.detail.modal("hide");
     },
     save: function (data) {
-        this.model.save(data);
+        var self = this;
+        this.$el.addClass("loading");
+        this.model.save(data, {
+            success: function () {
+                self.$el.removeClass("loading");
+            },
+            error: function () {
+                self.$el.removeClass("loading");
+                self.$el.addClass("error");
+                alert('error while saving, check if you are connected');
+            }
+        });
     },
     takeInChargeStory: function () {
         this.save({"assignee": params.me});

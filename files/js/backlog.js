@@ -127,7 +127,7 @@ ScrHub.view.BacklogStories = Backbone.View.extend({
     render: function () {
         var self = this;
         $(document.body).click(function () {
-            self.unselectStory();
+            self.blurStory();
         });
         this.stories = $("#stories-container");
         this.collection.fetch({
@@ -183,28 +183,7 @@ ScrHub.view.BacklogStories = Backbone.View.extend({
         }
         this.editingStory.showEdit();
     },
-    unselectStory: function (evt) {
-    },
-    selectStory: function (evt) {
-        var target = $(evt.currentTarget);
-        evt.preventDefault();
-        var view = this.views[target.attr("id")],
-            story = view.model;
-        if (story.has("milestone") && story.get("milestone").number == this.sprint) {
-            view.save({
-                milestone: null
-            }, function () {
-                target.removeClass("hightlight");
-            });
-        } else if (!story.has("milestone")) {
-            view.save({
-                milestone: this.sprint
-            }, function () {
-                target.addClass("hightlight");
-            });
-        } else {
-            alert("story already assigned");
-        }
+    blurStory: function (evt) {
     }
 });
 
