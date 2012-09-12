@@ -35,7 +35,7 @@ app.configure('dev', function () {
 app.configure('sta', function () {
     console.log('Using sta configuration');
     
-    process.host = "scrhub.herokuapp.com";
+    process.host = "www.scrhub.com";
     process.client_id = 'f48190b0a23185d38240';
     process.client_secret = '1fb743a81c15bd41836f02686bd529674d90de9c';
 });
