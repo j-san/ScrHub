@@ -10,7 +10,6 @@ ScrHub.view.Dashboard = Backbone.View.extend({
     el: "#dashboard",
     render: function () {
         var self = this;
-        this.$el.addClass("loading");
         this.collection.fetch({
             success: function (collection) {
                 collection.forEach(function (story) {
@@ -122,3 +121,7 @@ ScrHub.view.StoryTicket = Backbone.View.extend({
     }
 });
 
+/*
+ScrHub.view.StoryDialog = Backbone.View.extend({
+});
+*/

@@ -11,10 +11,8 @@ html
             li: a(href="#backlog-sprints", data-toggle="tab") Sprints
         .tab-content
             #backlog-stories.tab-pane.active
-                .config
-                    p: button#add-story add story
-                    p fill a title to save new row on github
-                    p click on a story to edit
+                .options
+                    p: button#add-story.btn Add new story
                 ul#stories-container
             #backlog-sprints.tab-pane
                 ul#sprints-container
