@@ -140,7 +140,7 @@ app.get('/:user/:name/dashboard/', function dashboard (req, res) {
     });
 });
 
-app.get('/:user/:name/backlog/', function backlog (req, res) {
+app.get('/:user/:name/backlog/', private, function backlog (req, res) {
     var project = req.params.user + '/' + req.params.name;
     requestApi(req, res).getProject(project, function(project) {
         res.render('backlog', { 
