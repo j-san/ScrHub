@@ -1,22 +1,12 @@
 
 body {
     background-color: #DDD;
-    background-image: url(../img/graphy.png), url(../img/scrhub.png);
+    background-image: url(../img/graphy.png);
     background-repeat: repeat repeat;
     background-position: center top;
     font-size: 18px;
 }
 
-body:after {
-    content: " ";
-    position: absolute;
-    width: 100px;
-    height: 100px;
-    top: 45px;
-    right: 95px;
-    background-image: url(../img/scrhub.png);
-    background-repeat: no-repeat;
-}
 .loading {
     opacity: .5;
 }
@@ -29,7 +19,7 @@ body:after {
 h1 {
     line-height: 1.2em;
     font-size: 2.4em;
-    margin: .5em 2em;
+    margin: .5em 0 .5em 4.5em;
     font-family: 'Marck Script', cursive;
 }
 .center {
@@ -54,6 +44,7 @@ p {
 }
 
 #content {
+    position: relative;
     width: 800px;
     padding: 40px 20px;
     margin: 20px auto;
@@ -69,7 +60,16 @@ p {
     background-repeat: no-repeat;
     background-position: center 140px;
 }
-
+#content:after {
+    content: " ";
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: 25px;
+    left: 20px;
+    background-image: url(../img/scrhub.png);
+    background-repeat: no-repeat;
+}
 #content h1 {
     text-align: center;
 }
@@ -109,6 +109,17 @@ nav {
     border: 1px solid #888;
     border-left: none;
     background: white;
+}
+
+nav:after {
+    content: " ";
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: 70px;
+    left: 90px;
+    background-image: url(../img/scrhub.png);
+    background-repeat: no-repeat;
 }
 
 .navigation.active {
