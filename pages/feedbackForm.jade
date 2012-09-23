@@ -1,0 +1,20 @@
+doctype 5
+html
+    head
+        title Welcome to Scrum Hub
+        include head
+    body
+        #content
+            h1 That's a good idea !
+            form(method="POST", action="/feedback/")
+                textarea.content(name="content", rows="15")
+                input(type="submit", value="send")
+            ul you can also :
+                li fill a 
+                    a(href="https://github.com/j-san/ScrHub/issues/new") GitHub issue
+                li send a mail at 
+                    a(href="mailto:jonathan@scrhub.com") jonathan@scrhub.com
+                li
+                    a(href="http://twitter.com/j_sanp") follow me
+                    |  on Twitter 
+        include ga

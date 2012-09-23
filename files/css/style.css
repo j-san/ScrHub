@@ -72,6 +72,15 @@ p {
 }
 #content h1 {
     text-align: center;
+    margin: .8em 0;
+}
+
+/* feedback */
+#content textarea {
+    width: 100%;
+    min-height: 60px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, .4);
 }
 
 
@@ -126,6 +135,13 @@ nav:after {
     font-size: 2.5em;
 }
 
+.social-btns {
+    text-align: right;
+    vertical-align: bottom;
+}
+.fb-like {
+    top: -4px;
+}
 
 /* Dashboard */
 

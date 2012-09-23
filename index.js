@@ -1,7 +1,8 @@
 
 var express = require('express'),
     GithubApi = require('./githubapi'),
-    app = express.createServer(),
+    app = express(),
+    nodemailer = require("nodemailer"),
     port = process.env.PORT || 1337;
 
 app.configure(function () {
@@ -30,7 +31,6 @@ app.configure('dev', function () {
         next();
     });
 });
-
 
 app.configure('sta', function () {
     console.log('Using sta configuration');
@@ -206,6 +206,41 @@ app.get('/api/:user/:name/labels/', function allLabels (req, res) {
     });
 });
 
+app.get('/feedback/', private, function feedback (req, res) {
+    res.render('feedbackForm');
+});
+
+app.post('/feedback/', function sendFeedback (req, res) {
+    sendMail(req.body.content);
+    res.render('feedbackSent');
+});
+
 app.listen(port);
 console.log("Server running at " + main_url);
+
+function sendMail(content) {
+    var smtpTransport = nodemailer.createTransport("SMTP", {
+        service: "Gmail",
+        auth: {
+            user: "robot@scrhub.com",
+            pass: process.env.ROBOT_PWD
+        }
+    });
+
+    console.log(content);
+    smtpTransport.sendMail({
+        from: "Rugbite <robot@scrhub.com>",
+        to: "Jonathan <jonathan@scrhub.com>",
+        subject: "Feedback about Scrum Hub",
+        text: content,
+    }, function (error, response) {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log("Message sent: " + response.message);
+        }
+
+        smtpTransport.close();
+    });
+}
 

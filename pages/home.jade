@@ -1,11 +1,17 @@
 doctype 5
 html
     head
-        title Welcome to Scrum Hub
+        title Scrum Hub
         include head
     body
         #content
             h1 Welcome to Scrum Hub
+
+            .social-btns
+                <div class="fb-like" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false"></div>
+                <a href="https://twitter.com/j_sanp" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @j_sanp</a>
+                <a href="https://twitter.com/share" class="twitter-share-button">Tweet</a>
+
             ul
              li your code is on 
                 strong GitHub
@@ -25,4 +31,15 @@ html
                 li get notifications
                 li refs to users, projects, issues, ...
                 li be social
+
         include ga
+        #fb-root
+        script
+            (function(d, s, id) {
+              var js, fjs = d.getElementsByTagName(s)[0];
+              if (d.getElementById(id)) return;
+              js = d.createElement(s); js.id = id;
+              js.src = "//connect.facebook.net/fr_FR/all.js#xfbml=1&appId=434520186583515";
+              fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
