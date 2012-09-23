@@ -139,6 +139,9 @@ nav:after {
     text-align: right;
     vertical-align: bottom;
 }
+.social-btns > * {
+    margin-left: 5px;
+}
 .fb-like {
     top: -4px;
 }
