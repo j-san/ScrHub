@@ -154,7 +154,9 @@ app.get('/api/:user/:name/sprints/', function sprints (req, res) {
 
     requestApi(req, res).listSpints(project, function (data) {
         var sprint = GithubApi.findCurrentSprint(data);
-        sprint.current = true;
+        if (sprint) {
+            sprint.current = true;
+        }
         res.json(data);
     });
 });
