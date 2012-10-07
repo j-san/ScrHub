@@ -1,11 +1,11 @@
 doctype 5
 html
     head
-        title Scrum Hub Dashboard
+        title #{project.name} > Dashboard > Scrum Hub
         include head
     body
         include navigation
-        h1 #{project.name}
+        h1 Dashboard #{project.name}
         #dashboard.row-fluid.loading
             #todo.span4.column
                 h2 Todo

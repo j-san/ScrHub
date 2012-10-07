@@ -1,11 +1,11 @@
 doctype 5
 html
     head
-        title Scrum Hub Dashboard
+        title #{project.name} > Product Backlog > Scrum Hub
         include head
     body
         include navigation
-        h1 #{project.name}
+        h1 Product Backlog #{project.name}
         ul.nav.nav-tabs
             li.active: a(href="#backlog-stories", data-toggle="tab") Stories
             li: a(href="#backlog-sprints", data-toggle="tab") Sprints
