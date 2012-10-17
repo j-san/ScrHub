@@ -37,7 +37,9 @@ app.configure('sta', function () {
     
     process.host = "www.scrhub.com";
     process.client_id = 'f48190b0a23185d38240';
-    process.client_secret = '1fb743a81c15bd41836f02686bd529674d90de9c';
+    process.client_secret = process.env.GITHUB_SECRET;
+    
+    app.use(express.errorHandler({ dumpExceptions: false, showStack: false }));
 });
 
 var main_url = process.host=="localhost"?"http://localhost:"+port:"http://"+process.host;

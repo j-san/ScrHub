@@ -181,12 +181,13 @@ nav:after {
 .dashboard-ticket {
     display: inline-block;
     border: 1px solid black;
-    width: 200px;
+    width: 180px;
     height: 150px;
     margin: 10px;
     overflow: hidden;
     box-sizing: border-box;
     padding: 10px;
+    vertical-align: top;
 }
 
 .dashboard-ticket pre {
@@ -199,11 +200,14 @@ nav:after {
 
 .dashboard-ticket img {
     float: left;
-    padding: 5px;
+    position: relative;
+    top: -8px;
+    left: -8px;
 }
 
 #take-in-charge, #give-up, #test, #resume, #close {
     display: none;
+    float: right;
 }
 
 #give-up, #resume {
@@ -217,6 +221,12 @@ nav:after {
 #testing #close {
     display: inline-block;
 }
+
+.story-body {
+    clear: both;
+    padding-top: 8px;
+}
+
 
 /* Backlog */
 
@@ -315,7 +325,7 @@ nav:after {
 
 .backlog-line .select-sprint {
     position: absolute;
-    top: 30px;
+    top: 36px;
     right: 10px;
     width: 80px;
     line-height: 1em;

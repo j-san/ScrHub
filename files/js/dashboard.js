@@ -1,3 +1,5 @@
+var modal;
+
 $(function () {
     new ScrHub.view.Dashboard({
         collection: new ScrHub.model.CurrentSprintStoryList()
@@ -23,14 +25,9 @@ ScrHub.view.Dashboard = Backbone.View.extend({
 });
 
 ScrHub.view.StoryTicket = Backbone.View.extend({
+    className: "dashboard-ticket",
     events: {
-        "click .dashboard-ticket": "edit",
-        "click .close": "closeDialog",
-        "click #todo #take-in-charge": "takeInChargeStory",
-        "click #progress #give-up": "giveUpStory",
-        "click #progress #test": "readyForTestStory",
-        "click #testing #resume": "resumeStory",
-        "click #testing #close": "closeStory"
+        "click": "edit",
     },
     render: function () {
         this.todo = $("#todo");
@@ -38,42 +35,24 @@ ScrHub.view.StoryTicket = Backbone.View.extend({
         this.testing = $("#testing");
         var self = this;
 
-        this.ticket = $(this.make("div", {"class": "dashboard-ticket"}));
-        this.ticket.append(this.make("strong", {}, this.model.id + ". " + this.model.get("title")));
-        this.$el.append(this.ticket);
+        this.$el.append(this.make("h3", {}, this.model.id + ". " + this.model.get("title")));
 
         this.pinOnBoard();
-
-        this.detail = $(this.make("div", {"class": "detail modal hide"}));
-        $(this.make("div", {"class": "modal-header"})).appendTo(this.detail)
-            .append(this.make("button", {
-                type: "button", 
-                "class": "close"
-            }, "x"))           
-            .append(this.make("h1", {}, this.model.get("title")));
-
-        $(this.make("div", {"class": "modal-body"}, this.model.get("body") || "no content")).appendTo(this.detail);
-        $(this.make("div", {"class": "modal-footer"})).appendTo(this.detail)
-            .append(this.make("button", {"id": "take-in-charge"}, "Take in charge"))
-            .append(this.make("button", {"id": "give-up"}, "Give up"))
-            .append(this.make("button", {"id": "test"}, "Ready for testing"))
-            .append(this.make("button", {"id": "resume"}, "Resume"))
-            .append(this.make("button", {"id": "close"}, "Close"));
 
         this.model.on("change:assignee change:labels change:state", function () {
             self.pinOnBoard();
         });
-        this.$el.append(this.detail);
-        this.detail.modal({show: false});
         return this.$el;
     },
     pinOnBoard: function () {
         if (this.model.get("assignee")) {
             if (!this.$el.find("img").length) {
-                this.ticket.prepend(this.make("img", {"class": "avatar", "src": this.model.get("assignee").avatar_url}));
+                this.$el.prepend(this.make("img", {"class": "avatar", "src": this.model.get("assignee").avatar_url}));
             }
             if (this.model.hasLabel("testing")) {
                 this.testing.append(this.$el);
+            } else if (this.model.get("state") === "closed") {
+                this.$el.remove();
             } else {
                 this.progress.append(this.$el);
             }
@@ -83,10 +62,8 @@ ScrHub.view.StoryTicket = Backbone.View.extend({
         }
     },
     edit: function () {
-        this.detail.modal("show");
-    },
-    closeDialog: function () {
-        this.detail.modal("hide");
+        this.modal = new ScrHub.view.StoryDialog({ sender: this, model: this.model });
+        this.modal.render();
     },
     save: function (data) {
         var self = this;
@@ -101,27 +78,64 @@ ScrHub.view.StoryTicket = Backbone.View.extend({
                 alert('error while saving, check if you are connected');
             }
         });
+        this.modal.closeDialog();
+    }
+
+});
+
+
+ScrHub.view.StoryDialog = Backbone.View.extend({
+    events: {
+        "click .close": "closeDialog",
+        "click #todo #take-in-charge": "takeInChargeStory",
+        "click #progress #give-up": "giveUpStory",
+        "click #progress #test": "readyForTestStory",
+        "click #testing #resume": "resumeStory",
+        "click #testing #close": "closeStory"
+    },
+    render: function () {
+        this.sender = this.options.sender;
+        console.log(this.sender, this.options.sender);
+        this.detail = $(this.make("div", {"class": "detail modal hide"}));
+        $(this.make("div", {"class": "modal-header"})).appendTo(this.detail)
+            .append(this.make("button", {
+                type: "button", 
+                "class": "close"
+            }, "x"))
+            .append(this.make("h3", {}, this.model.get("title")));
+
+        $(this.make("div", {"class": "modal-body"}))
+            .append(this.make("button", {"id": "take-in-charge"}, "Take in charge"))
+            .append(this.make("button", {"id": "give-up"}, "Give up"))
+            .append(this.make("button", {"id": "test"}, "Processed"))
+            .append(this.make("button", {"id": "resume"}, "Resume"))
+            .append(this.make("button", {"id": "close"}, "Close"))
+            .append(this.make("div", {"class": "story-body"},  this.model.get("body") || "no content"))
+            .appendTo(this.detail);
+        this.$el.append(this.detail);
+        this.detail.modal();
+        this.$el.appendTo(this.sender.$el.closest(".column"));
+    },
+    closeDialog: function () {
+        this.detail.modal("hide");
+        this.detail.remove();
     },
     takeInChargeStory: function () {
-        this.save({"assignee": params.me});
+        this.sender.save({"assignee": params.me});
     },
     giveUpStory: function () {
-        this.save({"assignee": null});
+        this.sender.save({"assignee": null});
     },
     readyForTestStory: function () {
         this.model.addLabel("testing");
-        this.save();
+        this.sender.save();
     },
     resumeStory: function () {
         this.model.removeLabel("testing");
-        this.save();
+        this.sender.save();
     },
     closeStory: function () {
-        this.save({"state": "closed"});
+        this.sender.save({"state": "closed"});
     }
 });
 
-/*
-ScrHub.view.StoryDialog = Backbone.View.extend({
-});
-*/

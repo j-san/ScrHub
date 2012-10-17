@@ -23,7 +23,7 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
     events: {
         "blur .story-title": "saveStoryTitle",
         "blur .story-body": "saveStoryBody",
-        // "clickoutside .edit-form": "hideEdit",
+        "clickoutside .edit-form": "hideEdit",
         "click .select-sprint li": "saveStorySprint"
     },
 
@@ -113,7 +113,6 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
     },
     hideEdit: function () {
         this.$el.removeClass("edit-form");
-        console.log("end edit");
     }
 });
 
@@ -126,15 +125,20 @@ ScrHub.view.BacklogStories = Backbone.View.extend({
     views: {},
     render: function () {
         var self = this;
-        $(document.body).click(function () {
-            self.blurStory();
-        });
         this.stories = $("#stories-container");
         this.collection.fetch({
             success: function (collection) {
                 collection.forEach(function(story) {
                     self.addStory(story);
                 });
+            }
+        });
+        
+        $(document.body).click(function (evt) {
+            if (self.editElem && self.editElem.el !== evt.target && !self.editElem.$el.has(evt.target).length) {
+                self.editElem.hideEdit();
+                self.editElem = null;
+                console.log("close");
             }
         });
         return this.$el;
@@ -166,33 +170,31 @@ ScrHub.view.BacklogStories = Backbone.View.extend({
     },
     editStory: function (evt) {
         var target = $(evt.currentTarget);
-        if(this.editingStory && target.attr("id") == this.editingStory.id) {
-            return;
+        if(this.editElem && evt.currentTarget === this.editElem.el) {
+            return; // click on selected story
         }
         console.log("edit");
-        if (this.editingStory) {
-            this.editingStory.hideEdit();
+        if (this.editElem) {
+            this.editElem.hideEdit();
+            evt.stopPropagation();
         }
-        this.editingStory = this.views[target.attr("id")];
-        this.editingStory.$el.append(this.sprints);
+        this.editElem = this.views[target.attr("id")];
+        this.editElem.$el.append(this.sprints);
         this.sprints.children().removeClass('active');
-        if (this.editingStory.model.has("milestone")) {
-            this.sprints.find('#sprint-' + this.editingStory.model.get("milestone").number).addClass("active");
+        if (this.editElem.model.has("milestone")) {
+            this.sprints.find('#sprint-' + this.editElem.model.get("milestone").number).addClass("active");
         } else {
             this.sprints.find('#no-sprint').addClass("active");
         }
-        this.editingStory.showEdit();
-    },
-    blurStory: function (evt) {
+        this.editElem.showEdit();
     }
 });
 
 ScrHub.view.BacklogSprints = Backbone.View.extend({
     el: "#backlog-sprints",
     events: {
-        /*"click #menu-edit": "editMode",
-        "click #menu-assignment": "assignmentMode",
-        "click .sprint-select": "sprintClick",*/
+        //"click #add-sprint": "addNewSprint",
+        //"click .backlog-line": "editSprint"
     },
     render: function () {
         var self = this, sprints = $("#sprints-container");
@@ -201,25 +203,14 @@ ScrHub.view.BacklogSprints = Backbone.View.extend({
                 collection.forEach(function (sprint) {
                     var elem = self.make("li", {
                         "id": "sprint-" + sprint.id,
-                        "class": "sprint-select"
+                        "class": "sprint-line"
                     }, sprint.get("number") + ". " + sprint.get("title"));
                     sprints.append(elem);
-                    /*if (sprint.get("current")) {
-                        self.selectSprint(elem, sprint.get("number"));
-                    }*/
                 });
                 self.trigger("change");
             }
         });
         return this.$el;
-    },
-    sprintClick: function (evt) {
-        var matches = evt.currentTarget.id.match(/sprint-(\d+)/);
-        selectSprint(evt.currentTarget, matches[1]);
-    },
-    selectSprint: function (elem, sprint) {
-        $(elem).addClass("selected");
-        this.options.backlog.setSprint(sprint);
     }
 });
 
