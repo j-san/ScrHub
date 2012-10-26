@@ -1,1 +1,1 @@
-NODE_ENV=dev foreman start -p 1337
+foreman start -p 1337

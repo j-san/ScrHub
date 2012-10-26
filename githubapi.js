@@ -132,4 +132,13 @@ GithubApi.prototype.request = function (method, uri, data, options, headers, cb)
     return this;
 };
 
+
+function requestApi (req, res) {
+    return new GithubApi(req.session.state).on("error", function (code, message) {
+        res.json(code, message);
+    });
+}
+
+/* binding */
+GithubApi.requestApi = requestApi;
 module.exports = GithubApi;
