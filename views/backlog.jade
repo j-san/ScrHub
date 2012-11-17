@@ -18,5 +18,22 @@ html
                 ul#sprints-container
 
         include script
-        script(src="/js/backlog.js")
+        script(src="/js/UI/BacklogStories.js")
+        script(src="/js/UI/BacklogSprints.js")
+        script
+            $(function () {
+                var stories = new ScrHub.view.BacklogStories({
+                    collection: new ScrHub.model.StoryList()
+                })
+                stories.render();
+
+                var sprints = new ScrHub.view.BacklogSprints({
+                    collection: new ScrHub.model.SprintList()
+                })
+                sprints.render();
+
+                sprints.on("change", function () {
+                    stories.refreshSprints(sprints.collection.models);
+                });
+            });
         include ga

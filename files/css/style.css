@@ -118,6 +118,7 @@ nav {
     border: 1px solid #888;
     border-left: none;
     background: white;
+    z-index: 1;
 }
 
 nav:after {
@@ -278,10 +279,15 @@ nav:after {
     position: absolute;
     top: 3px;
     left: 40px;
-    right: 100px;
+    right: 200px;
     width: auto;
     border: 1px solid transparent;
     background: transparent;
+    box-shadow: none;
+}
+
+.backlog-line:not(.edit-form) .story-title {
+    -webkit-box-shadow: none;
 }
 
 .backlog-line.edit-form .story-title {
@@ -293,7 +299,7 @@ nav:after {
     position: absolute;
     top: 36px;
     left: 5px;
-    right: 100px;
+    right: 200px;
     bottom: 5px;
     width: auto;
 
@@ -306,8 +312,61 @@ nav:after {
 }
 .backlog-line.edit-form .story-body {
     opacity: 1;
-
 }
+
+
+.backlog-line .story-difficulty,
+.backlog-line .story-business-value {
+    position: absolute;
+    top: 3px;
+    right: 100px;
+    width: 40px;
+}
+
+.backlog-line .story-business-value {
+    right: 150px;
+}
+
+.backlog-line.edit-form .story-difficulty,
+.backlog-line.edit-form .story-business-value {
+    display: none;
+}
+
+.backlog-line .input-difficulty,
+.backlog-line .input-business-value {
+    display: none;
+    position: absolute;
+    top: 3px;
+    right: 100px;
+    width: 80px;
+}
+.backlog-line .input-difficulty {
+    top: 36px;
+    width: 90px;
+}
+
+.backlog-line.edit-form .input-difficulty,
+.backlog-line.edit-form .input-business-value {
+    display: block;
+}
+
+.backlog-line .input-difficulty input {
+    margin: 2px;
+}
+
+
+.backlog-line .input-difficulty label {
+    display: inline-block;
+    height: 19px;
+    margin: 0;
+    width: 35px;
+    vertical-align: top;
+    border: 1px solid #CCC;
+    border-radius: 3px;
+    margin: 3px;
+    padding: 1px;
+}
+
 .backlog-line .story-sprint {
     position: absolute;
     display: block;

@@ -1,5 +1,7 @@
 
-var GithubApi = require('../githubapi'),
+var GithubApi = require('../models/GithubApi'),
+    Story = require('../models/Story'),
+    merge = require('../utils/merge').merge,
     requestApi = GithubApi.requestApi;
 
 
@@ -21,7 +23,9 @@ function route (app) {
         
         function loadStories (sprint) {
             requestApi(req, res).dashboardStories(project, sprint, function (data) {
-                res.json(data);
+                Story.loadStories(data, function (stories) {
+                    res.json(stories);
+                });
             });
         }
         
@@ -42,14 +46,21 @@ function route (app) {
     app.get('/api/:user/:name/stories/', function allStories (req, res) {
         var project = req.params.user + '/' + req.params.name;
         requestApi(req, res).allStories(project, function (data) {
-            res.json(data);
+            Story.loadStories(data, function (stories) {
+                res.json(stories);
+            });
         });
     });
 
     app.put('/api/:user/:name/story/:story', function updateStory (req, res) {
         var project = req.params.user + '/' + req.params.name;
-        requestApi(req, res).updateStory(project, req.params.story, req.body, function (data) {
-            res.json(data);
+        var obj = req.body;
+        requestApi(req, res).updateStory(project, req.params.story, obj, function (data) {
+            obj.project = project;
+            merge(data, obj);
+            Story.sync(data, function (err, story) {
+                res.json(story);
+            });
         });
     });
 

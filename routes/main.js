@@ -1,6 +1,6 @@
 
 
-var GithubApi = require('../githubapi'),
+var GithubApi = require('../models/GithubApi'),
     requestApi = GithubApi.requestApi;
 
 

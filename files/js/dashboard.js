@@ -95,7 +95,6 @@ ScrHub.view.StoryDialog = Backbone.View.extend({
     },
     render: function () {
         this.sender = this.options.sender;
-        console.log(this.sender, this.options.sender);
         this.detail = $(this.make("div", {"class": "detail modal hide"}));
         $(this.make("div", {"class": "modal-header"})).appendTo(this.detail)
             .append(this.make("button", {

@@ -9,12 +9,11 @@ html
             form(method="POST", action="/feedback/")
                 textarea.content(name="content", rows="15")
                 input(type="submit", value="send")
-            ul you can also :
-                li fill a 
-                    a(href="https://github.com/j-san/ScrHub/issues/new") GitHub issue
-                li send a mail at 
-                    a(href="mailto:jonathan@scrhub.com") jonathan@scrhub.com
+
+            p you can also :
+            ul
+                li 
+                    a(href="https://github.com/j-san/ScrHub/issues/new") report a bug and/or fill a GitHub issue
                 li
-                    a(href="http://twitter.com/j_sanp") follow me
-                    |  on Twitter 
+                    a(href="http://twitter.com/j_sanp") Tweet me
         include ga

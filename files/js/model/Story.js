@@ -1,7 +1,7 @@
 
-var ScrHub = {};
+if (typeof window.ScrHub === "undefined") window.ScrHub = {};
+if (typeof ScrHub.model === "undefined") ScrHub.model = {};
 
-ScrHub.model = {};
 
 ScrHub.model.Story = Backbone.Model.extend({
     idAttribute: "number",
@@ -9,6 +9,8 @@ ScrHub.model.Story = Backbone.Model.extend({
         "title": "",
         "body": "",
         "state": "open",
+        "difficulty": 0,
+        "businessValue": 0,
         "assignee": null,
         "milestone": null,
         "labels": []
@@ -68,58 +70,10 @@ ScrHub.model.Story = Backbone.Model.extend({
     }
 });
 
+
 ScrHub.model.StoryList = Backbone.Collection.extend({
     model: ScrHub.model.Story,
     url: "/api/" + params.project + "/stories/"
 });
 
-
-
-ScrHub.model.Label = Backbone.Model.extend({
-    idAttribute: "name",
-    url: function () {
-        return "/api/" + params.project + "/label/" + (this.id || "new")
-    }
-});
-
-ScrHub.model.LabelList = Backbone.Collection.extend({
-    model: ScrHub.model.Label,
-    url: function () {
-        return "/api/" + params.project + "/labels/"
-    }
-});
-ScrHub.model.labels = new ScrHub.model.LabelList();
-ScrHub.model.labels.fetch();
-
-
-
-ScrHub.model.Sprint = Backbone.Model.extend({
-    idAttribute: "number",
-    defaults: {
-        "title": "",
-        "state": "open",
-        "description": "",
-        "due_on": null,
-    },
-    toJSON: function () {
-        var obj = {};
-        for (var attr in this.defaults) {
-            obj[attr] = this.get(attr);
-        }
-        return obj;
-    },
-    url: function () {
-        return "/api/" + params.project + "/sprint/" + (this.id || "new")
-    }
-});
-
-ScrHub.model.SprintList = Backbone.Collection.extend({
-    model: ScrHub.model.Sprint,
-    url: "/api/" + params.project + "/sprints/"
-});
-
-ScrHub.model.CurrentSprintStoryList = Backbone.Collection.extend({
-    model: ScrHub.model.Story,
-    url: "/api/" + params.project + "/sprint/current/stories/"
-});
 
