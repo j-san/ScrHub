@@ -19,12 +19,8 @@ StorySchema.virtual('id').set(function (id) {
 
 StorySchema.static('sync', function (obj, callback) {
     this.findById(obj.id, function (err, story) {
-        // if (story) {
-            // merge(story, obj);
-        // } else {
-            // persist new obj in db
         story = new Story(obj);
-        // }
+        // persist new obj if id does not exist yet
         story.save();
         callback(err, merge(obj, story.toObject()));
     });

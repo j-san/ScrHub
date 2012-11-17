@@ -6,9 +6,10 @@ var express = require('express'),
     MongoStore = require('connect-mongo')(express),
     routeMain = require('./routes/main'),
     routeApi = require('./routes/api'),
+    logging = require('./utils/logging'),
     port = process.env.PORT || 1337,
     app = express(),
-    mongoURL = process.env.MONGO_URL;
+    mongoURL = process.env.MONGO_URL || process.env.MONGOLAB_URI;
 
 
 // run with NODE_ENV=dev for debug config
@@ -19,11 +20,9 @@ app.configure('dev', function () {
     process.client_id = '78e3e8c40b1ca4c64828';
     process.client_secret = 'd507cf3cef62295ab983310fabb8736b27e7046d';
 
-    app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-    app.use(function logging (req, res, next) {
-        console.log(req.method, req.path);
-        next();
-    });
+    app.use(logging.logRequest);
+
+    app.use(logging.clientErrorHandler);
 });
 
 app.configure('sta', function () {
@@ -32,8 +31,8 @@ app.configure('sta', function () {
     process.host = "www.scrhub.com";
     process.client_id = 'f48190b0a23185d38240';
     process.client_secret = process.env.GITHUB_SECRET;
-    
-    app.use(express.errorHandler({ dumpExceptions: false, showStack: false }));
+
+    app.use(logging.errorHandler);
 });
 
 app.configure(function () {
@@ -45,8 +44,11 @@ app.configure(function () {
             url: mongoURL
         })
     }));
+    
     app.use(app.router);
     app.use(express.static(__dirname + '/files'));
+
+    app.use(logging.logErrors);
 
     app.engine('jade', require('jade').__express);
     app.set('view engine', 'jade');
@@ -60,6 +62,7 @@ mongoose.connect(mongoURL, function () {
     app.listen(port);
     console.log("Server running");
 });
+
 mongoose.connection.on('error', function () {
   console.error('mongodb connection error', arguments);
 });
