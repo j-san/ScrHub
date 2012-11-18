@@ -169,19 +169,16 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
     saveStorySprint: function (evt) {
         var newValue = $(evt.currentTarget).data("number");
         if((!this.model.has("milestone") && newValue != 0) || (this.model.has("milestone") && this.model.get("milestone") != newValue)) {
-            this.save({
-                "milestone": newValue
-            });
+            this.model.set("milestone", newValue);
+            this.syncModel();
         }
     },
     save: function () {
-        var self = this,
-            title = this.$el.find(".story-title").val(),
+        var title = this.$el.find(".story-title").val(),
             body = this.$el.find(".story-body").val(),
             businessValue = this.$el.find(".input-business-value").val(),
             difficulty = this.$el.find(".input-difficulty :checked").val();
 
-        console.log(difficulty);
         if (title === this.model.get("title")
                 && body === this.model.get("body")
                 && businessValue == this.model.get("businessValue")
@@ -194,8 +191,10 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
         //this.model.set("milestone", $(evt.currentTarget).data("number"));
         this.model.set("businessValue", Number(businessValue));
         this.model.set("difficulty", Number(difficulty));
-
-
+        this.syncModel();
+    },
+    syncModel: function () {
+        var self = this;
         this.$el.addClass("loading");
         this.$el.removeClass("error");
         this.model.save({}, {

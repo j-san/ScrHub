@@ -57,7 +57,7 @@ function route (app) {
         var obj = req.body;
         requestApi(req, res, next).updateStory(project, req.params.story, obj, function (data) {
             obj.project = project;
-            merge(data, obj);
+            merge(obj, data);
             Story.sync(data, function (err, story) {
                 if (err) {
                     next(err);

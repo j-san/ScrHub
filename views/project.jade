@@ -1,5 +1,5 @@
 doctype 5
-html
+html(lang="en")
     head
         include head
     body
@@ -9,3 +9,4 @@ html
                 h2: a(href="/#{p.full_name}/dashboard/")= p.full_name
                 p= p.description
         include ga
+        include footer

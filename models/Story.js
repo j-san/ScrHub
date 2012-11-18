@@ -6,11 +6,17 @@ var mongoose = require('mongoose'),
         project: String,
         difficulty: Number,
         businessValue: Number
+    },{
+        toObject: {
+            virtuals: true
+        }
     }),
     Story;
 
-StorySchema.virtual('rate').get(function () {
-    return this.businessValue / this.difficulty;
+StorySchema.virtual('priority').get(function () {
+    if (this.get("difficulty") > 0)
+        return this.get("businessValue") / this.get("difficulty");
+    return 0;
 });
 
 StorySchema.virtual('id').set(function (id) {
