@@ -6,10 +6,10 @@ var GithubApi = require('../models/GithubApi'),
 
 
 function route (app) {
-    app.get('/api/:user/:name/sprints/', function sprints (req, res) {
+    app.get('/api/:user/:name/sprints/', function sprints (req, res, next) {
         var project = req.params.user + '/' + req.params.name;
 
-        requestApi(req, res).listSpints(project, function (data) {
+        requestApi(req, res, next).listSpints(project, function (data) {
             var sprint = GithubApi.findCurrentSprint(data);
             if (sprint) {
                 sprint.current = true;
@@ -18,11 +18,11 @@ function route (app) {
         });
     });
 
-    app.get('/api/:user/:name/sprint/:sprint/stories/', function sprintStories (req, res) {
+    app.get('/api/:user/:name/sprint/:sprint/stories/', function sprintStories (req, res, next) {
         var project = req.params.user + '/' + req.params.name;
         
         function loadStories (sprint) {
-            requestApi(req, res).dashboardStories(project, sprint, function (data) {
+            requestApi(req, res, next).dashboardStories(project, sprint, function (data) {
                 Story.loadStories(data, function (stories) {
                     res.json(stories);
                 });
@@ -30,7 +30,7 @@ function route (app) {
         }
         
         if (req.params.sprint == "current") {
-            requestApi(req, res).listSpints(project, function (data) {
+            requestApi(req, res, next).listSpints(project, function (data) {
                 if (data.length) {
                     loadStories(GithubApi.findCurrentSprint(data).number);
                 } else {
@@ -43,37 +43,40 @@ function route (app) {
 
     });
 
-    app.get('/api/:user/:name/stories/', function allStories (req, res) {
+    app.get('/api/:user/:name/stories/', function allStories (req, res, next) {
         var project = req.params.user + '/' + req.params.name;
-        requestApi(req, res).allStories(project, function (data) {
+        requestApi(req, res, next).allStories(project, function (data) {
             Story.loadStories(data, function (stories) {
                 res.json(stories);
             });
         });
     });
 
-    app.put('/api/:user/:name/story/:story', function updateStory (req, res) {
+    app.put('/api/:user/:name/story/:story', function updateStory (req, res, next) {
         var project = req.params.user + '/' + req.params.name;
         var obj = req.body;
-        requestApi(req, res).updateStory(project, req.params.story, obj, function (data) {
+        requestApi(req, res, next).updateStory(project, req.params.story, obj, function (data) {
             obj.project = project;
             merge(data, obj);
             Story.sync(data, function (err, story) {
+                if (err) {
+                    next(err);
+                }
                 res.json(story);
             });
         });
     });
 
-    app.post('/api/:user/:name/story/new', function createStory (req, res) {
+    app.post('/api/:user/:name/story/new', function createStory (req, res, next) {
         var project = req.params.user + '/' + req.params.name;
-        requestApi(req, res).createStory(project, req.body, function (data) {
+        requestApi(req, res, next).createStory(project, req.body, function (data) {
             res.json(data);
         });
     });
 
-    app.get('/api/:user/:name/labels/', function allLabels (req, res) {
+    app.get('/api/:user/:name/labels/', function allLabels (req, res, next) {
         var project = req.params.user + '/' + req.params.name;
-        requestApi(req, res).allLabels(project, function (data) {
+        requestApi(req, res, next).allLabels(project, function (data) {
             res.json(data);
         });
     });
