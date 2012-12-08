@@ -135,7 +135,7 @@ GithubApi.prototype.request = function (method, uri, data, options, headers, cb)
 
 function requestApi (req, res, next) {
     return new GithubApi(req.session.state).on("error", function (code, message) {
-        next(err);
+         res.json(code, message);
     });
 }
 
