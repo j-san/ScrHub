@@ -160,9 +160,7 @@ footer {
 /* Dashboard */
 
 #dashboard, .tab-content {
-    width: -webkit-calc(100% - 40px);
-    width: -moz-calc(100% - 40px);
-    width: calc(100% - 40px);
+    width: auto;
     padding: 30px;
     box-sizing: border-box;
 
