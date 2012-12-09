@@ -18,6 +18,9 @@ ScrHub.view.Dashboard = Backbone.View.extend({
                     new ScrHub.view.StoryTicket({model: story}).render();
                 });
                 self.$el.removeClass("loading");
+            },
+            error: function (collection, xhr) {
+                alert(JSON.parse(xhr.responseText).message);
             }
         });
         return this.$el;

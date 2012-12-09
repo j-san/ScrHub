@@ -18,6 +18,9 @@ ScrHub.view.BacklogStories = Backbone.View.extend({
                 collection.forEach(function(story) {
                     self.addStory(story);
                 });
+            },
+            error: function (collection, xhr) {
+                alert(JSON.parse(xhr.responseText).message);
             }
         });
         
@@ -95,19 +98,22 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
         this.model.on("change:number", function (model, newValue) {
             self.$el.find(".story-id").text(newValue + ".");
         });
-        this.$el.append(this.make("input", {
-            "class": "story-title",
+
+        $(this.make("input", {
             type: "text",
             value: this.model.get("title")
-        }));
-        this.$el.append(this.make("input", {
+        })).appendTo(this.$el).wrap('<span class="story-title"/>');
+
+        $(this.make("input", {
             "class": "input-business-value",
             type: "number",
             value: this.model.get("businessValue") || 0
-        }));
-        this.$el.append(this.make("span", {
+        })).appendTo(this.$el);
+
+        $(this.make("span", {
             "class": "story-business-value"
-        }, this.model.get("businessValue") || "No"));
+        }, this.model.get("businessValue") || "No"
+        )).appendTo(this.$el);
 
         this.dificulty = $(this.make("div", {
             "class": "input-difficulty"
@@ -126,8 +132,9 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
         }(0, 1, 1));
 
         $(this.make("textarea", {
-            "class": "story-body"
-        }, this.model.get("body"))).appendTo(this.$el);
+        }, this.model.get("body")))
+        .appendTo(this.$el).wrap('<span class="story-body"/>');
+
         this.sprint = $(this.make("span", {
             "class": "story-sprint"
         })).appendTo(this.$el);
@@ -174,8 +181,8 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
         }
     },
     save: function () {
-        var title = this.$el.find(".story-title").val(),
-            body = this.$el.find(".story-body").val(),
+        var title = this.$el.find(".story-title").find("input").val(),
+            body = this.$el.find(".story-body").find("textarea").val(),
             businessValue = this.$el.find(".input-business-value").val(),
             difficulty = this.$el.find(".input-difficulty :checked").val();
 
