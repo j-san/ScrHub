@@ -4,6 +4,7 @@
   "scripts": {
     "start": "index.js"
   },
+  "author": "Jonathan Sanchez <jonathan@scrhub.com>",
   "version": "0.1.0",
   "engines": {
     "node": "0.6.x"
