@@ -3,17 +3,12 @@ exports.logErrors = function(err, req, res, next) {
     next(err);
 }
 
-exports.clientErrorHandler = function(err, req, res, next) {
-    if (req.xhr) {
-        res.send(500, { error: 'Something blew up!' });
-    } else {
-        next(err);
-    }
+exports.debugErrorHandler = function(err, req, res, next) {
+    res.send(500, err);
 }
 
 exports.errorHandler = function(err, req, res, next) {
-    res.status(500);
-    res.render('error', { error: err });
+    res.send(500, 'Internal Server Error');
 }
 
 exports.logRequest = function(req, res, next) {

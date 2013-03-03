@@ -22,10 +22,10 @@ app.configure('dev', function () {
 
     app.use(logging.logRequest);
 
-    app.use(logging.clientErrorHandler);
+    app.use(logging.debugErrorHandler);
 });
 
-app.configure('sta', function () {
+app.configure('sta', 'prd', function () {
     console.log('Using sta configuration');
 
     process.host = "www.scrhub.com";
