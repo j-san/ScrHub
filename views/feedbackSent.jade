@@ -1,11 +1,8 @@
-doctype 5
-html(lang="en")
-    head
-        title Welcome to Scrum Hub
-        include head
-    body
-        #content
-            h1 Thank you so mutch !
-            a.btn(href="/") continue to enjoy
-        include ga
-        include footer
+extends base
+
+block prepend head
+    title Thank you so mutch !
+
+block append content
+    h1 Thank you so mutch !
+    a.btn(href="/") continue to enjoy

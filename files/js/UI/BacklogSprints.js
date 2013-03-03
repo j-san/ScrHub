@@ -14,10 +14,11 @@ ScrHub.view.BacklogSprints = Backbone.View.extend({
         this.collection.fetch({
             success: function (collection) {
                 collection.forEach(function (sprint) {
-                    var elem = self.make("li", {
+                    var elem = $("<li/>", {
                         "id": "sprint-" + sprint.id,
-                        "class": "sprint-line"
-                    }, sprint.get("number") + ". " + sprint.get("title"));
+                        "class": "sprint-line",
+                        text: sprint.get("number") + ". " + sprint.get("title")
+                    });
                     sprints.append(elem);
                 });
                 self.trigger("change");

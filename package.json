@@ -10,11 +10,11 @@
     "node": "0.6.x"
   },
   "dependencies": {
-      "express": "3.0.0",
-      "jade": "0.27.6",
+      "express": "3.1.0",
+      "jade": "0.28.1",
       "connect-mongo": "",
       "nodemailer": "",
-      "mongoose": "3.4.0"
+      "mongoose": "3.5.7"
   },
   "devDependencies": {
   }

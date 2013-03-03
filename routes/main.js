@@ -1,11 +1,12 @@
 
 
 var GithubApi = require('../models/GithubApi'),
-    requestApi = GithubApi.requestApi;
+    requestApi = GithubApi.requestApi,
+    nodemailer = require("nodemailer");
 
 
 function route (app) {
-    
+
     /* Connection behavior */
 
     app.get('*', function getToken (req, res, next) {
@@ -80,7 +81,7 @@ function route (app) {
     app.get('/:user/:name/dashboard/', function dashboard (req, res) {
         var project = req.params.user + '/' + req.params.name;
         requestApi(req, res).getProject(project, function(project) {
-            res.render('dashboard', { 
+            res.render('dashboard', {
                 project: project
             });
         });
@@ -89,7 +90,7 @@ function route (app) {
     app.get('/:user/:name/backlog/', private, function backlog (req, res) {
         var project = req.params.user + '/' + req.params.name;
         requestApi(req, res).getProject(project, function(project) {
-            res.render('backlog', { 
+            res.render('backlog', {
                 project: project
             });
         });

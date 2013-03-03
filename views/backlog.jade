@@ -1,40 +1,38 @@
-doctype 5
-html(lang="en")
-    head
-        title #{project.name} > Product Backlog > Scrum Hub
-        include head
-    body
-        include navigation
-        h1 Product Backlog #{project.name}
-        ul.nav.nav-tabs
-            li.active: a(href="#backlog-stories", data-toggle="tab") Stories
-            li: a(href="#backlog-sprints", data-toggle="tab") Sprints
-        .tab-content
-            #backlog-stories.tab-pane.active
-                .options
-                    p: button#add-story.btn Add new story
-                ul#stories-container
-            #backlog-sprints.tab-pane
-                ul#sprints-container
+extends baseApp
 
-        include script
-        script(src="/js/UI/BacklogStories.js")
-        script(src="/js/UI/BacklogSprints.js")
-        script
-            $(function () {
-                var stories = new ScrHub.view.BacklogStories({
-                    collection: new ScrHub.model.StoryList()
-                })
-                stories.render();
+block prepend head
+    title #{project.name} > Product Backlog > Scrum Hub
 
-                var sprints = new ScrHub.view.BacklogSprints({
-                    collection: new ScrHub.model.SprintList()
-                })
-                sprints.render();
+block append scripts
+    script(src="/js/UI/BacklogStories.js")
+    script(src="/js/UI/BacklogSprints.js")
+    script
+        $(function () {
+            var stories = new ScrHub.view.BacklogStories({
+                collection: new ScrHub.model.StoryList()
+            })
+            stories.render();
 
-                sprints.on("change", function () {
-                    stories.refreshSprints(sprints.collection.models);
-                });
+            var sprints = new ScrHub.view.BacklogSprints({
+                collection: new ScrHub.model.SprintList()
+            })
+            sprints.render();
+
+            sprints.on("change", function () {
+                stories.refreshSprints(sprints.collection.models);
             });
-        include ga
-        include footer
+        });
+
+block append app
+    h1 Product Backlog #{project.name}
+    ul.nav.nav-tabs
+        li.active: a(href="#backlog-stories", data-toggle="tab") Stories
+        li: a(href="#backlog-sprints", data-toggle="tab") Sprints
+    .tab-content
+        #backlog-stories.tab-pane.active
+            .options
+                p: button#add-story.btn Add new story
+            ul#stories-container
+        #backlog-sprints.tab-pane
+            ul#sprints-container
+

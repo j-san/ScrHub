@@ -23,7 +23,7 @@ ScrHub.view.BacklogStories = Backbone.View.extend({
                 alert(JSON.parse(xhr.responseText).message);
             }
         });
-        
+
         $(document.body).click(function (evt) {
             if (self.editElem && self.editElem.el !== evt.target && !self.editElem.$el.has(evt.target).length) {
                 self.editElem.hideEdit();
@@ -34,13 +34,13 @@ ScrHub.view.BacklogStories = Backbone.View.extend({
     },
     refreshSprints: function (sprints) {
         var self = this;
-        this.sprints = $(this.make("ul", {"class": "nav nav-pills nav-stacked select-sprint"}));
-        $(self.make("li", {"id": "no-sprint"}))
-            .append(self.make("a", {}, "None"))
+        this.sprints = $("<ul/>", {"class": "nav nav-pills nav-stacked select-sprint"});
+        $("<li/>", {"id": "no-sprint"})
+            .append($("<a/>", {text: "None"}))
             .appendTo(self.sprints);
         sprints.forEach(function (sprint) {
-            $(self.make("li", {"id": "sprint-" + sprint.get("number")}))
-                .append(self.make("a", {}, sprint.get("title")))
+            $("<li/>", {"id": "sprint-" + sprint.get("number")})
+                .append($("<a/>", {text: sprint.get("title")}))
                 .data("number",sprint.get("number"))
                 .appendTo(self.sprints);
         });
@@ -93,57 +93,66 @@ ScrHub.view.BacklogRow = Backbone.View.extend({
     render: function() {
         var self = this;
         this.id = this.el.id = "story-" + this.model.id;
-        this.$el.append(this.make("span", {"class": "story-id"}, this.model.id || "new" + "."));
+        this.$el.append($("<span/>", {"class": "story-id", text: this.model.id || "new" + "."}));
 
         this.model.on("change:number", function (model, newValue) {
             self.$el.find(".story-id").text(newValue + ".");
         });
 
-        $(this.make("input", {
+        $("<input/>", {
             type: "text",
             value: this.model.get("title")
-        })).appendTo(this.$el).wrap('<span class="story-title"/>');
+        }).appendTo(this.$el).wrap('<span class="story-title"/>');
 
-        $(this.make("input", {
+        $("<input/>", {
             "class": "input-business-value",
             type: "number",
             value: this.model.get("businessValue") || 0
-        })).appendTo(this.$el);
+        }).appendTo(this.$el);
 
-        $(this.make("span", {
-            "class": "story-business-value"
-        }, this.model.get("businessValue") || "No"
-        )).appendTo(this.$el);
+        $("<span/>", {
+            "class": "story-business-value",
+            text: this.model.get("businessValue") || "No"
+        }).appendTo(this.$el);
 
-        this.dificulty = $(this.make("div", {
+        this.dificulty = $("<div/>", {
             "class": "input-difficulty"
-        })).appendTo(this.$el);
-        this.$el.append(this.make("span", {
-            "class": "story-difficulty"
-        }, this.model.get("difficulty") || "No"));
+        }).appendTo(this.$el);
+
+        $("<span/>", {
+            "class": "story-difficulty",
+            text: this.model.get("difficulty") || "No"
+        }).appendTo(this.$el);
 
         (function fiboSuite(i, prev, fibo) {
             var id = self.id + "-difficulty-" + fibo;
-            $(self.make("label", { "for": id }, fibo))
-                .prepend(self.make("input", { id: id, name: self.id, type: "radio", value: fibo, checked: self.model.get("difficulty")==fibo }))
+            $("<label/>", { "for": id, text: fibo})
+                .prepend($("<input/>", {
+                    id: id,
+                    name: self.id,
+                    type: "radio",
+                    value: fibo,
+                    checked: self.model.get("difficulty")==fibo
+                }))
                 .appendTo(self.dificulty);
 
             if (i < 6) fiboSuite(i + 1, fibo, prev + fibo);
         }(0, 1, 1));
 
-        $(this.make("textarea", {
-        }, this.model.get("body")))
+        $("<textarea/>", {
+            text: this.model.get("body")
+        })
         .appendTo(this.$el).wrap('<span class="story-body"/>');
 
-        this.sprint = $(this.make("span", {
+        this.sprint = $("<span/>", {
             "class": "story-sprint"
-        })).appendTo(this.$el);
+        }).appendTo(this.$el);
 
         this.setSprint();
         this.model.on("change:milestone", function () {
             self.setSprint();
         });
-        
+
         return this.$el;
     },
     setSprint: function () {

@@ -1,12 +1,11 @@
-doctype 5
-html(lang="en")
-    head
-        include head
-    body
-        #content
-            h1 Select a project
-            each p, i in projects
-                h2: a(href="/#{p.full_name}/dashboard/")= p.full_name
-                p= p.description
-        include ga
-        include footer
+extends base
+
+block prepend head
+    title Select a project
+
+block append content
+    h1 Select a project
+    each p, i in projects
+        a.project-nav(href="/#{p.full_name}/dashboard/")
+            h2= p.full_name
+            p= p.description

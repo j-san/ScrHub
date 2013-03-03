@@ -1,20 +1,17 @@
-doctype 5
-html(lang="en")
-    head
-        title Welcome to Scrum Hub
-        include head
-    body
-        #content
-            h1 That's a good idea !
-            form(method="POST", action="/feedback/")
-                textarea.content(name="content", rows="15")
-                input(type="submit", value="send")
+extends base
 
-            p you can also :
-            ul
-                li 
-                    a(href="https://github.com/j-san/ScrHub/issues/new") report a bug and/or fill a GitHub issue
-                li
-                    a(href="http://twitter.com/j_sanp") Tweet me
-        include ga
-        include footer
+block prepend head
+    title That's a good idea !
+
+block append content
+    h1 That's a good idea !
+    form(method="POST", action="/feedback/")
+        textarea.content(name="content", rows="15")
+        input(type="submit", value="send")
+
+    p you can also :
+    ul
+        li
+            a(href="https://github.com/j-san/ScrHub/issues/new") report a bug and/or fill a GitHub issue
+        li
+            a(href="http://twitter.com/j_sanp") Tweet me

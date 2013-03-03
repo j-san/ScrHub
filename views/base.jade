@@ -1,0 +1,38 @@
+doctype 5
+html(lang="en")
+    head
+        block head
+            link(rel="shortcut icon", href="/img/scrhub-icon.png")
+            link(rel="stylesheet", href="/bootstrap/css/bootstrap.css")
+            link(rel="stylesheet", href="/bootstrap/css/bootstrap-responsive.css")
+            link(rel="stylesheet", href="/css/style.css")
+            link(rel="stylesheet", href="http://fonts.googleapis.com/css?family=Marck+Script")
+
+    body
+        //if lt IE 9
+            p.error: strong Please, use an up to date browser...
+        section#app.container
+            block app
+                section#content
+                    block content
+
+
+        footer © Created by&nbsp;
+            a(href="http://j-san.github.com") Jonathan Sanchez Pando
+
+    block scripts
+
+        script(src="http://code.jquery.com/jquery-1.7.2.min.js")
+        script(src="/bootstrap/js/bootstrap.js")
+
+        script(type="text/javascript")
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-34641800-1']);
+            _gaq.push(['_setDomainName', 'scrhub.com']);
+            _gaq.push(['_trackPageview']);
+
+            (function() {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();

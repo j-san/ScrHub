@@ -1,7 +1,6 @@
 
 var express = require('express'),
     mongoose = require("mongoose"),
-    nodemailer = require("nodemailer"),
     //SessionStore = require('./models/Session'),
     MongoStore = require('connect-mongo')(express),
     routeMain = require('./routes/main'),
@@ -17,8 +16,10 @@ app.configure('dev', function () {
     console.log('Using dev configuration http://localhost:' + port);
 
     process.host = 'localhost:'+ port;
-    process.client_id = '78e3e8c40b1ca4c64828';
+    process.client_id = '78e3e8c40b1ca4c64828'; // for localhost:1337
     process.client_secret = 'd507cf3cef62295ab983310fabb8736b27e7046d';
+
+    app.set('view options', { pretty: true });
 
     app.use(logging.logRequest);
 
@@ -44,7 +45,7 @@ app.configure(function () {
             url: mongoURL
         })
     }));
-    
+
     app.use(app.router);
     app.use(express.static(__dirname + '/files'));
 

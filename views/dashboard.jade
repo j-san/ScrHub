@@ -1,21 +1,19 @@
-doctype 5
-html(lang="en")
-    head
-        title #{project.name} > Dashboard > Scrum Hub
-        include head
-    body
-        include navigation
-        h1 Dashboard #{project.name}
-        // img(src="https://secure.travis-ci.org/#{project.full_name}.png")
-        #dashboard.row-fluid.loading
-            #todo.span4.column
-                h2 Todo
-            #progress.span4.column
-                h2 Progress
-            #testing.span4.column
-                h2 Testing
+extends baseApp
 
-        include script
-        script(src="/js/dashboard.js")
-        include ga
-        include footer
+block prepend head
+    title #{project.name} > Dashboard > Scrum Hub
+
+block append scripts
+    script(src="/js/dashboard.js")
+
+block append app
+    h1 Dashboard #{project.name}
+    // img(src="https://secure.travis-ci.org/#{project.full_name}.png")
+    #dashboard.row-fluid.loading
+        #todo.span4.column
+            h2 Todo
+        #progress.span4.column
+            h2 Progress
+        #testing.span4.column
+            h2 Testing
+

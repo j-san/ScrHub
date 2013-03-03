@@ -38,7 +38,7 @@ ScrHub.view.StoryTicket = Backbone.View.extend({
         this.testing = $("#testing");
         var self = this;
 
-        this.$el.append(this.make("h3", {}, this.model.id + ". " + this.model.get("title")));
+        this.$el.append($("<h3/>", {text: this.model.id + ". " + this.model.get("title")}));
 
         this.pinOnBoard();
 
@@ -50,7 +50,7 @@ ScrHub.view.StoryTicket = Backbone.View.extend({
     pinOnBoard: function () {
         if (this.model.get("assignee")) {
             if (!this.$el.find("img").length) {
-                this.$el.prepend(this.make("img", {"class": "avatar", "src": this.model.get("assignee").avatar_url}));
+                this.$el.prepend($("<img/>", {"class": "avatar", "src": this.model.get("assignee").avatar_url}));
             }
             if (this.model.hasLabel("testing")) {
                 this.testing.append(this.$el);
@@ -98,21 +98,18 @@ ScrHub.view.StoryDialog = Backbone.View.extend({
     },
     render: function () {
         this.sender = this.options.sender;
-        this.detail = $(this.make("div", {"class": "detail modal hide"}));
-        $(this.make("div", {"class": "modal-header"})).appendTo(this.detail)
-            .append(this.make("button", {
-                type: "button", 
-                "class": "close"
-            }, "x"))
-            .append(this.make("h3", {}, this.model.get("title")));
+        this.detail = $($("<div/>", {"class": "detail modal hide"}));
+        $($("<div/>", {"class": "modal-header"})).appendTo(this.detail)
+            .append($("<button/>", {type: "button", "class": "close", text: "x"}))
+            .append($("<h3/>", {text: this.model.get("title")}));
 
-        $(this.make("div", {"class": "modal-body"}))
-            .append(this.make("button", {"id": "take-in-charge"}, "Take in charge"))
-            .append(this.make("button", {"id": "give-up"}, "Give up"))
-            .append(this.make("button", {"id": "test"}, "Processed"))
-            .append(this.make("button", {"id": "resume"}, "Resume"))
-            .append(this.make("button", {"id": "close"}, "Close"))
-            .append(this.make("div", {"class": "story-body"},  this.model.get("body") || "no content"))
+        $($("<div/>", {"class": "modal-body"}))
+            .append($("<button/>", {"id": "take-in-charge", text: "Take in charge"}))
+            .append($("<button/>", {"id": "give-up", text: "Give up"}))
+            .append($("<button/>", {"id": "test", text: "Processed"}))
+            .append($("<button/>", {"id": "resume", text: "Resume"}))
+            .append($("<button/>", {"id": "close", text: "Close"}))
+            .append($("<div/>", {"class": "story-body", text: this.model.get("body") || "no content"}))
             .appendTo(this.detail);
         this.$el.append(this.detail);
         this.detail.modal();

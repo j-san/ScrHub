@@ -5,6 +5,17 @@ body {
     background-repeat: repeat repeat;
     background-position: center top;
     font-size: 18px;
+    line-height: 24px;
+}
+
+li {
+    font-size: 18px;
+    line-height: 24px;
+}
+
+.btn, .lead {
+    font-size: 24px;
+    line-height: 32px;
 }
 
 .loading {
@@ -17,29 +28,22 @@ body {
 }
 
 h1 {
-    line-height: 1.2em;
-    font-size: 2.4em;
-    margin: .5em 0 .5em 4.5em;
+    font-size: 48px;
     font-family: 'Marck Script', cursive;
+    margin: 9px 0 9px 60px;
 }
 .center {
     text-align:center
 }
 
 li {
-    line-height: 1.2em;
-    font-size: 1.2em;
 }
 
 p {
     margin: .8em 0;
-    line-height: 1.2em;
-    font-size: 1.2em;
 }
 
 .btn {
-    line-height: 1.2em;
-    font-size: 1.2em;
     font-family: 'Marck Script', cursive;
 }
 
@@ -80,7 +84,7 @@ p {
     width: 100%;
     min-height: 60px;
     box-sizing: border-box;
-    background: rgba(255, 255, 255, .4);
+    background: rgba(255, 255, 255, .8);
 }
 
 
@@ -155,6 +159,22 @@ footer {
 }
 .fb-like {
     top: -4px;
+}
+
+/* Projects list */
+
+.project-nav {
+    border: 1px solid #CCC;
+    border-radius: 5px;
+    display: block;
+    margin: 20px 5px;
+    padding: 5px 18px;
+    background: rgba(255,255, 255, 0.8);
+}
+.project-nav:hover,
+.project-nav:focus {
+    border: 1px solid black;
+    text-decoration: none;
 }
 
 /* Dashboard */
@@ -395,7 +415,6 @@ footer {
     right: 10px;
     width: 80px;
     height: 21px;
-    line-height: 1em;
     color: #CCC;
 }
 
@@ -408,7 +427,6 @@ footer {
     top: 36px;
     right: 10px;
     width: 80px;
-    line-height: 1em;
 }
 
 .options {
@@ -441,7 +459,6 @@ footer {
 }
 .nav-tabs > li {
     margin: 0 5px;
-    line-height: 1.8em;
     min-width: 110px;
     text-align: center;
 }
