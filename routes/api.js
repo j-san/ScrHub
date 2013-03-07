@@ -20,7 +20,7 @@ function route (app) {
 
     app.get('/api/:user/:name/sprint/:sprint/stories/', function sprintStories (req, res, next) {
         var project = req.params.user + '/' + req.params.name;
-        
+
         function loadStories (sprint) {
             requestApi(req, res, next).dashboardStories(project, sprint, function (data) {
                 Story.loadStories(data, function (stories) {
@@ -28,7 +28,7 @@ function route (app) {
                 });
             });
         }
-        
+
         if (req.params.sprint == "current") {
             requestApi(req, res, next).listSpints(project, function (data) {
                 if (data.length) {
@@ -58,7 +58,8 @@ function route (app) {
         requestApi(req, res, next).updateStory(project, req.params.story, obj, function (data) {
             obj.project = project;
             merge(obj, data);
-            Story.sync(data, function (err, story) {
+
+            Story.sync(obj, function (err, story) {
                 if (err) {
                     next(err);
                 }

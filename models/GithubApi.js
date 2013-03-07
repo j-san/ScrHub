@@ -115,14 +115,16 @@ GithubApi.prototype.request = function (method, uri, data, options, headers, cb)
         });
         res.on("end", function () {
             if (res.statusCode == 200) {
+                console.log("-response", method, uri);
                 self.emit("success", JSON.parse(data));
             } else {
-                console.log("error from github", res.statusCode, JSON.parse(data));
+                console.log("-error", method, uri, res.statusCode, JSON.parse(data));
                 self.emit("error", res.statusCode, JSON.parse(data));
             }
         });
 
     }).on('error', function(e) {
+        console.log("-error", method, uri);
         self.emit("error", e);
     });
     if (data) {

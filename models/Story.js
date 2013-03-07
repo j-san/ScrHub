@@ -35,7 +35,6 @@ StorySchema.static('sync', function (obj, callback) {
         }
         story.save(function end (err, story) {
             if (err) return callback(err);
-            
             callback(err, merge(obj, story.toObject()));
         });
     });
