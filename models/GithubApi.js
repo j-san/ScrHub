@@ -94,6 +94,7 @@ GithubApi.prototype.request = function (method, uri, data, options, headers, cb)
     options.headers = headers || {};
     options.path = uri;
     options.method = method;
+    options.headers['user-agent'] = 'SrcHub apllication';
 
     if (!options.hostname) {
         options.hostname = "api.github.com";
