@@ -14,6 +14,7 @@ function route (app) {
             if (sprint) {
                 sprint.current = true;
             }
+            res.set('Content-Type', 'application/json');
             res.json(data);
         });
     });
@@ -24,6 +25,7 @@ function route (app) {
         function loadStories (sprint) {
             requestApi(req, res, next).dashboardStories(project, sprint, function (data) {
                 Story.loadStories(data, function (stories) {
+                    res.set('Content-Type', 'application/json');
                     res.json(stories);
                 });
             });
@@ -47,6 +49,7 @@ function route (app) {
         var project = req.params.user + '/' + req.params.name;
         requestApi(req, res, next).allStories(project, function (data) {
             Story.loadStories(data, function (stories) {
+                res.set('Content-Type', 'application/json');
                 res.json(stories);
             });
         });
@@ -63,6 +66,7 @@ function route (app) {
                 if (err) {
                     next(err);
                 }
+                res.set('Content-Type', 'application/json');
                 res.json(story);
             });
         });
@@ -71,6 +75,7 @@ function route (app) {
     app.post('/api/:user/:name/story/new', function createStory (req, res, next) {
         var project = req.params.user + '/' + req.params.name;
         requestApi(req, res, next).createStory(project, req.body, function (data) {
+            res.set('Content-Type', 'application/json');
             res.json(data);
         });
     });
@@ -78,6 +83,7 @@ function route (app) {
     app.get('/api/:user/:name/labels/', function allLabels (req, res, next) {
         var project = req.params.user + '/' + req.params.name;
         requestApi(req, res, next).allLabels(project, function (data) {
+            res.set('Content-Type', 'application/json');
             res.json(data);
         });
     });

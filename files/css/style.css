@@ -43,7 +43,7 @@ p {
     margin: .8em 0;
 }
 
-.btn {
+.btn-large {
     font-family: 'Marck Script', cursive;
 }
 
@@ -357,19 +357,39 @@ footer {
 
 
 .backlog-line .story-difficulty,
-.backlog-line .story-business-value {
+.backlog-line .story-business-value,
+.backlog-line .story-priority {
     position: absolute;
     top: 3px;
-    right: 100px;
+    right: 140px;
     width: 40px;
+    text-align: center;
 }
 
 .backlog-line .story-business-value {
-    right: 150px;
+    right: 180px;
+}
+.backlog-line .story-priority {
+    right: 100px;
 }
 
+.backlog-line .story-business-value:after {
+    content: "/";
+    position: absolute;
+    right: 0px;
+}
+
+.backlog-line .story-difficulty:after {
+    content: ">";
+    position: absolute;
+    right: 0px;
+}
+
+
+
 .backlog-line.edit-form .story-difficulty,
-.backlog-line.edit-form .story-business-value {
+.backlog-line.edit-form .story-business-value,
+.backlog-line.edit-form .story-priority {
     display: none;
 }
 
@@ -393,19 +413,20 @@ footer {
 
 .backlog-line .input-difficulty input {
     margin: 2px;
+    display: none;
 }
 
 
 .backlog-line .input-difficulty label {
     display: inline-block;
     height: 19px;
+    line-height: 19px;
     margin: 0;
-    width: 35px;
+    width: 32px;
     vertical-align: top;
-    border: 1px solid #CCC;
-    border-radius: 3px;
     margin: 3px;
     padding: 1px;
+    font-size: 16px;
 }
 
 .backlog-line .story-sprint {

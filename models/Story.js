@@ -46,6 +46,8 @@ StorySchema.static('loadStories', function (stories, callback) {
             Story.findById(stories[i].id, function (err, story) {
                 if(story) {
                     merge(stories[i], story.toObject());
+                } else {
+                    merge(stories[i], {difficulty: 0, businessValue: 0, priority: 0});
                 }
 
                 load(i + 1); // recurcive iteration
