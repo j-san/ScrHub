@@ -1,0 +1,23 @@
+extends base
+
+block append scripts
+    script.
+        var params = {
+            project: "#{project.full_name}",
+            me: !{JSON.stringify(user)}
+        };
+    script(src="/components/requirejs/require.js", data-main="/js/main")
+
+
+block app
+    nav
+        a#nav-dashboard.navigation(href="#dashboard") Dashboard
+        a#nav-backlog.navigation(href="#backlog") Product Backlog
+        a.feedback(href="/feedback/") feedback
+        - if (!connected)
+            a.login(href="#{path}?connect=true") Connect
+        - else
+            a.login(href="/?disconnect=true") Disconnect #{user.name} (#{user.login})
+
+    h1 #{project.name}
+    #app-container
