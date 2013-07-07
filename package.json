@@ -5,17 +5,36 @@
     "start": "index.js"
   },
   "author": "Jonathan Sanchez <jonathan@scrhub.com>",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/CIRB/APPLICATION_REGIONALE_MOBILE.git"
+  },
   "version": "0.1.0",
   "engines": {
     "node": "0.6.x"
   },
   "dependencies": {
-      "express": "3.1.0",
-      "jade": "0.28.1",
+      "express": "3.3",
+      "jade": "0.32",
       "connect-mongo": "",
       "nodemailer": "",
-      "mongoose": "3.5.7"
+      "mongoose": "3.5.7",
+      "bower": ""
   },
   "devDependencies": {
+    "grunt-contrib-clean": "",
+    "grunt-contrib-jshint": "",
+    "grunt-contrib-jasmine": "",
+    "grunt-contrib-jasmine-node": "",
+    "grunt-contrib-nodeunit": "",
+    "grunt-contrib-concat": "",
+    "grunt-contrib-uglify": "",
+    "grunt-contrib-watch": "",
+    "grunt-release": "",
+    "jasmine-node": "",
+    "grunt": ""
+  },
+  "scripts": {
+    "postinstall": "./node_modules/bower/bin/bower install;"
   }
 }

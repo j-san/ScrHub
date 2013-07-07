@@ -1,22 +1,18 @@
 extends base
 
 block append scripts
-    script
+    script.
         var params = {
             project: "#{project.full_name}",
             me: !{JSON.stringify(user)}
         };
-    script(src="http://underscorejs.org/underscore.js")
-    script(src="http://backbonejs.org/backbone.js")
-    script(src="/js/model/Label.js")
-    script(src="/js/model/Story.js")
-    script(src="/js/model/Sprint.js")
+    script(src="/components/requirejs/require.js", data-main="/js/main")
 
 
 block app
     nav
-        a(class="navigation" + (path === "/#{project.full_name}/dashboard/" ? " active" : ""), href="/#{project.full_name}/dashboard/") Dashboard
-        a(class="navigation" + (path === "/#{project.full_name}/backlog/" ? " active" : ""), href="/#{project.full_name}/backlog/") Product Backlog
+        a(class="navigation" + (path === "/#{project.full_name}/dashboard/" ? " active" : ""), href="/#{project.full_name}#/dashboard/") Dashboard
+        a(class="navigation" + (path === "/#{project.full_name}/backlog/" ? " active" : ""), href="/#{project.full_name}#/backlog/") Product Backlog
         a.feedback(href="/feedback/") feedback
         - if (!connected)
             a.login(href="#{path}?connect=true") Connect

@@ -3,26 +3,6 @@ extends baseApp
 block prepend head
     title #{project.name} > Product Backlog > Scrum Hub
 
-block append scripts
-    script(src="/js/UI/BacklogStories.js")
-    script(src="/js/UI/BacklogSprints.js")
-    script
-        $(function () {
-            var stories = new ScrHub.view.BacklogStories({
-                collection: new ScrHub.model.StoryList()
-            })
-            stories.render();
-
-            var sprints = new ScrHub.view.BacklogSprints({
-                collection: new ScrHub.model.SprintList()
-            })
-            sprints.render();
-
-            sprints.on("change", function () {
-                stories.refreshSprints(sprints.collection.models);
-            });
-        });
-
 block append app
     h1 Product Backlog #{project.name}
     ul.nav.nav-tabs
