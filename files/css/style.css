@@ -262,6 +262,11 @@ footer {
 #sprints-container, #stories-container {
     margin: 0;
     list-style: none;
+    background-color: white;
+    border-radius: 6px;
+}
+#stories-container.loading {
+    min-height: 500px;
 }
 
 .backlog-line {
@@ -306,7 +311,7 @@ footer {
     display: block;
     position: absolute;
     top: 3px;
-    left: 40px;
+    left: 50px;
     right: 200px;
     width: auto;
 }

@@ -11,25 +11,25 @@ define(['backbone'], function (Backbone) {
             "click .select-sprint li": "saveStorySprint"
         },
 
-        storyRowTemplate: _.template([
-                '<span class="story-id"><%= number %></span>',
-                '<span class="story-title"><input type="text" value="<%= title %>" /></span>',
-                '<input class="input-business-value" type="number" value="<%= businessValue %>"/>',
-                '<span class="story-business-value"><%= businessValue || "-" %></span>',
+        template: _.template([
+                '<span class="story-id"><%= model.id || "new" %>.</span>',
+                '<span class="story-title"><input type="text" value="<%= model.get("title") %>" /></span>',
+                '<input class="input-business-value" type="number" value="<%= model.get("businessValue") %>"/>',
+                '<span class="story-business-value"><%= model.get("businessValue") || "-" %></span>',
                 '<div class="input-difficulty" data-toggle="buttons-radio"><% _.each(fiboSuite, function(fibo, i) { %>',
-                    '<input id="<%= number %>-difficulty-<%= fibo %>" name="<%= number %>" type="radio" value="<%= fibo %>" <%= difficulty===fibo?"checked":"" %> />',
-                    '<label for="<%= number %>-difficulty-<%= fibo %>" class="btn <%= difficulty===fibo?"active":"" %>"><%= fibo %></label>',
+                    '<input id="<%= model.id || "new" %>-difficulty-<%= fibo %>" name="<%= model.id || "new" %>-difficulty" type="radio" value="<%= fibo %>" <%= model.get("difficulty")===fibo?"checked":"" %> />',
+                    '<label for="<%= model.id || "new" %>-difficulty-<%= fibo %>" class="btn <%= model.get("difficulty")===fibo?"active":"" %>"><%= fibo %></label>',
                 '<% }); %></div>',
-                '<span class="story-difficulty"><%= difficulty || "-" %></span>',
-                '<span class="story-priority"><%= priority || "-" %></span>',
-                '<span class="story-body"><textarea><%= body %></textarea></span>',
-                '<span class="story-sprint"><%= body %></span>'
+                '<span class="story-difficulty"><%= model.get("difficulty") || "-" %></span>',
+                '<span class="story-priority"><%= model.get("priority") || "-" %></span>',
+                '<span class="story-body"><textarea><%= model.get("body") %></textarea></span>',
+                '<span class="story-sprint"><%= model.get("body") %></span>'
             ].join('\n')),
 
         render: function() {
             var self = this;
 
-            this.$el.html(this.storyRowTemplate(this.model.attributes));
+            this.$el.html(this.template({ model: this.model }));
             this.id = this.el.id = "story-" + this.model.id;
 
             this.model.on("change:number", function (model, newValue) {

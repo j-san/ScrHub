@@ -20,12 +20,16 @@ define(['backbone'], function (Backbone) {
         url: function () {
             return "/api/" + params.project + "/sprint/" + (this.id || "new")
         }
+    }, { //class properties
+        getSprintList: function () {
+            var Collection = Backbone.Collection.extend({
+                model: Sprint,
+                url: "/api/" + params.project + "/sprints/"
+            });
+             return new Collection();
+        }
     });
 
-    Sprint.SprintList = Backbone.Collection.extend({
-        model: Sprint,
-        url: "/api/" + params.project + "/sprints/"
-    });
 
     return Sprint;
 });

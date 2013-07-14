@@ -7,13 +7,12 @@ requirejs.config({
     //never includes a ".js" extension since
     //the paths config could be for a directory.
     paths: {
-        'jquery': '/components/jquery/jquery',
         'backbone': '/components/backbone/backbone',
         'underscore': '/components/underscore/underscore'
     },
     shim: {
         'backbone': {
-            deps: ['underscore', 'jquery'],
+            deps: ['underscore'],
             exports: 'Backbone'
         },
         'underscore': {
@@ -23,7 +22,7 @@ requirejs.config({
 });
 
 
-require(['backbone', 'UI/ProductBacklog'], function(Backbone, ProductBacklog) {
+require(['backbone', 'UI/ProductBacklog', 'UI/Dashboard'], function(Backbone, ProductBacklog, Dashboard) {
 
     var container = $('#app-container');
     var App = Backbone.Router.extend({
@@ -42,6 +41,7 @@ require(['backbone', 'UI/ProductBacklog'], function(Backbone, ProductBacklog) {
         dashboard: function(query, page) {
             $('.navigation').removeClass('active');
             $('#nav-dashboard').addClass('active');
+            var dashboard = new Dashboard();
             container.html(dashboard.render());
         }
     });

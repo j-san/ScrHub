@@ -1,23 +1,26 @@
 
-if (typeof window.ScrHub === "undefined") window.ScrHub = {};
-if (typeof ScrHub.model === "undefined") ScrHub.model = {};
 
+define(['backbone'], function (Backbone) {
 
-ScrHub.model.Label = Backbone.Model.extend({
-    idAttribute: "name",
-    url: function () {
-        return "/api/" + params.project + "/label/" + (this.id || "new")
-    }
+    var Label = Backbone.Model.extend({
+        idAttribute: "name",
+        url: function () {
+            return "/api/" + params.project + "/label/" + (this.id || "new")
+        }
+    }, { //class properties
+        getLabelList: function () {
+            var Collection = Backbone.Collection.extend({
+                model: Label,
+                url: "/api/" + params.project + "/labels/"
+            });
+            return new Collection();
+        },
+        getLabel: function (id) {
+            return this.labels.get(id);
+        }
+    });
+
+    Label.labels = Label.getLabelList();
+    Label.labels.fetch();
+    return Label;
 });
-
-ScrHub.model.LabelList = Backbone.Collection.extend({
-    model: ScrHub.model.Label,
-    url: function () {
-        return "/api/" + params.project + "/labels/"
-    }
-});
-
-ScrHub.model.labels = new ScrHub.model.LabelList();
-ScrHub.model.labels.fetch();
-
-

@@ -19,10 +19,10 @@ define(['backbone', 'UI/BacklogRow', 'model/Sprint', 'model/Story'], function (B
             ].join('\n')),
         sprintsTemplate: _.template([
                 '<ul class="nav nav-pills nav-stacked select-sprint">',
-                '<li id="no-sprint"><a>None</a></li>',
-                '<% sprints.forEach(function (sprint) { %>',
-                    '<li id="sprint-<%= sprint.get("number") %>" data-number="<%= sprint.get("number") %>"><a><%= sprint.get("title") %></a></li>',
-                '<% }); %>',
+                    '<li id="no-sprint"><a>None</a></li>',
+                    '<% sprints.forEach(function (sprint) { %>',
+                        '<li id="sprint-<%= sprint.get("number") %>" data-number="<%= sprint.get("number") %>"><a><%= sprint.get("title") %></a></li>',
+                    '<% }); %>',
                 '</ul>'
             ].join('\n')),
         views: {},
@@ -32,7 +32,7 @@ define(['backbone', 'UI/BacklogRow', 'model/Sprint', 'model/Story'], function (B
             this.$el.html(this.bodyTemplate({}));
 
             this.stories = this.$("#stories-container");
-            this.storiesCollection = new Story.StoryList()
+            this.storiesCollection = Story.getStoryList();
             this.storiesCollection.fetch({
                 success: function (collection) {
                     collection.forEach(function(story) {
@@ -45,17 +45,17 @@ define(['backbone', 'UI/BacklogRow', 'model/Sprint', 'model/Story'], function (B
                 }
             });
 
-            this.sprintsCollection = new Sprint.SprintList()
+            this.sprintsCollection = Sprint.getSprintList();
             this.sprintsCollection.fetch({
                 success: function (collection) {
-                    self.sprints = self.sprintsTemplate({sprints: collection});
+                    self.sprints = $(self.sprintsTemplate({sprints: collection}));
                 },
                 error: function (collection, xhr) {
                     alert(JSON.parse(xhr.responseText).message);
                 }
             });
 
-            $(document.body).click(function (evt) {
+            $(document.body).click(function (evt) { // TODO: avoid multiple bind
                 if (self.editElem && self.editElem.el !== evt.target && !self.editElem.$el.has(evt.target).length) {
                     self.editElem.hideEdit();
                     self.editElem = null;

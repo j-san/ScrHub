@@ -1,5 +1,5 @@
 
-define(['backbone'], function (Backbone) {
+define(['backbone', 'model/Label'], function (Backbone, Label) {
 
     var Story = Backbone.Model.extend({
         idAttribute: "number",
@@ -40,9 +40,9 @@ define(['backbone'], function (Backbone) {
         },
         addLabel: function (id) {
             if (!this.hasLabel(id)) {
-                var label = ScrHub.model.labels.get(id);
+                var label = Label.getLabel(id);
                 if (!label) {
-                    throw "label not found on github, maybe need to create it"
+                    throw Error("label not found on github, maybe need to create it");
                 }
                 return this.get("labels").push(label);
             }
@@ -50,7 +50,7 @@ define(['backbone'], function (Backbone) {
         removeLabel: function (label) {
             var labels = this.get("labels");
             for (i in labels) {
-                if (labels[i] == label || labels[i].name == label) {
+                if (labels[i] === label || labels[i].name === label) {
                     labels.splice(i, 1);
                     return labels;
                 }
@@ -60,22 +60,27 @@ define(['backbone'], function (Backbone) {
         hasLabel: function (label) {
             var labels = this.get("labels");
             for (i in labels) {
-                if (labels[i] == label || labels[i].name == label) {
+                if (labels[i] === label || labels[i].name === label) {
                     return true;
                 }
             }
             return false;
         }
-    });
-
-    Story.StoryList = Backbone.Collection.extend({
-        model: Story,
-        url: "/api/" + params.project + "/stories/"
-    });
-
-    Story.CurrentSprintStoryList = Backbone.Collection.extend({
-        model: Story,
-        url: "/api/" + params.project + "/sprint/current/stories/"
+    }, { // class properties
+        getStoryList: function() {
+            var Collection = Backbone.Collection.extend({
+                model: Story,
+                url: "/api/" + params.project + "/stories/"
+            });
+            return new Collection();
+        },
+        getCurrentSprintStoryList: function() {
+            var Collection = Backbone.Collection.extend({
+                model: Story,
+                url: "/api/" + params.project + "/sprint/current/stories/"
+            });
+            return new Collection();
+        }
     });
 
     return Story;
