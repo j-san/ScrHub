@@ -2,24 +2,24 @@
   "name": "sruhub",
   "subdomain": "sruhub",
   "scripts": {
-    "start": "index.js"
+    "postinstall": "./node_modules/.bin/bower install"
   },
   "author": "Jonathan Sanchez <jonathan@scrhub.com>",
   "repository": {
     "type": "git",
     "url": "http://github.com/j-san/ScrHub.git"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "engines": {
     "node": "0.10.x"
   },
   "dependencies": {
-      "express": "3.3",
-      "jade": "0.32",
-      "connect-mongo": "",
-      "nodemailer": "",
-      "mongoose": "3.5.7",
-      "bower": ""
+    "express": "3.3",
+    "jade": "0.32",
+    "connect-mongo": "",
+    "nodemailer": "",
+    "mongoose": "3.5.7",
+    "bower": ""
   },
   "devDependencies": {
     "grunt-contrib-clean": "",
@@ -33,8 +33,5 @@
     "grunt-release": "",
     "jasmine-node": "",
     "grunt": ""
-  },
-  "scripts": {
-    "postinstall": "./node_modules/.bin/bower install"
   }
 }
