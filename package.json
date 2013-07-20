@@ -7,7 +7,7 @@
   "author": "Jonathan Sanchez <jonathan@scrhub.com>",
   "repository": {
     "type": "git",
-    "url": "http://github.com/CIRB/APPLICATION_REGIONALE_MOBILE.git"
+    "url": "http://github.com/j-san/ScrHub.git"
   },
   "version": "0.1.0",
   "engines": {
@@ -35,6 +35,6 @@
     "grunt": ""
   },
   "scripts": {
-    "postinstall": "./node_modules/.bin/bower install;"
+    "postinstall": "./node_modules/.bin/bower install"
   }
 }

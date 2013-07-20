@@ -9,7 +9,7 @@ block append scripts
             project: "#{project.full_name}",
             me: !{JSON.stringify(user)}
         };
-    script(src="http://requirejs.org/docs/release/2.1.8/comments/require.js", data-main="/js/main")
+    script(src="/components/requirejs/require.js", data-main="/js/main")
 
 
 block app
