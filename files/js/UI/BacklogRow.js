@@ -21,7 +21,7 @@ define(['backbone'], function (Backbone) {
                     '<label for="<%= model.id || "new" %>-difficulty-<%= fibo %>" class="btn <%= model.get("difficulty")===fibo?"active":"" %>"><%= fibo %></label>',
                 '<% }); %></div>',
                 '<span class="story-difficulty"><%= model.get("difficulty") || "-" %></span>',
-                '<span class="story-priority"><%= model.get("priority") || "-" %></span>',
+                '<span class="story-priority"><%=   model.get("priority").toFixed(2) || "-" %></span>',
                 '<span class="story-body"><textarea><%= model.get("body") %></textarea></span>',
                 '<span class="story-sprint"><%= model.get("body") %></span>'
             ].join('\n')),
