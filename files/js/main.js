@@ -7,8 +7,8 @@ requirejs.config({
     //never includes a ".js" extension since
     //the paths config could be for a directory.
     paths: {
-        'backbone': 'http://backbonejs.org/backbone.js',
-        'underscore': 'http://underscorejs.org/underscore.js'
+        'backbone': 'http://backbonejs.org/backbone',
+        'underscore': 'http://underscorejs.org/underscore'
         // 'backbone': '/components/backbone/backbone',
         // 'underscore': '/components/underscore/underscore'
     },
