@@ -82,7 +82,7 @@ module.exports = function(grunt) {
                 }
             },
             options: {
-                files: ['<%= jshint.server.src %>']
+                files: ['src/test/*.js']
             },
           }
     });
