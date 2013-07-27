@@ -23,6 +23,7 @@
     "underscore": "1.5.1"
   },
   "devDependencies": {
+    "grunt": "",
     "grunt-contrib-clean": "",
     "grunt-contrib-jshint": "",
     "grunt-contrib-jasmine": "",
@@ -33,7 +34,6 @@
     "grunt-contrib-watch": "",
     "grunt-release": "",
     "jasmine-node": "",
-    "sinon": "",
-    "grunt": ""
+    "sinon": ""
   }
 }
