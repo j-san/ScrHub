@@ -76,14 +76,16 @@ module.exports = function(grunt) {
             test: {
                 options: {
                     reporter: 'spec',
+                    require: ['should'],
                     debug: true,
                     //'debug-brk': true
-                    coverage: true
+                    coverage: true,
                 }
             },
             options: {
                 files: ['src/test/*.js']
             },
+            all: ['src/test/*.js']
           }
     });
 

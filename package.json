@@ -5,7 +5,7 @@
     "postinstall": "./node_modules/.bin/bower install",
     "blanket": {
       "pattern": [
-        "src/**/*.js"
+        "src"
       ]
     }
   },
