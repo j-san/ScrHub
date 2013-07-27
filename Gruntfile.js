@@ -78,6 +78,7 @@ module.exports = function(grunt) {
                     reporter: 'spec',
                     debug: true,
                     //'debug-brk': true
+                    coverage: true
                 }
             },
             options: {

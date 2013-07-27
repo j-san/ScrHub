@@ -25,7 +25,8 @@
     "nodemailer": "0.5",
     "mongoose": "3.6.15",
     "bower": "1.0.0",
-    "underscore": "1.5.1"
+    "underscore": "1.5.1",
+    "q": ""
   },
   "devDependencies": {
     "grunt": "",
