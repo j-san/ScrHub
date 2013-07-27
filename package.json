@@ -2,7 +2,12 @@
   "name": "sruhub",
   "subdomain": "sruhub",
   "scripts": {
-    "postinstall": "./node_modules/.bin/bower install"
+    "postinstall": "./node_modules/.bin/bower install",
+    "blanket": {
+      "pattern": [
+        "src/**/*.js"
+      ]
+    }
   },
   "author": "Jonathan Sanchez <jonathan@scrhub.com>",
   "repository": {
@@ -17,7 +22,7 @@
     "express": "3.3",
     "jade": "",
     "connect-mongo": "",
-    "nodemailer": "",
+    "nodemailer": "0.5",
     "mongoose": "3.6.15",
     "bower": "1.0.0",
     "underscore": "1.5.1"
@@ -34,6 +39,8 @@
     "grunt-contrib-watch": "",
     "grunt-release": "",
     "jasmine-node": "",
-    "sinon": ""
+    "grunt-mocha-cov": "",
+    "sinon": "",
+    "should": ""
   }
 }

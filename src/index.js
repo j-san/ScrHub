@@ -47,7 +47,7 @@ app.configure(function () {
     }));
 
     app.use(app.router);
-    app.use(express.static(__dirname + '/files'));
+    app.use(express.static(__dirname + '/../files'));
 
     app.use(logging.logErrors);
 

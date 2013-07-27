@@ -37,12 +37,6 @@ module.exports = function(grunt) {
         jasmine: {
             files: ['files/test/*.js']
         },
-        'jasmine-node': {
-            run: {
-                spec: 'spec'
-            },
-            executable: './node_modules/.bin/jasmine-node'
-        },
         jshint: {
             client: {
                 options: {
@@ -59,22 +53,37 @@ module.exports = function(grunt) {
                         'console': true
                     }
                 },
-                src: ['Gruntfile.js', 'models/*.js', 'utils/*.js', 'routes/*.js', 'spec/*.js']
+                src: ['Gruntfile.js', 'src/**/*.js']
             },
         },
         watch: {
-            gruntfile: {
-                files: '<%= jshint.server.src %>',
-                tasks: ['jshint:server', 'jasmine-node']
-            },
-            src: {
-                files: '<%= jshint.client.src %>',
-                tasks: ['jshint:client']
+            all: {
+                files: ['<%= jshint.server.src %>', '<%= jshint.client.src %>'],
+                tasks: ['default']
             }
         },
         realese: {
             npm: false
-        }
+        },
+        mochacov: {
+            coveralls: {
+                options: {
+                    coveralls: {
+                        serviceName: 'travis-ci'
+                    }
+                }
+            },
+            test: {
+                options: {
+                    reporter: 'spec',
+                    debug: true,
+                    //'debug-brk': true
+                }
+            },
+            options: {
+                files: ['src/test/*.js']
+            },
+          }
     });
 
 
@@ -87,9 +96,12 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-nodeunit');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-mocha-cov');
     grunt.loadNpmTasks('grunt-release');
 
     // Default task.
-    grunt.registerTask('default', ['jshint', 'jasmine-node', 'clean', 'concat', 'uglify']);
+    grunt.registerTask('default', ['jshint', 'mochacov:test']);
+    grunt.registerTask('travis', ['jshint', 'mochacov:coveralls']);
+    grunt.registerTask('dist', ['clean', 'concat', 'uglify']);
 
 };
