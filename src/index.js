@@ -42,7 +42,8 @@ app.configure(function () {
     app.use(express.session({
         secret: "d507cf3cef62295ab983310fabb8736b27e7046d",
         store: new MongoStore({
-            url: mongoURL
+            url: mongoURL,
+            db: 'scrhub'
         })
     }));
 

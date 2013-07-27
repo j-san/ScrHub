@@ -66,7 +66,7 @@ module.exports = function(grunt) {
             npm: false
         },
         mochacov: {
-            coveralls: {
+            travis: {
                 options: {
                     coveralls: {
                         serviceName: 'travis-ci'
@@ -82,7 +82,7 @@ module.exports = function(grunt) {
                 }
             },
             options: {
-                files: ['src/test/*.js']
+                files: ['<%= jshint.server.src %>']
             },
           }
     });
@@ -102,7 +102,7 @@ module.exports = function(grunt) {
 
     // Default task.
     grunt.registerTask('default', ['jshint', 'mochacov:test']);
-    grunt.registerTask('travis', ['jshint', 'mochacov:coveralls']);
+    grunt.registerTask('travis', ['jshint', 'mochacov:travis']);
     grunt.registerTask('dist', ['clean', 'concat', 'uglify']);
 
 };
