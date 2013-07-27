@@ -1,5 +1,4 @@
 var mongoose = require('mongoose'),
-    merge = require('../utils/merge').merge,
     _ = require('underscore'),
     q = require('q'),
     StorySchema = new mongoose.Schema({
@@ -17,8 +16,9 @@ var mongoose = require('mongoose'),
 
 StorySchema.virtual('priority').get(function () {
     var priority;
-    if (this.get("difficulty") > 0)
+    if (this.get("difficulty") > 0) {
         priority = this.get("businessValue") / this.get("difficulty");
+    }
     return priority || 0;
 });
 
@@ -28,13 +28,14 @@ StorySchema.virtual('id').set(function (id) {
 
 StorySchema.static('loadStories', function (stories) {
     var promises = [];
-    stories.forEach(function (index, story) {
-        promises.push(Story.findById(stories[i].id).then(function (err, fetchedStory) {
-            if (!fetchedStory) {
-                fetchedStory = new Story();
-            }
-            _.extend(story, fetchedStory.toObject());
-        }));
+    stories.forEach(function (story, index) {
+        console.log(story);
+        promises.push(
+            Story.findById(story.id)
+                .then(function (fetchedStory) {
+                    _.extend(story, fetchedStory.toObject());
+                }, function (err) {})
+        );
     });
     return q.all(promises);
 });
