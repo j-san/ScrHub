@@ -1,5 +1,7 @@
 var mongoose = require('mongoose'),
     merge = require('../utils/merge').merge,
+    _ = require('underscore'),
+    q = require('q'),
     StorySchema = new mongoose.Schema({
         _id: Number,
         number: Number,
@@ -14,50 +16,29 @@ var mongoose = require('mongoose'),
     Story;
 
 StorySchema.virtual('priority').get(function () {
+    var priority;
     if (this.get("difficulty") > 0)
-        return this.get("businessValue") / this.get("difficulty");
-    return 0;
+        priority = this.get("businessValue") / this.get("difficulty");
+    return priority || 0;
 });
 
 StorySchema.virtual('id').set(function (id) {
     this._id = id;
 });
 
-StorySchema.static('sync', function (obj, callback) {
-    this.findById(obj.id, function (err, story) {
-        if (err) return callback(err);
-
-        if (story) {
-            merge (story, obj);
-        } else {
-            story = new Story(obj);
-            // persist new obj if id does not exist yet
-        }
-        story.save(function end (err, story) {
-            if (err) return callback(err);
-            callback(err, merge(obj, story.toObject()));
-        });
+StorySchema.static('loadStories', function (stories) {
+    var promises = [];
+    stories.forEach(function (index, story) {
+        promises.push(Story.findById(stories[i].id).then(function (err, fetchedStory) {
+            if (!fetchedStory) {
+                fetchedStory = new Story();
+            }
+            _.extend(story, fetchedStory.toObject());
+        }));
     });
+    return q.all(promises);
 });
 
-StorySchema.static('loadStories', function (stories, callback) {
-    (function load (i) {
-        if (i in stories) {
-            Story.findById(stories[i].id, function (err, story) {
-                if(story) {
-                    merge(stories[i], story.toObject());
-                } else {
-                    merge(stories[i], {difficulty: 0, businessValue: 0, priority: 0});
-                }
-
-                load(i + 1); // recurcive iteration
-            });
-        } else {
-            // end of iteration
-            callback(stories);
-        }
-    }(0));
-});
 Story = mongoose.model('Story', StorySchema);
 module.exports = Story;
 

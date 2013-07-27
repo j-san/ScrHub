@@ -14,7 +14,7 @@ define(['backbone', 'model/Label'], function (Backbone, Label) {
             "labels": []
         },
         url: function () {
-            return "/api/" + params.project + "/story/" + (this.id || "new")
+            return "/api/" + params.project + "/story/" + (this.id || "new");
         },
         toJSON: function () {
             var obj = {};
@@ -49,7 +49,7 @@ define(['backbone', 'model/Label'], function (Backbone, Label) {
         },
         removeLabel: function (label) {
             var labels = this.get("labels");
-            for (i in labels) {
+            for (var i in labels) {
                 if (labels[i] === label || labels[i].name === label) {
                     labels.splice(i, 1);
                     return labels;
@@ -59,7 +59,7 @@ define(['backbone', 'model/Label'], function (Backbone, Label) {
         },
         hasLabel: function (label) {
             var labels = this.get("labels");
-            for (i in labels) {
+            for (var i in labels) {
                 if (labels[i] === label || labels[i].name === label) {
                     return true;
                 }

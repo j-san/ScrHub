@@ -37,12 +37,9 @@ module.exports = function(grunt) {
         jasmine: {
             files: ['files/test/*.js']
         },
-        nodeunit: {
-            all: ['test/*.js']
-        },
-        "jasmine-node": {
+        'jasmine-node': {
             run: {
-                spec: "spec"
+                spec: 'spec'
             },
             executable: './node_modules/.bin/jasmine-node'
         },
@@ -50,8 +47,8 @@ module.exports = function(grunt) {
             client: {
                 options: {
                     globals: {
-                        "jQuery": true,
-                        "console": true
+                        'jQuery': true,
+                        'console': true
                     }
                 },
                 src: ['files/js/**/*.js']
@@ -59,25 +56,21 @@ module.exports = function(grunt) {
             server: {
                 options: {
                     globals: {
-                        "console": true
+                        'console': true
                     }
                 },
-                src: ['Gruntfile.js', 'models/*.js', 'utils/*.js', 'routes/*.js']
+                src: ['Gruntfile.js', 'models/*.js', 'utils/*.js', 'routes/*.js', 'spec/*.js']
             },
         },
         watch: {
             gruntfile: {
-                files: '<%= jshint.gruntfile.src %>',
-                tasks: ['jshint:gruntfile']
+                files: '<%= jshint.server.src %>',
+                tasks: ['jshint:server', 'jasmine-node']
             },
             src: {
-                files: '<%= jshint.src.src %>',
-                tasks: ['jshint:src', 'qunit']
-            },
-            test: {
-                files: '<%= jshint.test.src %>',
-                tasks: ['jshint:test', 'qunit']
-            },
+                files: '<%= jshint.client.src %>',
+                tasks: ['jshint:client']
+            }
         },
         realese: {
             npm: false

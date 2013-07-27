@@ -18,7 +18,7 @@ define(['backbone'], function (Backbone) {
             return obj;
         },
         url: function () {
-            return "/api/" + params.project + "/sprint/" + (this.id || "new")
+            return "/api/" + params.project + "/sprint/" + (this.id || "new");
         }
     }, { //class properties
         getSprintList: function () {

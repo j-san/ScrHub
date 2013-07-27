@@ -5,7 +5,7 @@ define(['backbone'], function (Backbone) {
     var Label = Backbone.Model.extend({
         idAttribute: "name",
         url: function () {
-            return "/api/" + params.project + "/label/" + (this.id || "new")
+            return "/api/" + params.project + "/label/" + (this.id || "new");
         }
     }, { //class properties
         getLabelList: function () {

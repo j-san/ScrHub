@@ -34,7 +34,7 @@ require(['backbone', 'UI/ProductBacklog', 'UI/Dashboard'], function(Backbone, Pr
         backlog: function() {
             $('.navigation').removeClass('active');
             $('#nav-backlog').addClass('active');
-            var backlog = new ProductBacklog()
+            var backlog = new ProductBacklog();
             container.html(backlog.render());
         },
 

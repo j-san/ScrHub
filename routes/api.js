@@ -1,11 +1,12 @@
 
 var GithubApi = require('../models/GithubApi'),
     Story = require('../models/Story'),
-    merge = require('../utils/merge').merge,
+    _ = require('underscore'),
     requestApi = GithubApi.requestApi;
 
 
 function route (app) {
+    'use strict';
     app.get('/api/:user/:name/sprints/', function sprints (req, res, next) {
         var project = req.params.user + '/' + req.params.name;
 
@@ -31,7 +32,7 @@ function route (app) {
             });
         }
 
-        if (req.params.sprint == "current") {
+        if (req.params.sprint == 'current') {
             requestApi(req, res, next).listSpints(project, function (data) {
                 if (data.length) {
                     loadStories(GithubApi.findCurrentSprint(data).number);
@@ -48,7 +49,7 @@ function route (app) {
     app.get('/api/:user/:name/stories/', function allStories (req, res, next) {
         var project = req.params.user + '/' + req.params.name;
         requestApi(req, res, next).allStories(project, function (data) {
-            Story.loadStories(data, function (stories) {
+            Story.loadStories(data).then(function (stories) {
                 res.set('Content-Type', 'application/json');
                 res.json(stories);
             });
@@ -60,14 +61,21 @@ function route (app) {
         var obj = req.body;
         requestApi(req, res, next).updateStory(project, req.params.story, obj, function (data) {
             obj.project = project;
-            merge(obj, data);
+            _.extend(obj, data);
 
-            Story.sync(obj, function (err, story) {
-                if (err) {
-                    next(err);
-                }
+            Story.findById(obj.id).then(function (story) {
+                return _.extend(story.toObject(), obj);
+            }, function() {
+                // use new obj if id does not exist yet
+                return obj;
+            }).then(function (story) {
+                story = new Story(story);
+                return story.save();
+            }).then(function (story) {
                 res.set('Content-Type', 'application/json');
-                res.json(story);
+                res.json(_.extend(obj, story.toObject()));
+            }, function (err) {
+                next(err);
             });
         });
     });
