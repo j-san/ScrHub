@@ -20,7 +20,7 @@ function route (app) {
 
         if (req.session.state.code && !req.session.state.token) {
             console.log('-get token from github');
-            new GithubApi(req.session.state).getToken(function (data) {
+            new GithubApi(req.session.state).getToken().then(function (data) {
                 if (data.access_token) {
                     req.session.state.token = data.access_token;
                 } else {
@@ -28,8 +28,8 @@ function route (app) {
                     req.session.state = {};
                 }
                 next();
-            }).on("error", function () {
-                console.log("error while getting new token...");
+            }, function () {
+                console.error("error while getting new token...");
                 req.session.state = {};
                 next();
             });
@@ -49,11 +49,11 @@ function route (app) {
         res.locals.connected = Boolean(req.session.state.token);
         res.locals.user = req.session.state.user || {};
         if (req.session.state.token && !req.session.state.user) {
-            new GithubApi(req.session.state).getUser(function (user) {
+            new GithubApi(req.session.state).getUser().then(function (user) {
                 res.locals.user = req.session.state.user = user;
                 next();
-            }).on("error", function () {
-                console.log("error while getting new token...");
+            }, function () {
+                console.error("error while getting new token...");
                 req.session.state = {};
                 next();
             });
@@ -68,19 +68,19 @@ function route (app) {
     });
 
     app.get('/projects/', private, function projects (req, res) {
-        requestApi(req, res).listProjects(function(projects) {
+        requestApi(req, res).listProjects().then(function(projects) {
             res.render('project', { projects: projects });
         });
     });
     app.get('/projects/:name/', function orgProjects (req, res) {
-        requestApi(req, res).listOrgProjects(req.params.name, function(projects) {
+        requestApi(req, res).listOrgProjects(req.params.name).then(function(projects) {
             res.render('project', { projects: projects });
         });
     });
 
     app.get('/:user/:name/', private, function dashboard (req, res) {
         var project = req.params.user + '/' + req.params.name;
-        requestApi(req, res).getProject(project, function(project) {
+        requestApi(req, res).getProject(project).then(function(project) {
             res.render('app', {
                 project: project
             });

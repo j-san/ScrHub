@@ -8,7 +8,29 @@ var express = require('express'),
     logging = require('./utils/logging'),
     port = process.env.PORT || 1337,
     app = express(),
-    mongoURL = process.env.MONGO_URL || process.env.MONGOLAB_URI;
+    mongoURL = process.env.MONGOLAB_URI || 'mongodb://localhost/scrhub';
+
+
+app.configure(function () {
+    app.use(express.bodyParser());
+    app.use(express.cookieParser());
+    app.use(express.session({
+        secret: "d507cf3cef62295ab983310fabb8736b27e7046d",
+        store: new MongoStore({
+            url: mongoURL,
+            db: 'scrhub'
+        })
+    }));
+
+    app.use(app.router);
+    app.use(express.static(__dirname + '/../files'));
+
+    app.use(logging.logErrors);
+
+    app.engine('jade', require('jade').__express);
+    app.set('view engine', 'jade');
+    // app.set('views', __dirname + '/views');
+});
 
 
 // run with NODE_ENV=dev for debug config
@@ -35,28 +57,6 @@ app.configure('sta', 'prd', function () {
 
     app.use(logging.errorHandler);
 });
-
-app.configure(function () {
-    app.use(express.bodyParser());
-    app.use(express.cookieParser());
-    app.use(express.session({
-        secret: "d507cf3cef62295ab983310fabb8736b27e7046d",
-        store: new MongoStore({
-            url: mongoURL,
-            db: 'scrhub'
-        })
-    }));
-
-    app.use(app.router);
-    app.use(express.static(__dirname + '/../files'));
-
-    app.use(logging.logErrors);
-
-    app.engine('jade', require('jade').__express);
-    app.set('view engine', 'jade');
-    // app.set('views', __dirname + '/views');
-});
-
 routeMain.route(app);
 routeApi.route(app);
 

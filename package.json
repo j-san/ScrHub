@@ -1,6 +1,6 @@
 {
-  "name": "sruhub",
-  "subdomain": "sruhub",
+  "name": "scrhub",
+  "subdomain": "scrhub",
   "scripts": {
     "postinstall": "./node_modules/.bin/bower install",
     "blanket": {
@@ -41,6 +41,7 @@
     "grunt-release": "",
     "jasmine-node": "",
     "grunt-mocha-cov": "",
+    "grunt-express-server": "",
     "sinon": "",
     "should": ""
   }

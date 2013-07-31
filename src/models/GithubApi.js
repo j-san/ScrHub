@@ -1,14 +1,12 @@
 
 var http = require("https"),
     querystring = require("querystring"),
-    EventEmitter = require('events').EventEmitter;
+    q = require("q");
+
 
 var GithubApi = function (state) {
-    EventEmitter.call(this);
     this.state = state;
 };
-
-GithubApi.prototype = Object.create(EventEmitter.prototype);
 
 GithubApi.findCurrentSprint = function (sprints) {
     var nearest = null;
@@ -20,57 +18,57 @@ GithubApi.findCurrentSprint = function (sprints) {
     return nearest;
 };
 
-GithubApi.prototype.getUser = function (cb) {
-    return this.load("/user", cb);
+GithubApi.prototype.getUser = function () {
+    return this.load("/user");
 };
 
-GithubApi.prototype.listProjects = function (cb) {
-    return this.load("/user/repos", cb);
+GithubApi.prototype.listProjects = function () {
+    return this.load("/user/repos");
 };
-GithubApi.prototype.listOrgProjects = function (name, cb) {
-    return this.load("/orgs/" + name + "/repos", cb);
+GithubApi.prototype.listOrgProjects = function (name) {
+    return this.load("/orgs/" + name + "/repos");
 };
-GithubApi.prototype.getProject = function (name, cb) {
-    return this.load("/repos/" + name, cb);
-};
-
-GithubApi.prototype.allStories = function (project, cb) {
-    return this.load("/repos/" + project + "/issues", cb);
+GithubApi.prototype.getProject = function (name) {
+    return this.load("/repos/" + name);
 };
 
-GithubApi.prototype.allLabels = function (project, cb) {
-    return this.load("/repos/" + project + "/labels", cb);
+GithubApi.prototype.allStories = function (project) {
+    return this.load("/repos/" + project + "/issues");
 };
 
-GithubApi.prototype.listSpints = function (project, cb) {
-    return this.load("/repos/" + project + "/milestones?state=open", cb);
+GithubApi.prototype.allLabels = function (project) {
+    return this.load("/repos/" + project + "/labels");
 };
 
-GithubApi.prototype.dashboardStories = function (project, sprint, cb) {
-    return this.load("/repos/" + project + "/issues" + (sprint?"?milestone="+sprint:""), cb);
+GithubApi.prototype.listSprints = function (project) {
+    return this.load("/repos/" + project + "/milestones?state=open");
 };
 
-GithubApi.prototype.updateStory = function (project, story, data, cb) {
-    return this.update("/repos/" + project + "/issues/" + story, data, cb);
+GithubApi.prototype.dashboardStories = function (project, sprint) {
+    return this.load("/repos/" + project + "/issues" + (sprint?"?milestone="+sprint:""));
 };
 
-GithubApi.prototype.createStory = function (project, data, cb) {
-    return this.create("/repos/" + project + "/issues", data, cb);
+GithubApi.prototype.updateStory = function (project, story, data) {
+    return this.update("/repos/" + project + "/issues/" + story, data);
 };
 
-GithubApi.prototype.load = function (path, cb) {
-    return this.request("GET", path).on("success", cb);
+GithubApi.prototype.createStory = function (project, data) {
+    return this.create("/repos/" + project + "/issues", data);
 };
 
-GithubApi.prototype.update = function (path, data, cb) {
-    return this.request("PATCH", path, JSON.stringify(data)).on("success", cb);
+GithubApi.prototype.load = function (path) {
+    return this.request("GET", path);
 };
 
-GithubApi.prototype.create = function (path, data, cb) {
-    return this.request("POST", path, JSON.stringify(data)).on("success", cb);
+GithubApi.prototype.update = function (path, data) {
+    return this.request("PATCH", path, JSON.stringify(data));
 };
 
-GithubApi.prototype.getToken = function (cb) {
+GithubApi.prototype.create = function (path, data) {
+    return this.request("POST", path, JSON.stringify(data));
+};
+
+GithubApi.prototype.getToken = function () {
     if(!this.state.code) {
         throw new Error('Not connected');
     }
@@ -81,12 +79,12 @@ GithubApi.prototype.getToken = function (cb) {
             client_secret: process.client_secret
         }), {
             hostname: "github.com"
-        }).on("success", cb);
+        });
 };
 
 
-GithubApi.prototype.request = function (method, uri, data, options, headers, cb) {
-    var request, self = this;
+GithubApi.prototype.request = function (method, uri, body, options, headers) {
+    var request, self = this, deferred = q.defer();
 
     console.log('-call', method, uri);
 
@@ -102,8 +100,8 @@ GithubApi.prototype.request = function (method, uri, data, options, headers, cb)
     if (!options.headers.Accept) {
         options.headers.Accept = "application/json";
     }
-    if (data) {
-        options.headers["Content-Length"] = data.length;
+    if (body) {
+        options.headers["Content-Length"] = body.length;
     }
     if (this.state && this.state.token) {
         options.headers.Authorization = "token " + this.state.token;
@@ -117,32 +115,28 @@ GithubApi.prototype.request = function (method, uri, data, options, headers, cb)
         res.on("end", function () {
             if (res.statusCode == 200) {
                 console.log("-response", method, uri);
-                self.emit("success", JSON.parse(data));
+                deferred.resolve(JSON.parse(data));
             } else {
-                console.log("-error", method, uri, res.statusCode, JSON.parse(data));
-                self.emit("error", res.statusCode, JSON.parse(data));
+                console.error('error', method, uri, res.statusCode, data);
+                deferred.reject(new Error(JSON.parse(data).message));
             }
         });
 
     }).on('error', function(e) {
-        console.log("-error", method, uri);
-        self.emit("error", e);
+        console.error(method, uri);
+        deferred.reject(e);
     });
-    if (data) {
-        request.write(data);
+    if (body) {
+        request.write(body);
     }
     request.end();
-    return this;
+    return deferred.promise;
 };
 
 
-function requestApi (req, res, next) {
-    return new GithubApi(req.session.state).on("error", function (code, message) {
-        res.set('Content-Type', 'application/json');
-        res.json(code, message);
-    });
-}
+GithubApi.requestApi = function (req) {
+    return new GithubApi(req.session.state);
+};
 
 /* binding */
-GithubApi.requestApi = requestApi;
 module.exports = GithubApi;

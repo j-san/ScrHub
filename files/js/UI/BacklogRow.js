@@ -1,6 +1,14 @@
 
 define(['backbone'], function (Backbone) {
 
+    var fiboSuite = [];
+    (function fiboSuiteFunc(prev, fibo) {
+        fiboSuite.push(fibo);
+        if (fiboSuite.length <= 6) {
+            fiboSuiteFunc(fibo, prev + fibo);
+        }
+    }(1, 1));
+
     return Backbone.View.extend({
         tagName: "li",
         className: "backlog-line",
@@ -21,7 +29,7 @@ define(['backbone'], function (Backbone) {
                     '<label for="<%= model.id || "new" %>-difficulty-<%= fibo %>" class="btn <%= model.get("difficulty")===fibo?"active":"" %>"><%= fibo %></label>',
                 '<% }); %></div>',
                 '<span class="story-difficulty"><%= model.get("difficulty") || "-" %></span>',
-                '<span class="story-priority"><%=   model.get("priority").toFixed(2) || "-" %></span>',
+                '<span class="story-priority"><%=   (model.get("priority") && model.get("priority").toFixed(2)) || "-" %></span>',
                 '<span class="story-body"><textarea><%= model.get("body") %></textarea></span>',
                 '<span class="story-sprint"><%= model.get("body") %></span>'
             ].join('\n')),
@@ -29,7 +37,7 @@ define(['backbone'], function (Backbone) {
         render: function() {
             var self = this;
 
-            this.$el.html(this.template({ model: this.model }));
+            this.$el.html(this.template({ model: this.model, fiboSuite: fiboSuite }));
             this.id = this.el.id = "story-" + this.model.id;
 
             this.model.on("change:number", function (model, newValue) {
@@ -106,6 +114,7 @@ define(['backbone'], function (Backbone) {
             this.model.save({}, {
                 success: function () {
                     self.$el.removeClass("loading");
+                    self.$el.removeClass("error");
                 },
                 error: function () {
                     self.$el.removeClass("loading");

@@ -26,15 +26,27 @@ StorySchema.virtual('id').set(function (id) {
     this._id = id;
 });
 
+StorySchema.method('toGithubObject', function () {
+    var obj = this.toObject();
+    delete obj.difficulty;
+    delete obj.businessValue;
+    delete obj.priority;
+    delete obj.project;
+    return obj;
+});
+
 StorySchema.static('loadStories', function (stories) {
     var promises = [];
     stories.forEach(function (story, index) {
-        console.log(story);
         promises.push(
             Story.findById(story.id)
-                .then(function (fetchedStory) {
-                    _.extend(story, fetchedStory.toObject());
-                }, function (err) {})
+                .exec().then(function (fetchedStory) {
+                    if (fetchedStory) {
+                        return _.extend(story, fetchedStory.toObject());
+                    } else {
+                        return story;
+                    }
+                })
         );
     });
     return q.all(promises);

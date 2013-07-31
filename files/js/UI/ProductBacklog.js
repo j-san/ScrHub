@@ -1,11 +1,6 @@
 
 
 define(['backbone', 'UI/BacklogRow', 'model/Sprint', 'model/Story'], function (Backbone, BacklogRow, Sprint, Story) {
-    fiboSuite = [];
-    (function fiboSuiteFunc(prev, fibo) {
-        fiboSuite.push(fibo);
-        if (fiboSuite.length <= 6) fiboSuiteFunc(fibo, prev + fibo);
-    }(1, 1));
 
     return Backbone.View.extend({
         id: "#product-backlog",

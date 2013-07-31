@@ -1,8 +1,4 @@
 
-if (typeof window.ScrHub === "undefined") window.ScrHub = {};
-if (typeof ScrHub.view === "undefined") ScrHub.view = {};
-
-
 ScrHub.view.BacklogSprints = Backbone.View.extend({
     el: "#backlog-sprints",
     events: {

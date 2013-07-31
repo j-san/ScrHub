@@ -40,26 +40,38 @@ module.exports = function(grunt) {
         jshint: {
             client: {
                 options: {
-                    globals: {
-                        'jQuery': true,
-                        'console': true
-                    }
+                    "browser": true,
+                    "curly": true
                 },
                 src: ['files/js/**/*.js']
             },
             server: {
                 options: {
+                    curly: true,
+                    debug: true,
+                    node: true,
+                    undef: true,
                     globals: {
-                        'console': true
+                        describe: true,
+                        it: true,
+                        xdescribe: true,
+                        xit: true
                     }
                 },
                 src: ['Gruntfile.js', 'src/**/*.js']
             },
         },
         watch: {
-            all: {
-                files: ['<%= jshint.server.src %>', '<%= jshint.client.src %>'],
+            client: {
+                files: ['<%= jshint.client.src %>'],
                 tasks: ['default']
+            },
+            server: {
+                files: ['<%= jshint.server.src %>'],
+                tasks: ['default', 'express'],
+                options: {
+                    nospawn: true
+                }
             }
         },
         realese: {
@@ -86,7 +98,17 @@ module.exports = function(grunt) {
                 files: ['src/test/*.js']
             },
             all: ['src/test/*.js']
-          }
+        },
+        express: {
+            runserver: {
+                options: {
+                    script: 'src/index.js',
+                    node_env: 'dev',
+                    port: 1337,
+                    output: 'Server running'
+                }
+            }
+        }
     });
 
 
@@ -101,10 +123,13 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-mocha-cov');
     grunt.loadNpmTasks('grunt-release');
+    grunt.loadNpmTasks('grunt-express-server');
+
 
     // Default task.
     grunt.registerTask('default', ['jshint', 'mochacov:test']);
     grunt.registerTask('travis', ['jshint', 'mochacov:travis']);
     grunt.registerTask('dist', ['clean', 'concat', 'uglify']);
+    grunt.registerTask('server', ['default', 'express', 'watch']);
 
 };

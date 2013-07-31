@@ -1,5 +1,4 @@
 var Promise = require('mongoose').Promise;
-var Model = require('mongoose').Model;
 var sinon = require('sinon');
 var sholud = require('should');
 
@@ -44,37 +43,43 @@ describe("Story Model", function() {
             businessValue: 5,
             difficulty: 21
         }));
-        Story.findById.withArgs(1).returns(p);
+        Story.findById.withArgs(1).returns({ exec: function () { return p; }});
 
         p = new Promise();
         p.complete(new Story({
             id: 2,
-            businessValue: 5,
+            businessValue: 6,
             difficulty: 21
         }));
-        Story.findById.withArgs(2).returns(p);
+        Story.findById.withArgs(2).returns({ exec: function () { return p; }});
 
         p = new Promise();
         p.error(new Error('not found'));
-        Story.findById.withArgs(3).returns(p);
+        Story.findById.withArgs(3).returns({ exec: function () { return p; }});
 
         p = new Promise();
         p.complete(new Story({
             id: 42,
-            businessValue: 5,
+            businessValue: 7,
             difficulty: 21
         }));
-        Story.findById.withArgs(42).returns(p);
+        Story.findById.withArgs(42).returns({ exec: function () { return p; }});
 
-        var s = new Story.loadStories([{
+        var stories = [{
             id: 1
         }, {
             id: 3
         }, {
             id: 42
-        }]).then(function() {
-
-        });
+        }];
+        var s = new Story.loadStories(stories)
+                .then(function() {
+                    stories[0].should.have.property('businessValue', 5);
+                    stories[1].should.not.have.property('businessValue');
+                    stories[2].should.not.have.property('businessValue', 7);
+                    Story.findById.called.sould.be.true();
+                    Story.findById.callCount.sould.be.eql(3);
+                });
     });
 });
 
