@@ -19,13 +19,13 @@
     "node": "0.10.x"
   },
   "dependencies": {
-    "express": "3.3",
+    "express": "3.4",
     "jade": "",
     "connect-mongo": "",
     "nodemailer": "0.5",
-    "mongoose": "3.6.15",
-    "bower": "1.0.0",
-    "underscore": "1.5.1",
+    "mongoose": "3.6.19",
+    "bower": "1.2.6",
+    "underscore": "1.5.2",
     "q": ""
   },
   "devDependencies": {
@@ -33,8 +33,6 @@
     "grunt-contrib-clean": "",
     "grunt-contrib-jshint": "",
     "grunt-contrib-jasmine": "",
-    "grunt-contrib-jasmine-node": "",
-    "grunt-contrib-nodeunit": "",
     "grunt-contrib-concat": "",
     "grunt-contrib-uglify": "",
     "grunt-contrib-watch": "",
