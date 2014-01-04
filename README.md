@@ -11,43 +11,55 @@ Written in Javascript for Node.js on Express.js, with a Mongodb database and Mon
 
 ## Install
 
-When Node.js is installed run:
+When Node.js and Npm are installed run:
 
 ```bash
 npm install
 ```
 
-### Run in dev mode:
+### Run for dev:
+
+With a watcher
+
+```bash
+node src/app
+```
+
+With a watcher
+
+```bash
+sudo npm install -g supervisor
+
+supervisor src/app
+```
+
+### Run tests
 
 Install grunt
 
 ```bash
 sudo npm install -g grunt-cli
-```
 
-Create a .env file
-
-```
-NODE_ENV=dev
-MONGO_URL=mongodb://example.com/scrhub
-```
-
-Then run the server with a watcher
-
-```bash
-grunt server
+grunt
 ```
 
 ### Run in production mode:
 
-create a .env file
+
+Create a .env file
 
 ```
-NODE_ENV=prd
-MONGO_URL=mongodb://example.com/scrhub
+NODE_ENV=prd  # default to dev
+MONGO_URL=mongodb://example.com/scrhub  # default to localhost
 ```
 
-Export a serice with [Forman](http://ddollar.github.io/foreman/)
+Then run the server:
+
+```bash
+foreman start -p 1337
+```
+
+Export a system serice with [Forman](http://ddollar.github.io/foreman/)
 
 
 You can also try it at http://www.scrhub.com/
@@ -58,7 +70,5 @@ Self product backlog: http://www.scrhub.com/j-san/ScrHub/backlog/
 
 
 todo:
-- rename index => app, files => public
-- review coverage report
 - console level print winston ?
 - github api => stories.list, stories.get, stories.update, ...
