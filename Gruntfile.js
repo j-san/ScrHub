@@ -72,7 +72,7 @@ module.exports = function(grunt) {
             },
             server: {
                 files: ['<%= jshint.server.src %>'],
-                tasks: ['default', 'express'],
+                tasks: ['default'],
                 options: {
                     nospawn: true
                 }
@@ -115,16 +115,6 @@ module.exports = function(grunt) {
             options: {
               src: 'lcov.info'
             }
-        },
-        express: {
-            runserver: {
-                options: {
-                    script: 'src/index.js',
-                    node_env: 'dev',
-                    port: 1337,
-                    output: 'Server running'
-                }
-            }
         }
     });
 
@@ -138,7 +128,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-release');
-    grunt.loadNpmTasks('grunt-express-server');
     grunt.loadNpmTasks('grunt-coveralls');
 
 
@@ -147,6 +136,4 @@ module.exports = function(grunt) {
     grunt.registerTask('test', ['mochaTest:test', 'mochaTest:html', 'mochaTest:travis']);
     grunt.registerTask('travis', ['jshint', 'mochaTest:travis', 'mochaTest:lcov', 'coveralls']);
     grunt.registerTask('dist', ['clean', 'concat', 'uglify']);
-    grunt.registerTask('server', ['default', 'express', 'watch']);
-
 };
