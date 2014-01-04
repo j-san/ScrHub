@@ -1,5 +1,6 @@
 
-var express = require('express'),
+var newrelic = require('newrelic'),
+    express = require('express'),
     mongoose = require("mongoose"),
     //SessionStore = require('./models/Session'),
     MongoStore = require('connect-mongo')(express),

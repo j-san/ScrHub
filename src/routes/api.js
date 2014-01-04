@@ -2,9 +2,7 @@
 var GithubApi = require('../models/GithubApi'),
     Story = require('../models/Story'),
     _ = require('underscore'),
-    q = require('q'),
-    requestApi = GithubApi.requestApi;
-
+    q = require('q');
 
 function route (app) {
     'use strict';
@@ -37,7 +35,7 @@ function route (app) {
         var project = req.params.user + '/' + req.params.name, promise;
 
         if (req.params.sprint === 'current') {
-            promise = requestApi(req.session.state).listSprints(project).then(function (data) {
+            promise = api.listSprints(project).then(function (data) {
                 if (data.length) {
                     return GithubApi.findCurrentSprint(data).number;
                 } else {
@@ -50,7 +48,7 @@ function route (app) {
             });
         }
         return promise.then(function (sprint) {
-            return requestApi(req.session.state).dashboardStories(project, sprint);
+            return api.dashboardStories(project, sprint);
         }).then(function (data) {
             return Story.loadStories(data);
         });
@@ -65,24 +63,18 @@ function route (app) {
 
     app.put('/api/:user/:name/story/:story', apiHandler(function updateStory (api, req, res, next) {
         var project = req.params.user + '/' + req.params.name;
-        var storySended = req.body;
-        var githubStory;
+
         return q.all([
-            api.updateStory(project, req.params.story, storySended),
-            Story.findById(storySended.id).exec()
-        ]).then(function (data, story) {
-            storySended.project = project;
-            githubStory = data;
-            if (story) {
-                return story.set(storySended).set(githubStory);
-            } else {
-                // use new obj if id does not exist yet
-                return new Story(storySended).set(githubStory);
-            }
-        }).then(function (story) {
-            return q.ninvoke(story, 'save');
-        }).then(function (args) {
-            return _.extend(args[0].toObject(), githubStory[0]);
+            api.updateStory(project, req.params.story, req.body),
+            Story.findById(req.body.id).exec().then(function (story) {
+                story.set(req.body);
+                return q.ninvoke(story, 'save');
+            }, function (err) {
+                var story = new Story(req.body);
+                return q.ninvoke(story, 'save');
+            })
+        ]).then(function (args) {
+            return _.extend(args[1], args[0]);
         });
     }));
 

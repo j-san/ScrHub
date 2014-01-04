@@ -1,7 +1,6 @@
 
 
 var GithubApi = require('../models/GithubApi'),
-    requestApi = GithubApi.requestApi,
     nodemailer = require("nodemailer");
 
 
@@ -61,31 +60,38 @@ function route (app) {
             next();
         }
     });
+
+    function apiHandler (callback) {
+        return function (req, res, next) {
+            callback(new GithubApi(req.session.state), req, res, next);
+        };
+    }
+
     app.get('/', function home (req, res) {
         res.render('home', {
             client_id: process.client_id
         });
     });
 
-    app.get('/projects/', private, function projects (req, res) {
-        requestApi(req, res).listProjects().then(function(projects) {
+    app.get('/projects/', private, apiHandler(function projects (api, req, res) {
+        api.listProjects().then(function(projects) {
             res.render('project', { projects: projects });
         });
-    });
-    app.get('/projects/:name/', function orgProjects (req, res) {
-        requestApi(req, res).listOrgProjects(req.params.name).then(function(projects) {
+    }));
+    app.get('/projects/:name/', apiHandler(function orgProjects (api, req, res) {
+        api.listOrgProjects(req.params.name).then(function(projects) {
             res.render('project', { projects: projects });
         });
-    });
+    }));
 
-    app.get('/:user/:name/', private, function dashboard (req, res) {
+    app.get('/:user/:name/', private, apiHandler(function dashboard (api, req, res) {
         var project = req.params.user + '/' + req.params.name;
-        requestApi(req, res).getProject(project).then(function(project) {
+        api.getProject(project).then(function(project) {
             res.render('app', {
                 project: project
             });
         });
-    });
+    }));
 
     app.get('/feedback/', private, function feedback (req, res) {
         res.render('feedbackForm');

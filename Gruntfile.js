@@ -88,7 +88,7 @@ module.exports = function(grunt) {
                 },
                 src: ['test/*.js']
             },
-            coverage: {
+            html: {
                 options: {
                     reporter: 'html-cov',
                     quiet: true,
@@ -136,7 +136,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jasmine');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-mocha-cov');
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-release');
     grunt.loadNpmTasks('grunt-express-server');
@@ -144,8 +143,9 @@ module.exports = function(grunt) {
 
 
     // Default task.
-    grunt.registerTask('default', ['jshint', 'mochaTest']);
-    grunt.registerTask('travis', ['jshint', 'mochaTest']);
+    grunt.registerTask('default', ['jshint', 'test']);
+    grunt.registerTask('test', ['mochaTest:test', 'mochaTest:html', 'mochaTest:travis']);
+    grunt.registerTask('travis', ['jshint', 'mochaTest:travis', 'mochaTest:lcov', 'coveralls']);
     grunt.registerTask('dist', ['clean', 'concat', 'uglify']);
     grunt.registerTask('server', ['default', 'express', 'watch']);
 

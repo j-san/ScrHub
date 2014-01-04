@@ -4,6 +4,7 @@ define(['backbone', 'model/Label'], function (Backbone, Label) {
     var Story = Backbone.Model.extend({
         idAttribute: "number",
         defaults: {
+            "id": "",
             "title": "",
             "body": "",
             "state": "open",
