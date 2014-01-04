@@ -96,7 +96,7 @@ module.exports = function(grunt) {
                 },
                 src: ['test/*.js']
             },
-            lvoc: {
+            lcov: {
                 options: {
                     reporter: 'mocha-lcov-reporter',
                     quiet: true,

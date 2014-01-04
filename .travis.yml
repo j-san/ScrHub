@@ -1,2 +1,3 @@
 before_script: "npm install; npm install -g grunt-cli"
+services: mongodb
 script: "grunt travis"
