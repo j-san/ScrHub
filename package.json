@@ -2,7 +2,13 @@
   "name": "scrhub",
   "subdomain": "scrhub",
   "scripts": {
-    "postinstall": "./node_modules/.bin/bower install"
+    "postinstall": "./node_modules/.bin/bower install",
+    "test": "grunt"
+  },
+  "config": {
+    "travis-cov": {
+      "threshold": 60
+    }
   },
   "author": "Jonathan Sanchez <jonathan@scrhub.com>",
   "repository": {
@@ -34,11 +40,9 @@
     "grunt-contrib-uglify": "latest",
     "grunt-contrib-watch": "latest",
     "grunt-release": "latest",
-    "grunt-mocha-cov": "latest",
     "grunt-mocha-test": "latest",
     "grunt-express-server": "latest",
     "grunt-coveralls": "latest",
-    "jasmine-node": "latest",
     "sinon": "latest",
     "should": "latest",
     "supertest": "latest",

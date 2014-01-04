@@ -23,7 +23,7 @@ module.exports = function(grunt) {
                 stripBanners: true
             },
             dist: {
-                src: ['files/js/<%= pkg.name %>.js'],
+                src: ['public/js/<%= pkg.name %>.js'],
                 dest: 'dist/<%= pkg.name %>.js'
             },
         },
@@ -37,7 +37,7 @@ module.exports = function(grunt) {
             },
         },
         jasmine: {
-            files: ['files/test/*.js']
+            files: ['public/test/*.js']
         },
         jshint: {
             client: {
@@ -45,7 +45,7 @@ module.exports = function(grunt) {
                     "browser": true,
                     "curly": true
                 },
-                src: ['files/js/**/*.js']
+                src: ['public/js/**/*.js']
             },
             server: {
                 options: {
@@ -112,7 +112,7 @@ module.exports = function(grunt) {
             }
         },
         coveralls: {
-            options: {
+            test: {
               src: 'lcov.info'
             }
         }
@@ -133,7 +133,16 @@ module.exports = function(grunt) {
 
     // Default task.
     grunt.registerTask('default', ['jshint', 'test']);
-    grunt.registerTask('test', ['mochaTest:test', 'mochaTest:html', 'mochaTest:travis']);
-    grunt.registerTask('travis', ['jshint', 'mochaTest:travis', 'mochaTest:lcov', 'coveralls']);
+    grunt.registerTask('test', [
+        'mochaTest:test',
+        'mochaTest:html',
+        'mochaTest:travis'
+    ]);
+    grunt.registerTask('travis', [
+        'jshint',
+        'mochaTest:travis',
+        'mochaTest:lcov',
+        'coveralls'
+    ]);
     grunt.registerTask('dist', ['clean', 'concat', 'uglify']);
 };
