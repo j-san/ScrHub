@@ -81,27 +81,6 @@ module.exports = function(grunt) {
         realese: {
             npm: false
         },
-        mochacov: {
-            options: {
-                files: ['test/*.js']
-            },
-            travis: {
-                options: {
-                    coveralls: {
-                        serviceName: 'travis-ci'
-                    }
-                }
-            },
-            test: {
-                options: {
-                    reporter: 'spec',
-                    require: ['should'],
-                    debug: true,
-                    //'debug-brk': true
-                    coverage: true,
-                }
-            }
-        },
         mochaTest: {
             test: {
                 options: {
@@ -117,11 +96,24 @@ module.exports = function(grunt) {
                 },
                 src: ['test/*.js']
             },
-            'travis-cov': {
+            lvoc: {
+                options: {
+                    reporter: 'mocha-lcov-reporter',
+                    quiet: true,
+                    captureFile: 'lcov.info'
+                },
+                src: ['test/*.js']
+            },
+            travis: {
                 options: {
                     reporter: 'travis-cov'
                 },
                 src: ['test/*.js']
+            }
+        },
+        coveralls: {
+            options: {
+              src: 'lcov.info'
             }
         },
         express: {
@@ -148,11 +140,12 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-release');
     grunt.loadNpmTasks('grunt-express-server');
+    grunt.loadNpmTasks('grunt-coveralls');
 
 
     // Default task.
     grunt.registerTask('default', ['jshint', 'mochaTest']);
-    grunt.registerTask('travis', ['jshint', 'mochacov']);
+    grunt.registerTask('travis', ['jshint', 'mochaTest']);
     grunt.registerTask('dist', ['clean', 'concat', 'uglify']);
     grunt.registerTask('server', ['default', 'express', 'watch']);
 

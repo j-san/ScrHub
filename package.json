@@ -16,11 +16,11 @@
   "dependencies": {
     "express": "3.4",
     "jade": "1.0.2",
-    "request": "latest",
+    "request": "2.30",
     "connect-mongo": "latest",
     "nodemailer": "0.6",
-    "mongoose": "3.6.19",
-    "bower": "1.2.6",
+    "mongoose": "3.8",
+    "bower": "1.2",
     "underscore": "1.5.2",
     "q": "latest"
   },
@@ -36,12 +36,14 @@
     "grunt-mocha-cov": "latest",
     "grunt-mocha-test": "latest",
     "grunt-express-server": "latest",
+    "grunt-coveralls": "latest",
     "jasmine-node": "latest",
     "sinon": "latest",
     "should": "latest",
     "supertest": "latest",
     "nock": "latest",
     "blanket": "~1.1.6",
-    "travis-cov": "~0.2.4"
+    "travis-cov": "~0.2.4",
+    "mocha-lcov-reporter": "latest"
   }
 }
