@@ -2,12 +2,7 @@
   "name": "scrhub",
   "subdomain": "scrhub",
   "scripts": {
-    "postinstall": "./node_modules/.bin/bower install",
-    "blanket": {
-      "pattern": [
-        "src"
-      ]
-    }
+    "postinstall": "./node_modules/.bin/bower install"
   },
   "author": "Jonathan Sanchez <jonathan@scrhub.com>",
   "repository": {
@@ -20,27 +15,33 @@
   },
   "dependencies": {
     "express": "3.4",
-    "jade": "",
-    "connect-mongo": "",
-    "nodemailer": "0.5",
+    "jade": "1.0.2",
+    "request": "latest",
+    "connect-mongo": "latest",
+    "nodemailer": "0.6",
     "mongoose": "3.6.19",
     "bower": "1.2.6",
     "underscore": "1.5.2",
-    "q": ""
+    "q": "latest"
   },
   "devDependencies": {
-    "grunt": "",
-    "grunt-contrib-clean": "",
-    "grunt-contrib-jshint": "",
-    "grunt-contrib-jasmine": "",
-    "grunt-contrib-concat": "",
-    "grunt-contrib-uglify": "",
-    "grunt-contrib-watch": "",
-    "grunt-release": "",
-    "jasmine-node": "",
-    "grunt-mocha-cov": "",
-    "grunt-express-server": "",
-    "sinon": "",
-    "should": ""
+    "grunt": "latest",
+    "grunt-contrib-clean": "latest",
+    "grunt-contrib-jshint": "latest",
+    "grunt-contrib-jasmine": "latest",
+    "grunt-contrib-concat": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-watch": "latest",
+    "grunt-release": "latest",
+    "grunt-mocha-cov": "latest",
+    "grunt-mocha-test": "latest",
+    "grunt-express-server": "latest",
+    "jasmine-node": "latest",
+    "sinon": "latest",
+    "should": "latest",
+    "supertest": "latest",
+    "nock": "latest",
+    "blanket": "~1.1.6",
+    "travis-cov": "~0.2.4"
   }
 }

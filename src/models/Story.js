@@ -38,15 +38,14 @@ StorySchema.method('toGithubObject', function () {
 StorySchema.static('loadStories', function (stories) {
     var promises = [];
     stories.forEach(function (story, index) {
-        promises.push(
-            Story.findById(story.id)
-                .exec().then(function (fetchedStory) {
-                    if (fetchedStory) {
-                        return _.extend(story, fetchedStory.toObject());
-                    } else {
-                        return story;
-                    }
-                })
+        promises.push(Story.findById(story.id)
+            .exec().then(function (fetchedStory) {
+                if (fetchedStory) {
+                    return _.extend(story, fetchedStory.toObject());
+                } else {
+                    return story;
+                }
+            })
         );
     });
     return q.all(promises);

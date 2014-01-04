@@ -1,7 +1,8 @@
 
 var http = require("https"),
     querystring = require("querystring"),
-    q = require("q");
+    q = require("q"),
+    request = require('request');
 
 
 var GithubApi = function (state) {
@@ -78,64 +79,43 @@ GithubApi.prototype.getToken = function () {
             client_id: process.client_id,
             client_secret: process.client_secret
         }), {
-            hostname: "github.com"
+            hostname: "https://github.com"
         });
 };
 
 
 GithubApi.prototype.request = function (method, uri, body, options, headers) {
-    var request, self = this, deferred = q.defer();
+    var self = this, deferred = q.defer();
 
     console.log('-call', method, uri);
 
     options = options || {};
     options.headers = headers || {};
-    options.path = uri;
+    var host = options.hostname || "https://api.github.com";
+    delete options.hostname;
+    options.uri = host + uri;
     options.method = method;
-    options.headers['user-agent'] = 'SrcHub apllication';
-
-    if (!options.hostname) {
-        options.hostname = "api.github.com";
-    }
-    if (!options.headers.Accept) {
-        options.headers.Accept = "application/json";
-    }
-    if (body) {
-        options.headers["Content-Length"] = body.length;
-    }
+    options.body = body;
+    options.headers['user-agent'] = 'SrcHub application';
+    options.json = true;
+    // if (!options.headers.Accept) {
+    //     options.headers.Accept = "application/json";
+    // }
     if (this.state && this.state.token) {
         options.headers.Authorization = "token " + this.state.token;
     }
 
-    request = http.request(options, function(res) {
-        var data = "";
-        res.on("data", function (buff) {
-            data += buff;
-        });
-        res.on("end", function () {
-            if (res.statusCode == 200) {
-                console.log("-response", method, uri);
-                deferred.resolve(JSON.parse(data));
-            } else {
-                console.error('error', method, uri, res.statusCode, data);
-                deferred.reject(new Error(JSON.parse(data).message));
-            }
-        });
-
-    }).on('error', function(e) {
-        console.error(method, uri);
-        deferred.reject(e);
+    request(options, function (err, response, body) {
+        if(response.statusCode === 200) {
+            console.log("-response", method, uri);
+            deferred.resolve(body);
+        } else {
+            console.error('error', method, body);
+            deferred.reject(body.message);
+        }
     });
-    if (body) {
-        request.write(body);
-    }
-    request.end();
+
     return deferred.promise;
-};
-
-
-GithubApi.requestApi = function (req) {
-    return new GithubApi(req.session.state);
 };
 
 /* binding */

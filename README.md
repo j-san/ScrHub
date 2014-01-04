@@ -53,3 +53,12 @@ Export a serice with [Forman](http://ddollar.github.io/foreman/)
 You can also try it at http://www.scrhub.com/
 
 Self product backlog: http://www.scrhub.com/j-san/ScrHub/backlog/
+
+
+
+
+todo:
+- rename index => app, files => public
+- review coverage report
+- console level print winston ?
+- github api => stories.list, stories.get, stories.update, ...

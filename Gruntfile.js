@@ -2,16 +2,18 @@
 module.exports = function(grunt) {
     'use strict';
 
-    // Project configuration.
+    require('blanket')({
+        pattern: __dirname + '/src/'
+    });
+
     grunt.initConfig({
-        // Metadata.
         pkg: grunt.file.readJSON('package.json'),
         banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
             '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
             '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
             '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
             ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
-        // Task configuration.
+
         clean: {
             src: ['dist']
         },
@@ -52,6 +54,8 @@ module.exports = function(grunt) {
                     node: true,
                     undef: true,
                     globals: {
+                        before: true,
+                        after: true,
                         describe: true,
                         it: true,
                         xdescribe: true,
@@ -78,6 +82,9 @@ module.exports = function(grunt) {
             npm: false
         },
         mochacov: {
+            options: {
+                files: ['test/*.js']
+            },
             travis: {
                 options: {
                     coveralls: {
@@ -93,11 +100,29 @@ module.exports = function(grunt) {
                     //'debug-brk': true
                     coverage: true,
                 }
+            }
+        },
+        mochaTest: {
+            test: {
+                options: {
+                    reporter: 'spec',
+                },
+                src: ['test/*.js']
             },
-            options: {
-                files: ['src/test/*.js']
+            coverage: {
+                options: {
+                    reporter: 'html-cov',
+                    quiet: true,
+                    captureFile: 'coverage.html'
+                },
+                src: ['test/*.js']
             },
-            all: ['src/test/*.js']
+            'travis-cov': {
+                options: {
+                    reporter: 'travis-cov'
+                },
+                src: ['test/*.js']
+            }
         },
         express: {
             runserver: {
@@ -120,13 +145,14 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-mocha-cov');
+    grunt.loadNpmTasks('grunt-mocha-test');
     grunt.loadNpmTasks('grunt-release');
     grunt.loadNpmTasks('grunt-express-server');
 
 
     // Default task.
-    grunt.registerTask('default', ['jshint', 'mochacov:test']);
-    grunt.registerTask('travis', ['jshint', 'mochacov:travis']);
+    grunt.registerTask('default', ['jshint', 'mochaTest']);
+    grunt.registerTask('travis', ['jshint', 'mochacov']);
     grunt.registerTask('dist', ['clean', 'concat', 'uglify']);
     grunt.registerTask('server', ['default', 'express', 'watch']);
 

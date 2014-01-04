@@ -69,4 +69,5 @@ mongoose.connection.on('error', function () {
   console.error('mongodb connection error', arguments);
 });
 
+exports = app;
 
