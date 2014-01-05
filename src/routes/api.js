@@ -67,7 +67,11 @@ function route (app) {
         return q.all([
             api.updateStory(project, req.params.story, req.body),
             Story.findById(req.body.id).exec().then(function (story) {
-                story.set(req.body);
+                if(story) {
+                    story.set(req.body);
+                } else {
+                    story = new Story(req.body);
+                }
                 return q.ninvoke(story, 'save');
             }, function (err) {
                 var story = new Story(req.body);
@@ -80,8 +84,10 @@ function route (app) {
 
     app.post('/api/:user/:name/story/new', apiHandler(function createStory (api, req, res, next) {
         var project = req.params.user + '/' + req.params.name;
-        return api.createStory(project, req.body).then(function (story) {
-            return q.ninvoke(new Story(story), 'save');
+        return api.createStory(project, req.body).then(function (issue) {
+            return q.ninvoke(new Story(issue), 'save').then(function (story) {
+                return _.extend(story, issue);
+            });
         });
     }));
 

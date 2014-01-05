@@ -63,23 +63,7 @@ define(['backbone'], function (Backbone) {
                 this.$el.find('#no-sprint').addClass("active");
             }
 
-        },/*
-        saveStoryTitle: function () {
-            var newValue = this.$el.find(".story-title").val();
-            if(this.model.get("title") != newValue) {
-                this.save({
-                    "title": newValue
-                });
-            }
         },
-        saveStoryBody: function () {
-            var newValue = this.$el.find(".story-body").val();
-            if(this.model.get("body") != newValue) {
-                this.save({
-                    "body": newValue
-                });
-            }
-        },*/
         saveStorySprint: function (evt) {
             var newValue = $(evt.currentTarget).data("number");
             if((!this.model.has("milestone") && newValue) || (this.model.has("milestone") && this.model.get("milestone") != newValue)) {
@@ -115,6 +99,7 @@ define(['backbone'], function (Backbone) {
                 success: function () {
                     self.$el.removeClass("loading");
                     self.$el.removeClass("error");
+                    // self.render();
                 },
                 error: function () {
                     self.$el.removeClass("loading");
