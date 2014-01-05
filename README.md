@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/j-san/ScrHub.png?branch=master)](https://travis-ci.org/j-san/ScrHub)
 [![Dependency Status](https://david-dm.org/j-san/ScrHub.png)](https://david-dm.org/j-san/ScrHub)
 [![Coverage Status](https://coveralls.io/repos/j-san/ScrHub/badge.png?branch=master)](https://coveralls.io/r/j-san/ScrHub?branch=master)
+[ ![Codeship Status for j-san/ScrHub](https://www.codeship.io/projects/7b863fd0-57bc-0131-db5e-1a858a86a816/status?branch=master)](https://www.codeship.io/projects/11677)
 
 This project is an interface disagned for scrum with GitHub, all stories data
 is stored on GitHub using GitHub api, no secondary DB.
@@ -18,8 +19,6 @@ npm install
 ```
 
 ### Run for dev:
-
-With a watcher
 
 ```bash
 node src/app

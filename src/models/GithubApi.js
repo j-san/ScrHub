@@ -2,7 +2,8 @@
 var http = require("https"),
     querystring = require("querystring"),
     q = require("q"),
-    request = require('request');
+    request = require('request'),
+    logger = require('../utils/logging').logger;
 
 
 var GithubApi = function (state) {
@@ -87,7 +88,7 @@ GithubApi.prototype.getToken = function () {
 GithubApi.prototype.request = function (method, uri, body, options, headers) {
     var self = this, deferred = q.defer();
 
-    console.log('-call', method, uri);
+    logger.debug('-', method, uri);
 
     options = options || {};
     options.headers = headers || {};
@@ -106,11 +107,11 @@ GithubApi.prototype.request = function (method, uri, body, options, headers) {
     }
 
     request(options, function (err, response, body) {
-        if(response.statusCode === 200) {
-            console.log("-response", method, uri);
+        if([200, 201].indexOf(response.statusCode) >= 0) {
+            logger.info("+", method, uri);
             deferred.resolve(body);
         } else {
-            console.error('error', method, body);
+            logger.error('*', uri, response.statusCode, "\n", body);
             deferred.reject(body.message);
         }
     });

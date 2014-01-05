@@ -78,18 +78,17 @@ function route (app) {
         });
     }));
 
-    app.post('/api/:user/:name/story/new', function createStory (api, req, res, next) {
+    app.post('/api/:user/:name/story/new', apiHandler(function createStory (api, req, res, next) {
         var project = req.params.user + '/' + req.params.name;
         return api.createStory(project, req.body).then(function (story) {
             return q.ninvoke(new Story(story), 'save');
         });
+    }));
 
-    });
-
-    app.get('/api/:user/:name/labels/', function allLabels (api, req, res, next) {
+    app.get('/api/:user/:name/labels/', apiHandler(function allLabels (api, req, res, next) {
         var project = req.params.user + '/' + req.params.name;
         return api.allLabels(project);
-    });
+    }));
 }
 
 /* binding */

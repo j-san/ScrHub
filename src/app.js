@@ -1,17 +1,24 @@
 
 var express = require('express'),
     mongoose = require("mongoose"),
+
     //SessionStore = require('./models/Session'),
     MongoStore = require('connect-mongo')(express),
     routeMain = require('./routes/main'),
     routeApi = require('./routes/api'),
     logging = require('./utils/logging'),
+    logger = logging.logger,
     port = process.env.PORT || 1337,
     app = express(),
+    logger,
     mongoURL = process.env.MONGOLAB_URI || 'mongodb://localhost/scrhub';
 
 
+app.set('env', process.env.NODE_ENV || 'dev');
+
 app.configure(function () {
+    app.use(express.logger());
+    app.use(express.compress());
     app.use(express.bodyParser());
     app.use(express.cookieParser());
     app.use(express.session({
@@ -35,7 +42,9 @@ app.configure(function () {
 app.configure('sta', 'prd', function () {
     require('newrelic');
 
-    console.log('Using sta configuration');
+    logging.usePrdLogger();
+
+    logger.info('Using sta/prd configuration');
 
     process.host = "www.scrhub.com";
     process.client_id = 'f48190b0a23185d38240';
@@ -46,31 +55,26 @@ app.configure('sta', 'prd', function () {
 
 // run with NODE_ENV=dev for debug config
 app.configure('dev', function () {
-    console.log('Using dev configuration http://localhost:' + port);
 
+    logger.info('Using dev configuration http://localhost:' + port);
     process.host = 'localhost:'+ port;
     process.client_id = '78e3e8c40b1ca4c64828'; // for localhost:1337
     process.client_secret = 'd507cf3cef62295ab983310fabb8736b27e7046d';
 
     app.set('view options', { pretty: true });
 
-    app.use(logging.logRequest);
-
     app.use(logging.debugErrorHandler);
 });
-
 
 routeMain.route(app);
 routeApi.route(app);
 
 mongoose.connect(mongoURL, function () {
     app.listen(port);
-    console.log("Server running");
+    logger.info("Server running");
 });
 
 mongoose.connection.on('error', function () {
-  console.error('mongodb connection error', arguments);
+    logger.error('mongodb connection error', arguments);
 });
-
-exports = app;
 

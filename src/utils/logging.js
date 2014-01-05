@@ -1,10 +1,40 @@
-exports.logErrors = function(err, req, res, next) {
-    console.error(err.message);
-    console.error(err.stack);
+
+var winston = require('winston'),
+    Mail = require('winston-mail').Mail,
+    logging = {};
+
+logger = new (winston.Logger)({
+    transports: [
+        new (winston.transports.Console)({
+            level: 'debug',
+            colorize: true
+        })
+    ]
+});
+
+logging.logger = logger;
+logging.usePrdLogger = function(req, res, next) {
+    logging.logger = new (winston.Logger)({
+        transports: [
+            new (winston.transports.Console)({ level: 'info' }),
+            new (Mail)({
+                level: "error",
+                host: "smtp.gmail.com",
+                username: "robot@scrhub.com",
+                password: process.env.ROBOT_PWD,
+                from: "Robot <robot@scrhub.com>",
+                to: "Jonathan <jonathan@scrhub.com>",
+            })
+        ]
+    });
+};
+
+logging.logErrors = function(err, req, res, next) {
+    logger.error(err.message, err.stack);
     next(err);
 };
 
-exports.debugErrorHandler = function(err, req, res, next) {
+logging.debugErrorHandler = function(err, req, res, next) {
     res.statusCode = 500;
 
     res.format({
@@ -17,7 +47,7 @@ exports.debugErrorHandler = function(err, req, res, next) {
     });
 };
 
-exports.errorHandler = function(err, req, res, next) {
+logging.errorHandler = function(err, req, res, next) {
     res.statusCode = 500;
 
     res.format({
@@ -33,7 +63,4 @@ exports.errorHandler = function(err, req, res, next) {
     });
 };
 
-exports.logRequest = function(req, res, next) {
-    console.log(req.method, req.path);
-    next();
-};
+module.exports = logging;

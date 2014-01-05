@@ -29,7 +29,9 @@
     "bower": "1.2",
     "underscore": "1.5.2",
     "newrelic": "1.2",
-    "q": "latest"
+    "q": "1.0",
+    "winston": "latest",
+    "winston-mail": "latest"
   },
   "devDependencies": {
     "grunt": "latest",

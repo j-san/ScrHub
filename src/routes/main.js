@@ -1,7 +1,8 @@
 
 
 var GithubApi = require('../models/GithubApi'),
-    nodemailer = require("nodemailer");
+    nodemailer = require("nodemailer"),
+    logger = require('../utils/logging').logger;
 
 
 function route (app) {
@@ -18,17 +19,17 @@ function route (app) {
         }
 
         if (req.session.state.code && !req.session.state.token) {
-            console.log('-get token from github');
+            logger.debug('-get token from github');
             new GithubApi(req.session.state).getToken().then(function (data) {
                 if (data.access_token) {
                     req.session.state.token = data.access_token;
                 } else {
-                    console.log("-unexpected github response", data);
+                    logger.error("unexpected github response", data);
                     req.session.state = {};
                 }
                 next();
             }, function () {
-                console.error("error while getting new token...");
+                logger.error("error while getting new token...");
                 req.session.state = {};
                 next();
             });
@@ -106,11 +107,11 @@ function route (app) {
 }
 
 function private (req, res, next) {
-    console.log("-private request");
+    logger.debug("private request");
     if(!req.session.state.token && !req.param('error')) {
         var redirect_uri = "http://" + process.host + req.path;
         var url = "https://github.com/login/oauth/authorize?client_id=" + process.client_id + "&redirect_uri=" + redirect_uri + "&scope=repo";
-        console.log("-redirect to github auth", url);
+        logger.debug("redirect to github auth", url);
         res.redirect(url);
     } else {
         next();
@@ -127,17 +128,17 @@ function sendMail(content) {
         }
     });
 
-    console.log(content);
+    logger.debug(content);
     smtpTransport.sendMail({
-        from: "Rugbite <robot@scrhub.com>",
+        from: "Robot <robot@scrhub.com>",
         to: "Jonathan <jonathan@scrhub.com>",
         subject: "Feedback about Scrum Hub",
         text: content,
     }, function (error, response) {
         if (error) {
-            console.log(error);
+            logger.log(error);
         } else {
-            console.log("Message sent: " + response.message);
+            logger.debug("Message sent: " + response.message);
         }
 
         smtpTransport.close();
