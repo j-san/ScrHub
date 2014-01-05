@@ -3,7 +3,7 @@ var winston = require('winston'),
     Mail = require('winston-mail').Mail,
     logging = {};
 
-logger = new (winston.Logger)({
+var logger = new (winston.Logger)({
     transports: [
         new (winston.transports.Console)({
             level: 'debug',
