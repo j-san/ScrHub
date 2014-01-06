@@ -134,7 +134,7 @@ function sendMail(content) {
         text: content,
     }, function (error, response) {
         if (error) {
-            logger.log(error);
+            logger.error(error);
         } else {
             logger.debug("Message sent: " + response.message);
         }
