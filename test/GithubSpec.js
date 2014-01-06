@@ -1,8 +1,10 @@
-var sinon = require('sinon');
-var sholud = require('should');
-var nock = require('nock');
-var q = require('q');
-var GithubApi = require('../src/models/GithubApi');
+require('../src/utils/logging').useSilenteLogger();
+
+var sinon = require('sinon'),
+    sholud = require('should'),
+    nock = require('nock'),
+    q = require('q'),
+    GithubApi = require('../src/models/GithubApi');
 
 nock.disableNetConnect();
 

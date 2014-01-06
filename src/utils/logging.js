@@ -13,7 +13,7 @@ var logger = new (winston.Logger)({
 });
 
 logging.logger = logger;
-logging.usePrdLogger = function(req, res, next) {
+logging.usePrdLogger = function() {
     logging.logger = new (winston.Logger)({
         transports: [
             new (winston.transports.Console)({ level: 'info' }),
@@ -25,6 +25,13 @@ logging.usePrdLogger = function(req, res, next) {
                 from: "Robot <robot@scrhub.com>",
                 to: "Jonathan <jonathan@scrhub.com>",
             })
+        ]
+    });
+};
+logging.useSilenteLogger = function() {
+    logging.logger = new (winston.Logger)({
+        transports: [
+            new (winston.transports.Console)({ level: 'error' })
         ]
     });
 };

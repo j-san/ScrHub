@@ -99,7 +99,6 @@ define(['backbone'], function (Backbone) {
                 success: function () {
                     self.$el.removeClass("loading");
                     self.$el.removeClass("error");
-                    // self.render();
                 },
                 error: function () {
                     self.$el.removeClass("loading");

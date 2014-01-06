@@ -64,10 +64,3 @@ Export a system serice with [Forman](http://ddollar.github.io/foreman/)
 You can also try it at http://www.scrhub.com/
 
 Self product backlog: http://www.scrhub.com/j-san/ScrHub/backlog/
-
-
-
-
-todo:
-- console level print winston ?
-- github api => stories.list, stories.get, stories.update, ...

@@ -102,8 +102,6 @@ function route (app) {
         sendMail(req.body.content);
         res.render('feedbackSent');
     });
-
-
 }
 
 function private (req, res, next) {

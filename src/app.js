@@ -10,7 +10,6 @@ var express = require('express'),
     logger = logging.logger,
     port = process.env.PORT || 1337,
     app = express(),
-    logger,
     mongoURL = process.env.MONGOLAB_URI || 'mongodb://localhost/scrhub';
 
 
@@ -19,7 +18,8 @@ app.set('env', process.env.NODE_ENV || 'dev');
 app.configure(function () {
     app.use(express.logger());
     app.use(express.compress());
-    app.use(express.bodyParser());
+    app.use(express.urlencoded());
+    app.use(express.json());
     app.use(express.cookieParser());
     app.use(express.session({
         secret: "d507cf3cef62295ab983310fabb8736b27e7046d",

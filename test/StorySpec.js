@@ -1,18 +1,22 @@
-var mongoose = require('mongoose');
-var Promise = mongoose.Promise;
-var sinon = require('sinon');
-var sholud = require('should');
-var q = require('q');
+require('../src/utils/logging').useSilenteLogger();
+
+var mongoose = require('mongoose'),
+    Promise = mongoose.Promise,
+    sinon = require('sinon'),
+    sholud = require('should'),
+    q = require('q');
 
 var Story = require('../src/models/Story');
 
+
 describe("Story Model", function() {
-    var connection;
+
     before(function(done) {
         mongoose.connect('mongodb://localhost/scrhub-test', function () {
             done();
         });
     });
+
      after(function(done) {
         mongoose.connection.db.dropDatabase(function(){
             mongoose.disconnect(function(){
@@ -20,6 +24,7 @@ describe("Story Model", function() {
             });
         });
     });
+
     it("should use parameter id as primary key", function() {
         var s = new Story({id: 123});
         s.save();
