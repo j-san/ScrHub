@@ -22,8 +22,9 @@ logging.usePrdLogger = function() {
                 host: "smtp.gmail.com",
                 username: "robot@scrhub.com",
                 password: process.env.ROBOT_PWD,
-                from: "Robot <robot@scrhub.com>",
-                to: "Jonathan <jonathan@scrhub.com>",
+                ssl: true,
+                from: "robot@scrhub.com",
+                to: "jonathan@scrhub.com",
             })
         ]
     });
@@ -37,7 +38,7 @@ logging.useSilenteLogger = function() {
 };
 
 logging.logErrors = function(err, req, res, next) {
-    logger.error(err.message, err.stack);
+    logger.error(err.message + '\n\n' + err.stack);
     next(err);
 };
 

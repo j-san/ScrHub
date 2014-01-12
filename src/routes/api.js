@@ -2,6 +2,7 @@
 var GithubApi = require('../models/GithubApi'),
     Story = require('../models/Story'),
     _ = require('underscore'),
+    logger = require('../utils/logging').logger,
     q = require('q');
 
 function route (app) {

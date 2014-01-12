@@ -99,9 +99,8 @@ GithubApi.prototype.request = function (method, uri, body, options, headers) {
     options.body = body;
     options.headers['user-agent'] = 'SrcHub application';
     options.json = true;
-    // if (!options.headers.Accept) {
-    //     options.headers.Accept = "application/json";
-    // }
+    options.headers.Accept = "application/json";
+
     if (this.state && this.state.token) {
         options.headers.Authorization = "token " + this.state.token;
     }
@@ -111,8 +110,7 @@ GithubApi.prototype.request = function (method, uri, body, options, headers) {
             logger.info("+", method, uri);
             deferred.resolve(body);
         } else {
-            logger.error('*', uri, response.statusCode, "\n", body);
-            deferred.reject(body.message);
+            deferred.reject(new Error(body.message + ' (' + uri + ' - ' + response.statusCode + ')'));
         }
     });
 
