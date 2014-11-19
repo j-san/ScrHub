@@ -86,6 +86,7 @@ function route (app) {
     app.post('/api/:user/:name/story/new', apiHandler(function createStory (api, req, res, next) {
         var project = req.params.user + '/' + req.params.name;
         return api.createStory(project, req.body).then(function (issue) {
+            issue.project = project;
             return q.ninvoke(new Story(issue), 'save').then(function (story) {
                 return _.extend(story, issue);
             });

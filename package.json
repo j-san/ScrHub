@@ -3,7 +3,8 @@
   "subdomain": "scrhub",
   "scripts": {
     "postinstall": "./node_modules/.bin/bower install",
-    "test": "grunt"
+    "test": "grunt",
+    "start": "nodemon src/app.js"
   },
   "config": {
     "travis-cov": {
@@ -17,40 +18,41 @@
   },
   "version": "0.1.1",
   "engines": {
-    "node": "0.10.x"
+    "node": "0.11.x"
   },
   "dependencies": {
-    "express": "3.4",
-    "jade": "1.0.2",
-    "request": "2.30",
-    "connect-mongo": "latest",
-    "nodemailer": "0.6",
-    "mongoose": "3.8",
-    "bower": "1.2",
-    "underscore": "1.5.2",
-    "newrelic": "1.2",
-    "q": "1.0",
-    "winston": "latest",
-    "winston-mail": "latest"
+    "bower": "^1.2.8",
+    "connect-mongo": "^0.4.1",
+    "express": "^3.4.8",
+    "jade": "^1.7.0",
+    "mongoose": "^3.8.19",
+    "newrelic": "^1.13.3",
+    "nodemailer": "^0.6.5",
+    "q": "^1.0.1",
+    "request": "^2.48.0",
+    "underscore": "^1.7.0",
+    "winston": "^0.8.3",
+    "winston-mail": "^0.2.9"
   },
   "devDependencies": {
+    "blanket": "~1.1.6",
     "grunt": "latest",
     "grunt-contrib-clean": "latest",
-    "grunt-contrib-jshint": "latest",
-    "grunt-contrib-jasmine": "latest",
     "grunt-contrib-concat": "latest",
+    "grunt-contrib-jasmine": "latest",
+    "grunt-contrib-jshint": "latest",
     "grunt-contrib-uglify": "latest",
     "grunt-contrib-watch": "latest",
-    "grunt-release": "latest",
-    "grunt-mocha-test": "latest",
-    "grunt-express-server": "latest",
     "grunt-coveralls": "latest",
-    "sinon": "latest",
-    "should": "latest",
-    "supertest": "latest",
+    "grunt-express-server": "latest",
+    "grunt-mocha-test": "latest",
+    "grunt-release": "latest",
+    "mocha-lcov-reporter": "latest",
     "nock": "latest",
-    "blanket": "~1.1.6",
-    "travis-cov": "~0.2.4",
-    "mocha-lcov-reporter": "latest"
+    "nodemon": "^1.2.1",
+    "should": "latest",
+    "sinon": "latest",
+    "supertest": "latest",
+    "travis-cov": "~0.2.4"
   }
 }
