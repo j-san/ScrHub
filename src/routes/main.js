@@ -2,118 +2,85 @@
 
 var GithubApi = require('../models/GithubApi'),
     nodemailer = require("nodemailer"),
+    github = require('octonode'),
+    _ = require('koa-route'),
+    q = require("q"),
     logger = require('../utils/logging').logger;
-
 
 function route (app) {
 
-    /* Connection behavior */
+    var authUrl = github.auth.config({
+        id: process.env.GITHUB_CLIENT_ID || 'f48190b0a23185d38240',
+        secret: process.env.GITHUB_SECRET
+    }).login(['repo']);
 
-    app.get('*', function getToken (req, res, next) {
-        if (!req.session.state) {
-            req.session.state = {};
+    app.use(function *initAuthToken(next) {
+        if (this.request.query.code) {
+            this.session.$set('accessCode', this.request.query.code);
         }
 
-        if (req.param('code')) {
-            req.session.state.code = req.param('code');
+        if (this.session.accessCode && !this.session.authToken) {
+            logger.debug('get token from github');
+            try {
+                var token = yield q.ninvoke(github.auth, 'login', this.query.code);
+                this.session.$set('authToken', token);
+            } catch(err) {
+                console.error(err.trace);
+                this.session.accessCode = null;
+                this.session.authToken = null;
+            }
         }
 
-        if (req.session.state.code && !req.session.state.token) {
-            logger.debug('-get token from github');
-            new GithubApi(req.session.state).getToken().then(function (data) {
-                if (data.access_token) {
-                    req.session.state.token = data.access_token;
-                } else {
-                    logger.error("unexpected github response", data);
-                    req.session.state = {};
-                }
-                next();
-            }, function () {
-                logger.error("error while getting new token...");
-                req.session.state = {};
-                next();
-            });
-        } else {
-            next();
-        }
+        yield next;
     });
 
-    app.get('*', function loadUser (req, res, next) {
-        if (req.param("connect")) {
-            private(req, res, next);
-        }
-        if (req.param("disconnect")) {
-            req.session.state = {};
-        }
-        res.locals.path = req.path;
-        res.locals.connected = Boolean(req.session.state.token);
-        res.locals.user = req.session.state.user || {};
-        if (req.session.state.token && !req.session.state.user) {
-            new GithubApi(req.session.state).getUser().then(function (user) {
-                res.locals.user = req.session.state.user = user;
-                next();
-            }, function () {
-                console.error("error while getting new token...");
-                req.session.state = {};
-                next();
-            });
-        } else {
-            next();
-        }
-    });
 
-    function apiHandler (callback) {
-        return function (req, res, next) {
-            callback(new GithubApi(req.session.state), req, res, next);
-        };
-    }
-
-    app.get('/', function home (req, res) {
-        res.render('home', {
+    app.use(_.get('/', function *home() {
+        yield this.render('home', {
             client_id: process.client_id
         });
+    }));
+
+    app.use(function *authenticationRequired(next) {
+
+        if(!this.session.authToken && !this.request.query.error) {
+
+            logger.debug('private request');
+            this.response.redirect(authUrl + '&redirect_uri=' + this.request.path);
+        } else {
+            this.ghClient = github.client(this.session.authToken);
+            yield next;
+        }
     });
 
-    app.get('/projects/', private, apiHandler(function projects (api, req, res) {
-        api.listProjects().then(function(projects) {
-            res.render('project', { projects: projects });
-        });
+    app.use(_.get('/projects/', function *projectList () {
+        var results = yield q.ninvoke(this.ghClient.me(), 'repos');
+        yield this.render('project', { projects: results[0] });
     }));
-    app.get('/projects/:name/', apiHandler(function orgProjects (api, req, res) {
-        api.listOrgProjects(req.params.name).then(function(projects) {
-            res.render('project', { projects: projects });
+
+    app.use(_.get('/projects/:name/', function *orgProjects (api, req, res) {
+        var projects = yield this.ghClient.org(req.params.name).repos();
+        yield this.render('project', { projects: projects });
+    }));
+
+    app.use(_.get('/:user/:name/', function *dashboard (user, name) {
+
+        var projectName = user + '/' + name;
+        var project = yield q.ninvoke(this.ghClient, 'repo', projectName);
+        console.log(project);
+        yield this.render('app', {
+            project: project
         });
     }));
 
-    app.get('/:user/:name/', private, apiHandler(function dashboard (api, req, res) {
-        var project = req.params.user + '/' + req.params.name;
-        api.getProject(project).then(function(project) {
-            res.render('app', {
-                project: project
-            });
-        });
+    app.use(_.get('/feedback/', function *feedback (req, res) {
+        yield res.render('feedbackForm');
     }));
 
-    app.get('/feedback/', private, function feedback (req, res) {
-        res.render('feedbackForm');
-    });
-
-    app.post('/feedback/', function sendFeedback (req, res) {
+    app.use(_.post('/feedback/', function *sendFeedback (req, res) {
         sendMail(req.body.content);
-        res.render('feedbackSent');
-    });
-}
-
-function private (req, res, next) {
-    logger.debug("private request");
-    if(!req.session.state.token && !req.param('error')) {
-        var redirect_uri = "http://" + process.host + req.path;
-        var url = "https://github.com/login/oauth/authorize?client_id=" + process.client_id + "&redirect_uri=" + redirect_uri + "&scope=repo";
-        logger.debug("redirect to github auth", url);
-        res.redirect(url);
-    } else {
-        next();
-    }
+        yield res.render('feedbackSent');
+    }));
 }
 
 /* Sending mail */

@@ -2,6 +2,7 @@
 var GithubApi = require('../models/GithubApi'),
     Story = require('../models/Story'),
     _ = require('underscore'),
+    r = require('koa-route'),
     logger = require('../utils/logging').logger,
     q = require('q');
 
@@ -20,7 +21,7 @@ function route (app) {
         };
     }
 
-    app.get('/api/:user/:name/sprints/', apiHandler(function sprints (api, req, res, next) {
+    app.use(r.get('/api/:user/:name/sprints/', apiHandler(function sprints (api, req, res, next) {
         var project = req.params.user + '/' + req.params.name;
 
         return api.listSprints(project).then(function (data) {
@@ -30,9 +31,9 @@ function route (app) {
             }
             return sprint;
         });
-    }));
+    })));
 
-    app.get('/api/:user/:name/sprint/:sprint/stories/', apiHandler(function sprintStories (api, req, res, next) {
+    app.use(r.get('/api/:user/:name/sprint/:sprint/stories/', apiHandler(function sprintStories (api, req, res, next) {
         var project = req.params.user + '/' + req.params.name, promise;
 
         if (req.params.sprint === 'current') {
@@ -53,16 +54,16 @@ function route (app) {
         }).then(function (data) {
             return Story.loadStories(data);
         });
-    }));
+    })));
 
-    app.get('/api/:user/:name/stories/', apiHandler(function allStories (api, req, res, next) {
+    app.use(r.get('/api/:user/:name/stories/', apiHandler(function allStories (api, req, res, next) {
         var project = req.params.user + '/' + req.params.name;
         return api.allStories(project).then(function (data) {
             return Story.loadStories(data);
         });
-    }));
+    })));
 
-    app.put('/api/:user/:name/story/:story', apiHandler(function updateStory (api, req, res, next) {
+    app.use(r.put('/api/:user/:name/story/:story', apiHandler(function updateStory (api, req, res, next) {
         var project = req.params.user + '/' + req.params.name;
 
         return q.all([
@@ -81,9 +82,9 @@ function route (app) {
         ]).then(function (args) {
             return _.extend(args[1], args[0]);
         });
-    }));
+    })));
 
-    app.post('/api/:user/:name/story/new', apiHandler(function createStory (api, req, res, next) {
+    app.use(r.post('/api/:user/:name/story/new', apiHandler(function createStory (api, req, res, next) {
         var project = req.params.user + '/' + req.params.name;
         return api.createStory(project, req.body).then(function (issue) {
             issue.project = project;
@@ -91,12 +92,12 @@ function route (app) {
                 return _.extend(story, issue);
             });
         });
-    }));
+    })));
 
-    app.get('/api/:user/:name/labels/', apiHandler(function allLabels (api, req, res, next) {
+    app.use(r.get('/api/:user/:name/labels/', apiHandler(function allLabels (api, req, res, next) {
         var project = req.params.user + '/' + req.params.name;
         return api.allLabels(project);
-    }));
+    })));
 }
 
 /* binding */

@@ -1,13 +1,14 @@
 
 module.exports = function(grunt) {
     'use strict';
+    var pkg = require('./package');
 
     require('blanket')({
         pattern: __dirname + '/src/'
     });
 
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+        pkg: pkg,
         banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' +
             '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
             '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
@@ -48,20 +49,7 @@ module.exports = function(grunt) {
                 src: ['public/js/**/*.js']
             },
             server: {
-                options: {
-                    curly: true,
-                    debug: true,
-                    node: true,
-                    undef: true,
-                    globals: {
-                        before: true,
-                        after: true,
-                        describe: true,
-                        it: true,
-                        xdescribe: true,
-                        xit: true
-                    }
-                },
+                options: pkg.jshintConfig,
                 src: ['Gruntfile.js', 'src/**/*.js']
             },
         },
