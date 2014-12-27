@@ -2,82 +2,78 @@
 
 var GithubApi = require('../models/GithubApi'),
     nodemailer = require("nodemailer"),
-    github = require('octonode'),
     _ = require('koa-route'),
     q = require("q"),
+    GithubApi = require('../models/GithubApi'),
     logger = require('../utils/logging').logger;
 
+var clientId = process.env.GITHUB_CLIENT_ID,
+    cliebtSecret = process.env.GITHUB_SECRET;
+
 function route (app) {
-
-    var authUrl = github.auth.config({
-        id: process.env.GITHUB_CLIENT_ID || 'f48190b0a23185d38240',
-        secret: process.env.GITHUB_SECRET
-    }).login(['repo']);
-
-    app.use(function *initAuthToken(next) {
+    app.use(function *initGithubClient(next) {
+        this.githubClient = new GithubApi(this.session.authToken);
         if (this.request.query.code) {
-            this.session.$set('accessCode', this.request.query.code);
+            yield this.session.$set('accessCode', this.request.query.code);
         }
 
-        if (this.session.accessCode && !this.session.authToken) {
-            logger.debug('get token from github');
-            try {
-                var token = yield q.ninvoke(github.auth, 'login', this.query.code);
-                this.session.$set('authToken', token);
-            } catch(err) {
-                console.error(err.trace);
-                this.session.accessCode = null;
-                this.session.authToken = null;
+        try {
+            if (this.session.accessCode && !this.session.authToken) {
+                logger.debug('get token from github');
+                var token = yield this.githubClient.getToken({
+                    code: this.query.code,
+                    client_id: clientId,
+                    client_secret: cliebtSecret,
+                });
+                this.session.$set('authToken', token.access_token);
+                this.githubClient.token = token.access_token;
+            }
+
+            yield next;
+        } catch(e) {
+            if (e.name === 'AuthenticationRequired') {
+                logger.debug("redirect to github auth");
+                var loginUrl = this.githubClient.loginUrl({
+                    client_id: clientId,
+                    scope: ['repo'],
+                    redirect_uri: this.request.protocol + '://' + this.request.host + this.request.path
+                });
+                this.session.$unset('accessCode');
+                this.session.$unset('authToken');
+                this.response.redirect(loginUrl);
+            } else {
+                throw e;
             }
         }
-
-        yield next;
     });
 
 
     app.use(_.get('/', function *home() {
-        yield this.render('home', {
-            client_id: process.client_id
-        });
+        yield this.render('home');
     }));
 
-    app.use(function *authenticationRequired(next) {
-
-        if(!this.session.authToken && !this.request.query.error) {
-
-            logger.debug('private request');
-            this.response.redirect(authUrl + '&redirect_uri=' + this.request.path);
-        } else {
-            this.ghClient = github.client(this.session.authToken);
-            yield next;
-        }
-    });
-
-    app.use(_.get('/projects/', function *projectList () {
-        var results = yield q.ninvoke(this.ghClient.me(), 'repos');
-        yield this.render('project', { projects: results[0] });
+    app.use(_.get('/projects/', function* () {
+        var results = yield this.githubClient.listProjects();
+        yield this.render('project', { projects: results });
     }));
 
-    app.use(_.get('/projects/:name/', function *orgProjects (api, req, res) {
-        var projects = yield this.ghClient.org(req.params.name).repos();
+    app.use(_.get('/projects/:name/', function* (api, req, res) {
+        var projects = yield this.githubClient.org(req.params.name).repos();
         yield this.render('project', { projects: projects });
     }));
 
-    app.use(_.get('/:user/:name/', function *dashboard (user, name) {
+    app.use(_.get('/:user/:name/', function* (user, name) {
 
         var projectName = user + '/' + name;
-        var project = yield q.ninvoke(this.ghClient, 'repo', projectName);
-        console.log(project);
-        yield this.render('app', {
-            project: project
-        });
+        var project = yield this.githubClient.getProject(projectName);
+        yield this.render('app', { project: project });
     }));
 
-    app.use(_.get('/feedback/', function *feedback (req, res) {
+    app.use(_.get('/feedback/', function* (req, res) {
         yield res.render('feedbackForm');
     }));
 
-    app.use(_.post('/feedback/', function *sendFeedback (req, res) {
+    app.use(_.post('/feedback/', function* (req, res) {
         sendMail(req.body.content);
         yield res.render('feedbackSent');
     }));

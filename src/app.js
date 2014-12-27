@@ -1,42 +1,38 @@
 
 var koa = require('koa'),
-    mongoose = require("mongoose"),
+    mongoose = require('mongoose'),
     session = require('koa-mongodb-session'),
-    router = require('koa-trie-router'),
-    routeMain = require('./routes/main'),
-    routeApi = require('./routes/api'),
-    configure = require('./routes/middleware');
+    logger = require('koa-logger'),
+    jade = require('koa-jade'),
+    serve = require('koa-static');
 
 
-var app = koa(),
-    port = process.env.PORT || 1337,
-    mongoUrl = process.env.MONGOLAB_URI || 'mongodb://localhost/scrhub';
+module.exports = function(db) {
+    var app = koa();
 
-if (app.env === 'production' || app.env === 'staging') {
-    require('newrelic');
-}
-require('dotenv').load();
+    app.use(logger());
 
-configure(app);
 
-var logger = require('./utils/logging').logger;
-
-mongoose.connect(mongoUrl, function () {
-    app.use(session({
-        key: process.env.SESSION_KEY || 'sid',
-        collection: mongoose.connection.db.collection('session')
+    app.use(jade.middleware({
+      viewPath: __dirname + '/../views',
+      debug: false,
+      pretty: false,
+      compileDebug: false,
+      locals: {}
     }));
-    app.keys = [process.env.SESSION_KEY || 'sid'];
 
-    app.use(router(app));
-    routeMain.route(app);
-    routeApi.route(app);
+    app.use(serve('static_modules'));
+    app.use(serve('public'));
 
-    app.listen(port);
-    logger.info("Server running on port " + port);
-});
+    app.keys = [process.env.SESSION_KEY || 'dev'];
 
-mongoose.connection.on('error', function () {
-    logger.error('mongodb connection error', arguments);
-});
+    app.use(session({
+        key: 'sid',
+        collection: db.collection('session')
+    }));
 
+    require('./routes/main').route(app);
+    require('./routes/api').route(app);
+
+    return app;
+};

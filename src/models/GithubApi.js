@@ -5,9 +5,15 @@ var http = require("https"),
     request = require('request'),
     logger = require('../utils/logging').logger;
 
+function AuthenticationRequiredError() {
+  Error.apply(this, arguments);
+  this.name = 'AuthenticationRequired';
+}
+AuthenticationRequiredError.prototype = Error.prototype;
 
-var GithubApi = function (state) {
-    this.state = state;
+
+var GithubApi = function (token) {
+    this.token = token;
 };
 
 GithubApi.findCurrentSprint = function (sprints) {
@@ -19,17 +25,56 @@ GithubApi.findCurrentSprint = function (sprints) {
     });
     return nearest;
 };
+GithubApi.prototype.getToken = function (options) {
+    if(!options.code) {
+        throw new Error('Not connected');
+    } else {
+        return this.request(
+            "POST",
+            "/login/oauth/access_token",
+            querystring.stringify({
+                code: options.code,
+                client_id: options.client_id,
+                client_secret: options.client_secret,
+                scope: options.scope
+            }), {
+                hostname: "https://github.com"
+            });
+    }
+};
+
+GithubApi.prototype.loginUrl = function (options) {
+    var url = 'https://github.com/login/oauth/authorize';
+
+    url += '?' + querystring.stringify({
+        client_id: options.client_id,
+        redirect_uri: options.redirect_uri,
+        scope: options.scope.join(',')
+    });
+
+    return url;
+};
+
+GithubApi.prototype.authenticationRequired = function () {
+    if(!this.token) {
+        throw new AuthenticationRequiredError();
+    }
+};
 
 GithubApi.prototype.getUser = function () {
+    this.authenticationRequired();
     return this.load("/user");
 };
 
 GithubApi.prototype.listProjects = function () {
+    this.authenticationRequired();
     return this.load("/user/repos");
 };
+
 GithubApi.prototype.listOrgProjects = function (name) {
     return this.load("/orgs/" + name + "/repos");
 };
+
 GithubApi.prototype.getProject = function (name) {
     return this.load("/repos/" + name);
 };
@@ -70,21 +115,6 @@ GithubApi.prototype.create = function (path, data) {
     return this.request("POST", path, JSON.stringify(data));
 };
 
-GithubApi.prototype.getToken = function () {
-    if(!this.state.code) {
-        throw new Error('Not connected');
-    }
-
-    return this.request("POST", "/login/oauth/access_token", querystring.stringify({
-            code: this.state.code,
-            client_id: process.client_id,
-            client_secret: process.client_secret
-        }), {
-            hostname: "https://github.com"
-        });
-};
-
-
 GithubApi.prototype.request = function (method, uri, body, options, headers) {
     var self = this, deferred = q.defer();
 
@@ -101,8 +131,8 @@ GithubApi.prototype.request = function (method, uri, body, options, headers) {
     options.json = true;
     options.headers.Accept = "application/json";
 
-    if (this.state && this.state.token) {
-        options.headers.Authorization = "token " + this.state.token;
+    if (this.token) {
+        options.headers.Authorization = "token " + this.token;
     }
 
     request(options, function (err, response, body) {
@@ -110,6 +140,10 @@ GithubApi.prototype.request = function (method, uri, body, options, headers) {
             logger.info("+", method, uri);
             deferred.resolve(body);
         } else {
+            logger.error("+", response.statusCode, uri);
+            if (response.statusCode === 401) {
+                deferred.reject(new AuthenticationRequiredError(body.message));
+            }
             deferred.reject(new Error(body.message + ' (' + uri + ' - ' + response.statusCode + ')'));
         }
     });

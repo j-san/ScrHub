@@ -1,6 +1,6 @@
 
 body {
-    background-color: #DDD;
+    background-color: #F0F0F0;
     background-image: url(../img/graphy.png);
     background-repeat: repeat repeat;
     background-position: center top;
@@ -49,9 +49,8 @@ p {
 
 #content {
     position: relative;
-    width: 800px;
     padding: 40px 20px;
-    margin: 20px auto;
+    margin: 10px auto;
 
     box-sizing: border-box;
     border-radius: 15px;

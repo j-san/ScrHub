@@ -20,5 +20,4 @@ module.exports = function configure(app) {
     // app.use(express.cookieParser());
 
     app.use(serve('public'));
-    app.use(_.get('static_modules', serve('static_modules')));
 };
