@@ -11,10 +11,6 @@ var port = process.env.PORT || 1337,
 mongoose.connect(mongoUrl, function () {
     var app = require('./src/app')(mongoose.connection.db);
 
-    if (app.env === 'production' || app.env === 'staging') {
-        require('newrelic');
-    }
-
     app.listen(port);
     logger.info("Server running on port " + port);
 });

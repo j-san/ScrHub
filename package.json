@@ -28,7 +28,6 @@
     "koa-route": "^2.4.0",
     "koa-static": "^1.4.7",
     "mongoose": "^3.8.19",
-    "newrelic": "^1.13.3",
     "nodemailer": "^0.6.5",
     "q": "^1.0.1",
     "request": "^2.48.0",
