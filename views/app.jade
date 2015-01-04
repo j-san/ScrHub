@@ -3,13 +3,13 @@ extends base
 block prepend head
     title #{project.name} > Scrum Hub
 
-block append scripts
+block prepend scripts
     script.
         var params = {
             project: "#{project.full_name}",
-            me: !{JSON.stringify(user)}
+            //- me: !{JSON.stringify(user)}
         };
-    script(src="/static_modules/require.js", data-main="/js/main")
+    script(src="/static_modules/require.js", data-main="js/main")
 
 
 block app

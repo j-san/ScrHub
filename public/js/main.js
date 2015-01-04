@@ -1,28 +1,5 @@
-requirejs.config({
-    //By default load any module IDs from js/lib
-    baseUrl: '/js',
-    //except, if the module ID starts with "app",
-    //load it from the js/app directory. paths
-    //config is relative to the baseUrl, and
-    //never includes a ".js" extension since
-    //the paths config could be for a directory.
-    paths: {
-        'backbone': '/components/backbone/backbone',
-        'underscore': '/components/underscore/underscore'
-    },
-    shim: {
-        'backbone': {
-            deps: ['underscore'],
-            exports: 'Backbone'
-        },
-        'underscore': {
-            exports: '_'
-        }
-    }
-});
 
-
-require(['backbone', 'UI/ProductBacklog', 'UI/Dashboard'], function(Backbone, ProductBacklog, Dashboard) {
+require(['backbone', 'jquery', 'js/UI/ProductBacklog', 'js/UI/Dashboard'], function(Backbone, $, ProductBacklog, Dashboard) {
 
     var container = $('#app-container');
     var App = Backbone.Router.extend({

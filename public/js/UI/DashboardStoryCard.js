@@ -1,5 +1,5 @@
 
-define(['backbone', 'UI/DashboardStoryDialog'], function (Backbone, StoryDialog) {
+define(['backbone', 'js/UI/DashboardStoryDialog'], function (Backbone, StoryDialog) {
 
     return Backbone.View.extend({
         className: "dashboard-ticket",

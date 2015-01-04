@@ -1,5 +1,5 @@
 
-define(['backbone', 'model/Label'], function (Backbone, Label) {
+define(['backbone', 'js/model/Label'], function (Backbone, Label) {
 
     var Story = Backbone.Model.extend({
         idAttribute: "number",

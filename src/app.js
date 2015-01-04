@@ -12,17 +12,16 @@ module.exports = function(db) {
 
     app.use(logger());
 
-
-    app.use(jade.middleware({
-      viewPath: __dirname + '/../views',
-      debug: false,
-      pretty: false,
-      compileDebug: false,
-      locals: {}
-    }));
-
     app.use(serve('static_modules'));
     app.use(serve('public'));
+
+    app.use(jade.middleware({
+        viewPath: __dirname + '/../views',
+        debug: app.env === 'development',
+        pretty: app.env === 'development',
+        compileDebug: app.env === 'development',
+        locals: {}
+    }));
 
     app.keys = [process.env.SESSION_KEY || 'dev'];
 

@@ -9,95 +9,64 @@ var GithubApi = require('../models/GithubApi'),
 function route (app) {
     'use strict';
 
-    function apiHandler (callback) {
-        return function (req, res, next) {
-            callback(new GithubApi(req.session.state), req, res, next)
-                .then(function (data) {
-                    res.set('Content-Type', 'application/json');
-                    res.json(data);
-                }, function (error) {
-                    next(error);
-                });
-        };
-    }
+    app.use(r.get('/api/:user/:name/sprints/', function* sprints (user, name) {
+        var sprints, project = user + '/' + name;
 
-    app.use(r.get('/api/:user/:name/sprints/', apiHandler(function sprints (api, req, res, next) {
-        var project = req.params.user + '/' + req.params.name;
-
-        return api.listSprints(project).then(function (data) {
-            var sprint = GithubApi.findCurrentSprint(data);
-            if (sprint) {
-                sprint.current = true;
-            }
-            return sprint;
-        });
-    })));
-
-    app.use(r.get('/api/:user/:name/sprint/:sprint/stories/', apiHandler(function sprintStories (api, req, res, next) {
-        var project = req.params.user + '/' + req.params.name, promise;
-
-        if (req.params.sprint === 'current') {
-            promise = api.listSprints(project).then(function (data) {
-                if (data.length) {
-                    return GithubApi.findCurrentSprint(data).number;
-                } else {
-                    return null;
-                }
-            });
-        } else {
-            promise = q.fcall(function () {
-                return req.params.sprint;
-            });
+        sprints = yield this.githubClient.listSprints(project);
+        var sprint = GithubApi.findCurrentSprint(sprints);
+        if (sprint) {
+            sprint.current = true;
         }
-        return promise.then(function (sprint) {
-            return api.dashboardStories(project, sprint);
-        }).then(function (data) {
-            return Story.loadStories(data);
-        });
-    })));
+        this.body = sprint;
+    }));
 
-    app.use(r.get('/api/:user/:name/stories/', apiHandler(function allStories (api, req, res, next) {
-        var project = req.params.user + '/' + req.params.name;
-        return api.allStories(project).then(function (data) {
-            return Story.loadStories(data);
-        });
-    })));
+    app.use(r.get('/api/:user/:name/sprint/:sprint/stories/', function* sprintStories (user, name, sprint) {
+        var project = user + '/' + name, stories, sprints;
 
-    app.use(r.put('/api/:user/:name/story/:story', apiHandler(function updateStory (api, req, res, next) {
-        var project = req.params.user + '/' + req.params.name;
+        if (sprint === 'current') {
+            sprints = yield this.githubClient.listSprints(project);
+            if (sprints.length) {
+                sprint = GithubApi.findCurrentSprint(sprints).number;
+            }
+        }
+        stories = yield this.githubClient.dashboardStories(project, sprint);
+        this.body = yield Story.loadStories(stories);
+    }));
 
-        return q.all([
-            api.updateStory(project, req.params.story, req.body),
-            Story.findById(req.body.id).exec().then(function (story) {
-                if(story) {
-                    story.set(req.body);
-                } else {
-                    story = new Story(req.body);
-                }
-                return q.ninvoke(story, 'save');
-            }, function (err) {
-                var story = new Story(req.body);
-                return q.ninvoke(story, 'save');
-            })
-        ]).then(function (args) {
-            return _.extend(args[1], args[0]);
-        });
-    })));
+    app.use(r.get('/api/:user/:name/stories/', function* allStories (user, name) {
+        var project = user + '/' + name;
+        var stories = yield this.githubClient.allStories(project);
+        this.body = yield Story.loadStories(stories);
+    }));
 
-    app.use(r.post('/api/:user/:name/story/new', apiHandler(function createStory (api, req, res, next) {
-        var project = req.params.user + '/' + req.params.name;
-        return api.createStory(project, req.body).then(function (issue) {
-            issue.project = project;
-            return q.ninvoke(new Story(issue), 'save').then(function (story) {
-                return _.extend(story, issue);
-            });
-        });
-    })));
+    app.use(r.put('/api/:user/:name/story/:story', function* updateStory (user, name, story) {
+        var project = user + '/' + name;
 
-    app.use(r.get('/api/:user/:name/labels/', apiHandler(function allLabels (api, req, res, next) {
-        var project = req.params.user + '/' + req.params.name;
-        return api.allLabels(project);
-    })));
+        var githubStory = yield this.githubClient.updateStory(project, story, this.body);
+        var formerStory = yield Story.findById(this.body.id).exec();
+        if(formerStory) {
+            formerStory.set(this.body);
+        } else {
+            formerStory = new Story(this.body);
+        }
+        yield formerStory.save();
+
+        this.body = _.extend(formerStory, githubStory);
+    }));
+
+    app.use(r.post('/api/:user/:name/story/new', function* createStory (user, name) {
+        var project = user + '/' + name;
+        var issue = yield this.githubClient.createStory(project, this.body);
+        issue.project = project;
+        var story =  new Story(issue);
+        yield story.save();
+        this.body = _.extend(story, issue);
+    }));
+
+    app.use(r.get('/api/:user/:name/labels/', function* allLabels (user, name) {
+        var project = user + '/' + name;
+        this.body = yield this.githubClient.allLabels(project);
+    }));
 }
 
 /* binding */

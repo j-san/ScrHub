@@ -31,7 +31,8 @@ function route (app) {
 
             yield next;
         } catch(e) {
-            if (e.name === 'AuthenticationRequired') {
+            console.log(e);
+            if (e.status === 401) {
                 logger.debug("redirect to github auth");
                 var loginUrl = this.githubClient.loginUrl({
                     client_id: clientId,
@@ -62,8 +63,7 @@ function route (app) {
         yield this.render('project', { projects: projects });
     }));
 
-    app.use(_.get('/:user/:name/', function* (user, name) {
-
+    app.use(_.get('/app/:user/:name/', function* (user, name) {
         var projectName = user + '/' + name;
         var project = yield this.githubClient.getProject(projectName);
         yield this.render('app', { project: project });

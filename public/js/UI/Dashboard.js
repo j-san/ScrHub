@@ -1,5 +1,5 @@
 
-define(['backbone', 'UI/DashboardStoryCard', 'model/Story'], function (Backbone, StoryCard, Story) {
+define(['backbone', 'js/UI/DashboardStoryCard', 'js/model/Story'], function (Backbone, StoryCard, Story) {
 
     return Backbone.View.extend({
         id: 'dashboard',

@@ -1,6 +1,6 @@
 
 
-define(['backbone', 'UI/BacklogRow', 'model/Sprint', 'model/Story'], function (Backbone, BacklogRow, Sprint, Story) {
+define(['backbone', 'js/UI/BacklogRow', 'js/model/Sprint', 'js/model/Story'], function (Backbone, BacklogRow, Sprint, Story) {
 
     return Backbone.View.extend({
         id: "#product-backlog",

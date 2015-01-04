@@ -1,13 +1,13 @@
 
 var http = require("https"),
     querystring = require("querystring"),
-    q = require("q"),
     request = require('request'),
     logger = require('../utils/logging').logger;
 
 function AuthenticationRequiredError() {
   Error.apply(this, arguments);
   this.name = 'AuthenticationRequired';
+  this.status = 401;
 }
 AuthenticationRequiredError.prototype = Error.prototype;
 
@@ -116,7 +116,7 @@ GithubApi.prototype.create = function (path, data) {
 };
 
 GithubApi.prototype.request = function (method, uri, body, options, headers) {
-    var self = this, deferred = q.defer();
+    var self = this;
 
     logger.debug('-', method, uri);
 
@@ -134,21 +134,20 @@ GithubApi.prototype.request = function (method, uri, body, options, headers) {
     if (this.token) {
         options.headers.Authorization = "token " + this.token;
     }
+    return new Promise(function (resolve, reject) {
 
-    request(options, function (err, response, body) {
-        if([200, 201].indexOf(response.statusCode) >= 0) {
-            logger.info("+", method, uri);
-            deferred.resolve(body);
-        } else {
-            logger.error("+", response.statusCode, uri);
-            if (response.statusCode === 401) {
-                deferred.reject(new AuthenticationRequiredError(body.message));
+        request(options, function (err, response, body) {
+            if([200, 201].indexOf(response.statusCode) >= 0) {
+                logger.info("+", method, uri);
+                resolve(body);
+            } else {
+                logger.error("+", response.statusCode, uri, body.message);
+                var error = new Error(body.message);
+                error.status = response.statusCode;
+                reject(error);
             }
-            deferred.reject(new Error(body.message + ' (' + uri + ' - ' + response.statusCode + ')'));
-        }
+        });
     });
-
-    return deferred.promise;
 };
 
 /* binding */
