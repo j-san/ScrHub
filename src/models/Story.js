@@ -37,7 +37,7 @@ StorySchema.method('toGithubObject', function () {
 
 StorySchema.static('loadStories', function (stories) {
     var promises = [];
-    stories.forEach(function (story, index) {
+    stories.forEach(function (story) {
         promises.push(Story.findById(story.id)
             .exec().then(function (fetchedStory) {
                 if (fetchedStory) {

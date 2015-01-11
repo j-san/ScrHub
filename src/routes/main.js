@@ -3,7 +3,6 @@
 var GithubApi = require('../models/GithubApi'),
     nodemailer = require("nodemailer"),
     _ = require('koa-route'),
-    q = require("q"),
     GithubApi = require('../models/GithubApi'),
     logger = require('../utils/logging').logger;
 
@@ -31,7 +30,6 @@ function route (app) {
 
             yield next;
         } catch(e) {
-            console.log(e);
             if (e.status === 401) {
                 logger.debug("redirect to github auth");
                 var loginUrl = this.githubClient.loginUrl({
@@ -58,8 +56,8 @@ function route (app) {
         yield this.render('project', { projects: results });
     }));
 
-    app.use(_.get('/projects/:name/', function* (api, req, res) {
-        var projects = yield this.githubClient.org(req.params.name).repos();
+    app.use(_.get('/projects/:name/', function* (name) {
+        var projects = yield this.githubClient.org(name).repos();
         yield this.render('project', { projects: projects });
     }));
 

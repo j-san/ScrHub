@@ -37,38 +37,4 @@ logging.useSilenteLogger = function() {
     });
 };
 
-logging.logErrors = function(err, req, res, next) {
-    logger.error(err.message + '\n\n' + err.stack);
-    next(err);
-};
-
-logging.debugErrorHandler = function(err, req, res, next) {
-    res.statusCode = 500;
-
-    res.format({
-        text: function(){
-            res.send(err.stack);
-        },
-        json: function(){
-            res.json({ message: err.message, stack: err.stack });
-        }
-    });
-};
-
-logging.errorHandler = function(err, req, res, next) {
-    res.statusCode = 500;
-
-    res.format({
-        text: function(){
-            res.send('Internal Server Error');
-        },
-        html: function(){
-            res.send('<h1>Internal Server Error</h1>');
-        },
-        json: function(){
-            res.json({ message: 'Internal Server Error' });
-        }
-    });
-};
-
 module.exports = logging;

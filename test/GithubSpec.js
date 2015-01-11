@@ -1,16 +1,18 @@
 require('../src/utils/logging').useSilenteLogger();
+require('co-mocha');
+require('should');
 
-var sinon = require('sinon'),
-    sholud = require('should'),
-    nock = require('nock'),
-    q = require('q'),
+var nock = require('nock'),
     GithubApi = require('../src/models/GithubApi');
 
-nock.disableNetConnect();
+describe("Github Api", function() {
+    before(function() {
+        nock.disableNetConnect();
+    });
 
-describe("Github Api", function(done) {
-    it("should request to Github", function() {
-        nock("https://api.github.com")
+    it("should request github", function* () {
+
+        var scope = nock("https://api.github.com")
             .get("/user")
             .reply(200, {})
             .get("/user/repos")
@@ -23,23 +25,23 @@ describe("Github Api", function(done) {
             .reply(200, {})
             .get("/repos/hello/world/issues?milestone=x")
             .reply(200, {});
+
         var api = new GithubApi({});
-        q.all([
+
+        yield [
             api.getUser(),
             api.listProjects(),
             api.listOrgProjects('hello'),
             api.allStories('hello/world'),
             api.allLabels('hello/world'),
             api.dashboardStories('hello/world', 'x')
-        ]).then(function () {
-            done();
-        }).fail(function (err) {
-            done(err);
-        });
+        ];
+
+        scope.done(); // validate all requests are performed
     });
 
-    it("should return fetched data", function() {
-        nock("https://api.github.com")
+    it("should fetch data to github", function* () {
+        var scope = nock("https://api.github.com")
             .get("/repos/hello/world/milestones?state=open")
             .reply(200, [
                 {number: 1, title: "V0.1"},
@@ -47,24 +49,22 @@ describe("Github Api", function(done) {
                 {number: 3, title: "V0.3"}
             ]);
 
-        (new GithubApi({})).listSprints('hello/world').then(function (sprints) {
-            sprints.length.should.be(3);
-            done();
-        }).fail(function (err) {
-            done(err);
-        });
+        var sprints = yield new GithubApi({}).listSprints('hello/world');
+        sprints.length.should.equal(3);
+
+        scope.done();
     });
 
-    it("should generate a new token", function() {
-        nock("https://github.com")
+    it("should fetch a new github token", function* () {
+        var scope = nock("https://github.com")
             .post("/login/oauth/access_token")
             .reply(200, {
                 access_token: 'xxxx'
             });
 
-        (new GithubApi({code: "fake"})).getToken().then(function (data) {
-            data.should.have.property('access_token');
-            done();
-        });
+        var auth = yield new GithubApi().getToken({code: 'fake code'});
+        auth.should.have.property('access_token');
+
+        scope.done();
     });
 });

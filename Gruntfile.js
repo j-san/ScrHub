@@ -50,7 +50,7 @@ module.exports = function(grunt) {
             },
             server: {
                 options: pkg.jshintConfig,
-                src: ['Gruntfile.js', 'src/**/*.js']
+                src: ['Gruntfile.js', 'test/**/*.js', 'src/**/*.js']
             },
         },
         watch: {

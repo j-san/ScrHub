@@ -1,9 +1,7 @@
 require('../src/utils/logging').useSilenteLogger();
+require('co-mocha');
 
 var mongoose = require('mongoose'),
-    Promise = mongoose.Promise,
-    sinon = require('sinon'),
-    sholud = require('should'),
     q = require('q');
 
 var Story = require('../src/models/Story');
@@ -14,14 +12,6 @@ describe("Story Model", function() {
     before(function(done) {
         mongoose.connect('mongodb://localhost/scrhub-test', function () {
             done();
-        });
-    });
-
-     after(function(done) {
-        mongoose.connection.db.dropDatabase(function(){
-            mongoose.disconnect(function(){
-                done();
-            });
         });
     });
 
@@ -97,6 +87,12 @@ describe("Story Model", function() {
                     }).fail(function (err) {
                         done(err);
                     });
+        });
+    });
+
+     after(function(done) {
+        mongoose.connection.db.dropDatabase(function(){
+            mongoose.disconnect(done);
         });
     });
 });

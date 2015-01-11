@@ -1,6 +1,5 @@
 
 var koa = require('koa'),
-    mongoose = require('mongoose'),
     session = require('koa-mongodb-session'),
     logger = require('koa-logger'),
     jade = require('koa-jade'),
@@ -10,7 +9,9 @@ var koa = require('koa'),
 module.exports = function(db) {
     var app = koa();
 
-    app.use(logger());
+    if (app.env === 'development') {
+        app.use(logger());
+    }
 
     app.use(serve('static_modules'));
     app.use(serve('public'));

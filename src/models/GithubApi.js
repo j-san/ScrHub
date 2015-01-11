@@ -1,6 +1,5 @@
 
-var http = require("https"),
-    querystring = require("querystring"),
+var querystring = require("querystring"),
     request = require('request'),
     logger = require('../utils/logging').logger;
 
@@ -116,8 +115,6 @@ GithubApi.prototype.create = function (path, data) {
 };
 
 GithubApi.prototype.request = function (method, uri, body, options, headers) {
-    var self = this;
-
     logger.debug('-', method, uri);
 
     options = options || {};
