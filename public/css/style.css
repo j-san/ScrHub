@@ -260,6 +260,7 @@ footer {
 
 #sprints-container, #stories-container {
     margin: 0;
+    padding: 0;
     list-style: none;
     background-color: white;
     border-radius: 6px;

@@ -3,8 +3,10 @@
   "subdomain": "scrhub",
   "scripts": {
     "postinstall": "borrower install",
-    "test": "NODE_ENV=test node --harmony ./node_modules/.bin/grunt",
-    "start": "nodemon --watch src --harmony server.js"
+    "start": "nodemon --harmony --watch ./src server.js",
+    "test": "npm run jshint && npm run mocha",
+    "mocha": "NODE_ENV=test mocha --harmony",
+    "jshint": "jshint src test"
   },
   "author": "Jonathan Sanchez Pando <me@jsan.me>",
   "repository": {
@@ -54,6 +56,8 @@
     "grunt-mocha-istanbul": "^2.2.0",
     "grunt-mocha-test": "latest",
     "grunt-release": "latest",
+    "istanbul": "^0.3.5",
+    "istanbul-harmony": "^0.3.1",
     "mocha-lcov-reporter": "latest",
     "nock": "latest",
     "nodemon": "latest",

@@ -108,7 +108,7 @@ module.exports = function(grunt) {
             all: {
                 src: ['test'],
                 options: {
-                    coverage:true,
+                    coverage: true,
                     check: {
                         lines: 75,
                         statements: 75
@@ -148,7 +148,7 @@ module.exports = function(grunt) {
     // Default task.
     grunt.registerTask('default', ['jshint', 'test']);
     grunt.registerTask('test', [
-        'mochaTest:test',
+        'mocha_istanbul',
         'mochaTest:html',
         'mochaTest:travis'
     ]);

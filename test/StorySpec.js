@@ -1,4 +1,3 @@
-require('../src/utils/logging').useSilenteLogger();
 require('co-mocha');
 
 var mongoose = require('mongoose'),
