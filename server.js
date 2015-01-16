@@ -1,8 +1,8 @@
 
 require('dotenv').load();
 
-var mongoose = require('mongoose'),
-    logger = require('./src/utils/logging').logger;
+var logger = require('./src/utils/logging').logger,
+    mongoose = require('mongoose');
 
 var port = process.env.PORT || 1337,
     mongoUrl = process.env.MONGOLAB_URI || 'mongodb://localhost/scrhub';

@@ -103,6 +103,31 @@ module.exports = function(grunt) {
             test: {
               src: 'lcov.info'
             }
+        },
+        mocha_istanbul: {
+            all: {
+                src: ['test'],
+                options: {
+                    coverage:true,
+                    check: {
+                        lines: 75,
+                        statements: 75
+                    },
+                    root: './src',
+                    reportFormats: ['cobertura','lcovonly']
+                }
+            }
+        },
+        istanbul_check_coverage: {
+          default: {
+            options: {
+              coverageFolder: 'coverage*', // will check both coverage folders and merge the coverage results
+              check: {
+                lines: 80,
+                statements: 80
+              }
+            }
+          }
         }
     });
 
@@ -115,6 +140,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-mocha-test');
+    grunt.loadNpmTasks('grunt-mocha-istanbul');
     grunt.loadNpmTasks('grunt-release');
     grunt.loadNpmTasks('grunt-coveralls');
 

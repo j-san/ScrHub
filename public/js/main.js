@@ -15,7 +15,7 @@ require(['backbone', 'jquery', 'js/UI/ProductBacklog', 'js/UI/Dashboard'], funct
             container.html(backlog.render());
         },
 
-        dashboard: function(query, page) {
+        dashboard: function() {
             $('.navigation').removeClass('active');
             $('#nav-dashboard').addClass('active');
             var dashboard = new Dashboard();

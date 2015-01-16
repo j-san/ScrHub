@@ -1,40 +1,17 @@
+var winston = require('winston');
 
-var winston = require('winston'),
-    Mail = require('winston-mail').Mail,
-    logging = {};
+process.env.MONGOOSE_DISABLE_STABILITY_WARNING = true;
+exports.logger = new winston.Logger();
 
-var logger = new (winston.Logger)({
-    transports: [
-        new (winston.transports.Console)({
-            level: 'debug',
-            colorize: true
-        })
-    ]
-});
-
-logging.logger = logger;
-logging.usePrdLogger = function() {
-    logging.logger = new (winston.Logger)({
-        transports: [
-            new (winston.transports.Console)({ level: 'info' }),
-            new (Mail)({
-                level: "error",
-                host: "smtp.gmail.com",
-                username: "robot@scrhub.com",
-                password: process.env.ROBOT_PWD,
-                ssl: true,
-                from: "robot@scrhub.com",
-                to: "jonathan@scrhub.com",
-            })
-        ]
-    });
-};
-logging.useSilenteLogger = function() {
-    logging.logger = new (winston.Logger)({
-        transports: [
-            new (winston.transports.Console)({ level: 'error' })
-        ]
+exports.useDebugLogger = function () {
+    exports.logger.add(winston.transports.Console, {
+        level: 'debug',
+        colorize: true
     });
 };
 
-module.exports = logging;
+exports.useLogentriesLogger = function(options) {
+    exports.logger.add(winston.transports.Console, { level: 'info' });
+    exports.logger.add(winston.transports.Logentries, { level: 'info', token: options.token });
+};
+

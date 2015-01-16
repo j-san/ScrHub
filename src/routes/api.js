@@ -65,6 +65,10 @@ function route (app) {
         var project = user + '/' + name;
         this.body = yield this.githubClient.allLabels(project);
     }));
+
+    app.use(r.get('/api/me/', function* () {
+        this.body = yield this.githubClient.getUser();
+    }));
 }
 
 /* binding */

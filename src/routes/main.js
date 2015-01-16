@@ -61,7 +61,7 @@ function route (app) {
         yield this.render('project', { projects: projects });
     }));
 
-    app.use(_.get('/app/:user/:name/', function* (user, name) {
+    app.use(_.get('/project/:user/:name/', function* (user, name) {
         var projectName = user + '/' + name;
         var project = yield this.githubClient.getProject(projectName);
         yield this.render('app', { project: project });

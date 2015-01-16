@@ -36,7 +36,11 @@ define(['backbone', 'js/UI/BacklogRow', 'js/model/Sprint', 'js/model/Story'], fu
                     self.stories.removeClass('loading');
                 },
                 error: function (collection, xhr) {
-                    alert(JSON.parse(xhr.responseText).message);
+                    if (xhr.responseJSON) {
+                        alert(xhr.responseJSON.message);
+                    } else {
+                        alert(xhr.status);
+                    }
                 }
             });
 

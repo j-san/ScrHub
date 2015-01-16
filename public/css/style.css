@@ -273,7 +273,7 @@ footer {
     padding: 5px 9px;
     border: 1px solid #CCC;
     background: white;
-    height: 24px;
+    height: 34px;
     transition: height .5s linear;
     -webkit-transition: height .5s linear;
 }
