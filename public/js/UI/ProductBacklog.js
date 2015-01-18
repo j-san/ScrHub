@@ -12,14 +12,14 @@ define(['backbone', 'js/UI/BacklogRow', 'js/model/Sprint', 'js/model/Story'], fu
                 '<p><button id="add-story">Add new story</button></p>',
                 '<ul id="stories-container" class="loading"></ul>'
             ].join('\n')),
-        sprintsTemplate: _.template([
-                '<ul class="nav nav-pills nav-stacked select-sprint">',
-                    '<li id="no-sprint"><a>None</a></li>',
-                    '<% sprints.forEach(function (sprint) { %>',
-                        '<li id="sprint-<%= sprint.get("number") %>" data-number="<%= sprint.get("number") %>"><a><%= sprint.get("title") %></a></li>',
-                    '<% }); %>',
-                '</ul>'
-            ].join('\n')),
+        // sprintsTemplate: _.template([
+        //         '<ul class="nav nav-pills nav-stacked select-sprint">',
+        //             '<li id="no-sprint"><a>None</a></li>',
+        //             '<% sprints.forEach(function (sprint) { %>',
+        //                 '<li id="sprint-<%= sprint.get("number") %>" data-number="<%= sprint.get("number") %>"><a><%= sprint.get("title") %></a></li>',
+        //             '<% }); %>',
+        //         '</ul>'
+        //     ].join('\n')),
         views: {},
         render: function () {
             var self = this;
@@ -44,15 +44,15 @@ define(['backbone', 'js/UI/BacklogRow', 'js/model/Sprint', 'js/model/Story'], fu
                 }
             });
 
-            this.sprintsCollection = Sprint.getSprintList();
-            this.sprintsCollection.fetch({
-                success: function (collection) {
-                    self.sprints = $(self.sprintsTemplate({sprints: collection}));
-                },
-                error: function (collection, xhr) {
-                    alert(JSON.parse(xhr.responseText).message);
-                }
-            });
+            // this.sprintsCollection = Sprint.getSprintList();
+            // this.sprintsCollection.fetch({
+            //     success: function (collection) {
+            //         self.sprints = $(self.sprintsTemplate({sprints: collection}));
+            //     },
+            //     error: function (collection, xhr) {
+            //         alert(JSON.parse(xhr.responseText).message);
+            //     }
+            // });
 
             $(document.body).click(function (evt) { // TODO: avoid multiple bind
                 if (self.editElem && self.editElem.el !== evt.target && !self.editElem.$el.has(evt.target).length) {
@@ -84,13 +84,13 @@ define(['backbone', 'js/UI/BacklogRow', 'js/model/Sprint', 'js/model/Story'], fu
                 evt.stopPropagation();
             }
             this.editElem = this.views[target.attr("id")];
-            this.editElem.$el.append(this.sprints);
-            this.sprints.children().removeClass('active');
-            if (this.editElem.model.has("milestone")) {
-                this.sprints.find('#sprint-' + this.editElem.model.get("milestone").number).addClass("active");
-            } else {
-                this.sprints.find('#no-sprint').addClass("active");
-            }
+            // this.editElem.$el.append(this.sprints);
+            // this.sprints.children().removeClass('active');
+            // if (this.editElem.model.has("milestone")) {
+            //     this.sprints.find('#sprint-' + this.editElem.model.get("milestone").number).addClass("active");
+            // } else {
+            //     this.sprints.find('#no-sprint').addClass("active");
+            // }
             this.editElem.showEdit();
         }
     });

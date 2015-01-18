@@ -22,16 +22,18 @@ define(['backbone'], function (Backbone) {
         template: _.template([
                 '<span class="story-id"><%= model.id || "new" %>.</span>',
                 '<span class="story-title"><input type="text" value="<%= model.get("title") %>" /></span>',
+                '<span class="story-info">',
+                    '<%= model.get("businessValue") || "-" %>',
+                    ' / <%= (model.get("priority") && model.get("priority").toFixed(2)) || "-" %>',
+                    ' = <%= model.get("difficulty") || "-" %>',
+                '</span>',
                 '<input class="input-business-value" type="number" value="<%= model.get("businessValue") %>"/>',
-                '<span class="story-business-value"><%= model.get("businessValue") || "-" %></span>',
                 '<div class="input-difficulty" data-toggle="buttons-radio"><% _.each(fiboSuite, function(fibo, i) { %>',
                     '<input id="<%= model.id || "new" %>-difficulty-<%= fibo %>" name="<%= model.id || "new" %>-difficulty" type="radio" value="<%= fibo %>" <%= model.get("difficulty")===fibo?"checked":"" %> />',
-                    '<label for="<%= model.id || "new" %>-difficulty-<%= fibo %>" class="btn <%= model.get("difficulty")===fibo?"active":"" %>"><%= fibo %></label>',
+                    '<label for="<%= model.id || "new" %>-difficulty-<%= fibo %>" class="btn btn-default <%= model.get("difficulty")===fibo?"active":"" %>"><%= fibo %></label>',
                 '<% }); %></div>',
-                '<span class="story-difficulty"><%= model.get("difficulty") || "-" %></span>',
-                '<span class="story-priority"><%=   (model.get("priority") && model.get("priority").toFixed(2)) || "-" %></span>',
                 '<span class="story-body"><textarea><%= model.get("body") %></textarea></span>',
-                '<span class="story-sprint"><%= model.get("body") %></span>'
+                // '<span class="story-sprint"><%= model.get("body") %></span>'
             ].join('\n')),
 
         render: function() {

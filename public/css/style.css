@@ -325,7 +325,7 @@ footer {
     position: absolute;
     top: 3px;
     left: 50px;
-    right: 200px;
+    right: 140px;
     width: auto;
 }
 
@@ -352,7 +352,7 @@ footer {
     position: absolute;
     top: 36px;
     left: 5px;
-    right: 200px;
+    right: 140px;
     bottom: 5px;
     width: auto;
 
@@ -374,40 +374,16 @@ footer {
 }
 
 
-.backlog-line .story-difficulty,
-.backlog-line .story-business-value,
-.backlog-line .story-priority {
+.backlog-line .story-info {
     position: absolute;
     top: 3px;
-    right: 140px;
-    width: 40px;
+    right: 20px;
+    width: 100px;
     text-align: center;
 }
 
-.backlog-line .story-business-value {
-    right: 180px;
-}
-.backlog-line .story-priority {
-    right: 100px;
-}
 
-.backlog-line .story-business-value:after {
-    content: "/";
-    position: absolute;
-    right: 0px;
-}
-
-.backlog-line .story-difficulty:after {
-    content: ">";
-    position: absolute;
-    right: 0px;
-}
-
-
-
-.backlog-line.edit-form .story-difficulty,
-.backlog-line.edit-form .story-business-value,
-.backlog-line.edit-form .story-priority {
+.backlog-line.edit-form .story-info {
     display: none;
 }
 
@@ -416,12 +392,12 @@ footer {
     display: none;
     position: absolute;
     top: 3px;
-    right: 100px;
-    width: 80px;
+    right: 20px;
+    width: 100px;
 }
 .backlog-line .input-difficulty {
     top: 36px;
-    width: 90px;
+    width: 100px;
 }
 
 .backlog-line.edit-form .input-difficulty,
@@ -440,7 +416,7 @@ footer {
     height: 19px;
     line-height: 19px;
     margin: 0;
-    width: 32px;
+    width: 41px;
     vertical-align: top;
     margin: 3px;
     padding: 1px;

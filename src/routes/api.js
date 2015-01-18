@@ -68,8 +68,13 @@ function route (app) {
         this.body = yield this.githubClient.allLabels(project);
     }));
 
-    app.use(r.get('/api/me/', function* () {
-        this.body = yield this.githubClient.getUser();
+    app.use(r.get('/api/settings/', function* () {
+        this.body = {};
+        this.body.app = {
+            env: app.env,
+            version: app.verison
+        };
+        this.body.user = yield this.githubClient.getUser();
     }));
 }
 

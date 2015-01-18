@@ -6,12 +6,14 @@ var koa = require('koa'),
     debug = require('koa-logger'),
     bodyParser = require('koa-bodyparser'),
     koaLogentries = require('./utils/koa-logentries'),
+    pkg = require('../package'),
     logging = require('./utils/logging');
 
 
 module.exports = function(db) {
     var app = koa();
     app.debug = app.env === 'development';
+    app.version = pkg.version;
 
     if (app.debug) {
         app.use(debug());
