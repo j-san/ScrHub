@@ -37,15 +37,17 @@ function route (app) {
         this.body = yield Story.loadStories(stories);
     }));
 
-    app.use(r.put('/api/:user/:name/story/:story', function* (user, name, story) {
+    app.use(r.put('/api/:user/:name/story/:number', function* (user, name, number) {
         var project = user + '/' + name;
+        var storyId = this.request.body.id;
 
-        var githubStory = yield this.githubClient.updateStory(project, story, this.body);
-        var formerStory = yield Story.findById(this.body.id).exec();
+        var githubStory = yield this.githubClient.updateStory(project, number, this.request.body);
+        var formerStory = yield Story.findById(storyId).exec();
+
         if(formerStory) {
-            formerStory.set(this.body);
+            formerStory.set(this.request.body);
         } else {
-            formerStory = new Story(this.body);
+            formerStory = new Story(this.request.body);
         }
         yield formerStory.save();
 
