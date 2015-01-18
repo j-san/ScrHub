@@ -1,5 +1,5 @@
 
-require(['backbone', 'jquery', 'js/UI/ProductBacklog', 'js/UI/Dashboard'], function(Backbone, $, ProductBacklog, Dashboard) {
+require(['backbone', 'jquery', 'bootstrap', 'js/UI/ProductBacklog', 'js/UI/Dashboard'], function(Backbone, $, bootstrap, ProductBacklog, Dashboard) {
 
     var container = $('#app-container');
     var App = Backbone.Router.extend({

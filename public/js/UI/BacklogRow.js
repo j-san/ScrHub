@@ -1,5 +1,5 @@
 
-define(['backbone'], function (Backbone) {
+define(['backbone', 'underscore'], function (Backbone, _) {
 
     var fiboSuite = [];
     (function fiboSuiteFunc(prev, fibo) {
@@ -16,7 +16,7 @@ define(['backbone'], function (Backbone) {
             //"blur .story-title": "saveStoryTitle",
             //"blur .story-body": "saveStoryBody",
             //"clickoutside .edit-form": "hideEdit",
-            "click .select-sprint li": "saveStorySprint"
+            // "click .select-sprint li": "saveStorySprint"
         },
 
         template: _.template([
@@ -24,13 +24,14 @@ define(['backbone'], function (Backbone) {
                 '<span class="story-title"><input type="text" value="<%= model.get("title") %>" /></span>',
                 '<span class="story-info">',
                     '<%= model.get("businessValue") || "-" %>',
-                    ' / <%= (model.get("priority") && model.get("priority").toFixed(2)) || "-" %>',
-                    ' = <%= model.get("difficulty") || "-" %>',
+                    ' / <%= model.get("difficulty") || "-" %>',
+                    ' = <%= (model.get("priority") && model.get("priority").toFixed(2)) || "-" %>',
                 '</span>',
                 '<input class="input-business-value" type="number" value="<%= model.get("businessValue") %>"/>',
-                '<div class="input-difficulty" data-toggle="buttons-radio"><% _.each(fiboSuite, function(fibo, i) { %>',
-                    '<input id="<%= model.id || "new" %>-difficulty-<%= fibo %>" name="<%= model.id || "new" %>-difficulty" type="radio" value="<%= fibo %>" <%= model.get("difficulty")===fibo?"checked":"" %> />',
-                    '<label for="<%= model.id || "new" %>-difficulty-<%= fibo %>" class="btn btn-default <%= model.get("difficulty")===fibo?"active":"" %>"><%= fibo %></label>',
+                '<div class="input-difficulty btn-group" data-toggle="buttons"><% _.each(fiboSuite, function(fibo, i) { %>',
+                    '<label class="btn btn-default <%= model.get("difficulty")===fibo?"active":"" %>"><%= fibo %>',
+                        '<input name="<%= model.id || "new" %>-difficulty" type="radio" value="<%= fibo %>" <%= model.get("difficulty")===fibo?"checked":"" %> />',
+                    '</label>',
                 '<% }); %></div>',
                 '<span class="story-body"><textarea><%= model.get("body") %></textarea></span>',
                 // '<span class="story-sprint"><%= model.get("body") %></span>'
@@ -42,37 +43,33 @@ define(['backbone'], function (Backbone) {
             this.$el.html(this.template({ model: this.model, fiboSuite: fiboSuite }));
             this.id = this.el.id = "story-" + this.model.id;
 
-            this.model.on("change:number", function (model, newValue) {
-                self.$el.find(".story-id").text(newValue + ".");
-            });
+            // this.sprint = this.$(".story-sprint");
 
-            this.sprint = this.$(".story-sprint");
-
-            this.setSprint();
-            this.model.on("change:milestone", function () {
-                self.setSprint();
-            });
+            // this.setSprint();
+            // this.model.on("change:milestone", function () {
+            //     self.setSprint();
+            // });
 
             return this.$el;
         },
-        setSprint: function () {
-            this.$el.find('.select-sprint li').removeClass("active");
-            if (this.model.has("milestone") && typeof this.model.get("milestone") == "object") {
-                this.sprint.html(this.model.get("milestone").title).addClass('active');
-                this.$el.find('#sprint-' + this.model.get("milestone").number).addClass("active");
-            } else if(!this.model.has("milestone")) {
-                this.sprint.html("none").removeClass('active');
-                this.$el.find('#no-sprint').addClass("active");
-            }
+        // setSprint: function () {
+        //     this.$el.find('.select-sprint li').removeClass("active");
+        //     if (this.model.has("milestone") && typeof this.model.get("milestone") == "object") {
+        //         this.sprint.html(this.model.get("milestone").title).addClass('active');
+        //         this.$el.find('#sprint-' + this.model.get("milestone").number).addClass("active");
+        //     } else if(!this.model.has("milestone")) {
+        //         this.sprint.html("none").removeClass('active');
+        //         this.$el.find('#no-sprint').addClass("active");
+        //     }
 
-        },
-        saveStorySprint: function (evt) {
-            var newValue = $(evt.currentTarget).data("number");
-            if((!this.model.has("milestone") && newValue) || (this.model.has("milestone") && this.model.get("milestone") != newValue)) {
-                this.model.set("milestone", newValue);
-                this.syncModel();
-            }
-        },
+        // },
+        // saveStorySprint: function (evt) {
+        //     var newValue = $(evt.currentTarget).data("number");
+        //     if((!this.model.has("milestone") && newValue) || (this.model.has("milestone") && this.model.get("milestone") != newValue)) {
+        //         this.model.set("milestone", newValue);
+        //         this.syncModel();
+        //     }
+        // },
         save: function () {
             var title = this.$el.find(".story-title").find("input").val(),
                 body = this.$el.find(".story-body").find("textarea").val(),
@@ -81,8 +78,8 @@ define(['backbone'], function (Backbone) {
 
             if (title === this.model.get("title") &&
                     body === this.model.get("body") &&
-                    businessValue == this.model.get("businessValue") &&
-                    difficulty == this.model.get("difficulty")) {
+                    businessValue === this.model.get("businessValue") &&
+                    difficulty === this.model.get("difficulty")) {
                 return;
             }
 
@@ -101,6 +98,7 @@ define(['backbone'], function (Backbone) {
                 success: function () {
                     self.$el.removeClass("loading");
                     self.$el.removeClass("error");
+                    self.render();
                 },
                 error: function () {
                     self.$el.removeClass("loading");
