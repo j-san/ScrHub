@@ -27,6 +27,10 @@ li {
     border: red 1px solid !important;
 }
 
+.container {
+    padding: 0 30px;
+}
+
 h1 {
     font-size: 48px;
     font-family: 'Marck Script', cursive;
@@ -183,7 +187,6 @@ footer {
     padding: 30px;
     box-sizing: border-box;
 
-    margin: 0 20px;
     border-radius: 15px;
     background-color: white;
     box-shadow: 6px 10px 7px rgba(0, 0, 0, .3);
@@ -191,15 +194,25 @@ footer {
 
 
 #dashboard .column {
-    display: inline-block;
     vertical-align: top;
     padding: 20px;
     box-sizing: border-box;
-    min-height: 600px;
+    min-height: 150px;
     background: white;
 }
 #dashboard .column:not(:last-child) {
-    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+@media (min-width: 768px) {
+    #dashboard .column {
+        min-height: 450px;
+    }
+
+    #dashboard .column:not(:last-child) {
+        border-bottom: none;
+        border-right: 1px solid black;
+    }
 }
 
 #closed {

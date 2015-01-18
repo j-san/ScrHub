@@ -1,7 +1,7 @@
 extends base
 
 block prepend head
-    title #{project.name} > Scrum Hub
+    title #{project.name} @ Scrum Hub
 
 block prepend scripts
     script.
@@ -13,14 +13,14 @@ block prepend scripts
 
 
 block app
-    nav
-        a#nav-dashboard.navigation(href="#dashboard") Dashboard
-        a#nav-backlog.navigation(href="#backlog") Product Backlog
-        a.feedback(href="/feedback/") feedback
-        - if (!connected)
-            a.login(href="#{path}?connect=true") Connect
-        - else
-            a.login(href="/?disconnect=true") Disconnect #{user.name} (#{user.login})
+    //- nav
+    //-     a#nav-dashboard.navigation(href="#dashboard") Dashboard
+    //-     a#nav-backlog.navigation(href="#backlog") Product Backlog
+    //-     a.feedback(href="/feedback/") feedback
+    //-     - if (!connected)
+    //-         a.login(href="#{path}?connect=true") Connect
+    //-     - else
+    //-         a.login(href="/?disconnect=true") Disconnect #{user.name} (#{user.login})
 
     h1 #{project.name}
     #app-container

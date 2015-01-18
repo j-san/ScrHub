@@ -4,6 +4,7 @@ var koa = require('koa'),
     jade = require('koa-jade'),
     serve = require('koa-static'),
     debug = require('koa-logger'),
+    bodyParser = require('koa-bodyparser'),
     koaLogentries = require('./utils/koa-logentries'),
     logging = require('./utils/logging');
 
@@ -39,6 +40,7 @@ module.exports = function(db) {
         collection: db.collection('session')
     }));
 
+    app.use(bodyParser());
     require('./routes/main').route(app);
     require('./routes/api').route(app);
 

@@ -3,15 +3,15 @@ define(['backbone', 'js/UI/DashboardStoryCard', 'js/model/Story'], function (Bac
 
     return Backbone.View.extend({
         id: 'dashboard',
-        className: 'row-fluid loading',
+        className: 'row loading',
         template: _.template([
-                '<div id="todo" class="span4 column">',
+                '<div id="todo" class="col-sm-4 column">',
                     '<h2>Todo</h2>',
                 '</div>',
-                '<div id="progress" class="span4 column">',
+                '<div id="progress" class="col-sm-4 column">',
                     '<h2>Progress</h2>',
                 '</div>',
-                '<div id="testing" class="span4 column">',
+                '<div id="testing" class="col-sm-4 column">',
                     '<h2>Testing</h2>',
                 '</div>',
             ].join('\n')),
