@@ -1,25 +1,18 @@
 require('co-mocha');
 
-var mongoose = require('mongoose');
-
 var Story = require('../src/models/Story');
 
 
 describe("Story Model", function() {
+    require('TestSetup').database();
 
-    before(function(done) {
-        mongoose.connect('mongodb://localhost/scrhub-test', function () {
-            done();
-        });
-    });
-
-    it("should use parameter id as primary key", function() {
+    it("should use parameter id as primary key", function () {
         var s = new Story({id: 123});
         s.save();
         s.should.have.property('_id', 123);
     });
 
-    it("should compute priority", function() {
+    it("should compute priority", function () {
         var s = new Story({
             businessValue: 20,
             difficulty: 5
@@ -82,12 +75,6 @@ describe("Story Model", function() {
         stories[0].should.have.property('businessValue', 5);
         stories[1].should.not.have.property('businessValue');
         stories[2].should.have.property('businessValue', 7);
-    });
-
-     after(function(done) {
-        mongoose.connection.db.dropDatabase(function(){
-            mongoose.disconnect(done);
-        });
     });
 });
 

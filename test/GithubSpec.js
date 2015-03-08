@@ -5,9 +5,7 @@ var nock = require('nock'),
     GithubApi = require('../src/models/GithubApi');
 
 describe("Github Api", function() {
-    before(function() {
-        nock.disableNetConnect();
-    });
+    require('TestSetup').nock();
 
     it("should request github", function* () {
 
