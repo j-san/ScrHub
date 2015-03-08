@@ -28,15 +28,15 @@ GithubApi.prototype.getToken = function (options) {
     if(!options.code) {
         throw new Error('Not connected');
     } else {
+
         return this.request(
             "POST",
             "/login/oauth/access_token",
-            querystring.stringify({
+            {
                 code: options.code,
                 client_id: options.client_id,
-                client_secret: options.client_secret,
-                scope: options.scope
-            }), {
+                client_secret: options.client_secret
+            }, {
                 hostname: "https://github.com"
             });
     }
@@ -115,7 +115,7 @@ GithubApi.prototype.create = function (path, data) {
 };
 
 GithubApi.prototype.request = function (method, uri, body, options, headers) {
-    logger.debug('-', method, uri);
+    logger.debug('-->', method, uri);
 
     options = options || {};
     options.headers = headers || {};
@@ -135,10 +135,10 @@ GithubApi.prototype.request = function (method, uri, body, options, headers) {
 
         request(options, function (err, response, body) {
             if([200, 201].indexOf(response.statusCode) >= 0) {
-                logger.info("+", method, uri);
+                logger.info("<--", method, uri, response.statusCode);
                 resolve(body);
             } else {
-                logger.error("+", response.statusCode, uri, body.message);
+                logger.error("<--", method, uri, response.statusCode, response.statusMessage, body);
                 var error = new Error(body.message);
                 error.status = response.statusCode;
                 reject(error);

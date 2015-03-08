@@ -3,9 +3,8 @@ var koa = require('koa'),
     session = require('koa-mongodb-session'),
     jade = require('koa-jade'),
     serve = require('koa-static'),
-    debug = require('koa-logger'),
+    logger = require('koa-logger'),
     bodyParser = require('koa-bodyparser'),
-    koaLogentries = require('./utils/koa-logentries'),
     pkg = require('../package'),
     logging = require('./utils/logging');
 
@@ -16,13 +15,11 @@ module.exports = function(db) {
     app.version = pkg.version;
 
     if (app.debug) {
-        app.use(debug());
+        app.use(logger());
         logging.useDebugLogger();
     } else if (app.env !== 'test') {
-        logging.useLogentriesLogger({ token: process.env.LOGENTRIES_TOKEN });
-        app.use(koaLogentries({ token: process.env.LOGENTRIES_TOKEN }));
+        logging.useLiveLogger();
     }
-
 
     app.use(serve('static_modules'));
     app.use(serve('public'));

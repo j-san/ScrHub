@@ -28,7 +28,7 @@ define(['backbone', 'underscore'], function (Backbone, _) {
                     ' = <%= (model.get("priority") && model.get("priority").toFixed(2)) || "-" %>',
                 '</span>',
                 '<input class="input-business-value" type="number" value="<%= model.get("businessValue") %>"/>',
-                '<div class="input-difficulty btn-group" data-toggle="buttons"><% _.each(fiboSuite, function(fibo, i) { %>',
+                '<div class="input-difficulty" data-toggle="buttons"><% _.each(fiboSuite, function(fibo, i) { %>',
                     '<label class="btn btn-default <%= model.get("difficulty")===fibo?"active":"" %>"><%= fibo %>',
                         '<input name="<%= model.id || "new" %>-difficulty" type="radio" value="<%= fibo %>" <%= model.get("difficulty")===fibo?"checked":"" %> />',
                     '</label>',

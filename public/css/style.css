@@ -400,13 +400,15 @@ footer {
     width: 100px;
 }
 
-.backlog-line.edit-form .input-difficulty,
+.backlog-line.edit-form .input-difficulty {
+    display: flex;
+    flex-wrap: wrap
+}
 .backlog-line.edit-form .input-business-value {
     display: block;
 }
 
 .backlog-line .input-difficulty input {
-    margin: 2px;
     display: none;
 }
 

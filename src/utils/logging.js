@@ -10,8 +10,10 @@ exports.useDebugLogger = function () {
     });
 };
 
-exports.useLogentriesLogger = function(options) {
-    exports.logger.add(winston.transports.Console, { level: 'info' });
-    exports.logger.add(winston.transports.Logentries, { level: 'info', token: options.token });
+exports.useLiveLogger = function() {
+    exports.logger.add(winston.transports.Console, {
+        level: 'info',
+        colorize: false
+    });
 };
 
