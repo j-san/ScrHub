@@ -4,7 +4,7 @@ var Story = require('../src/models/Story');
 
 
 describe("Story Model", function() {
-    require('TestSetup').database();
+    require('./TestSetup').database();
 
     it("should use parameter id as primary key", function () {
         var s = new Story({id: 123});

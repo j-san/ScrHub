@@ -5,7 +5,7 @@ var nock = require('nock'),
     GithubApi = require('../src/models/GithubApi');
 
 describe("Github Api", function() {
-    require('TestSetup').nock();
+    require('./TestSetup').nock();
 
     it("should request github", function* () {
 

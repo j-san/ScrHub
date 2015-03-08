@@ -4,9 +4,9 @@ var nock = require('nock');
 
 describe("api", function() {
 
-    require('TestSetup').database();
-    require('TestSetup').client();
-    require('TestSetup').nock();
+    require('./TestSetup').database();
+    require('./TestSetup').client();
+    require('./TestSetup').nock();
 
     it("should get stories", function* () {
         nock("https://api.github.com")

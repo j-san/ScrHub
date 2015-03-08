@@ -5,9 +5,9 @@ var nock = require('nock');
 
 describe("views", function() {
 
-    require('TestSetup').database();
-    require('TestSetup').client();
-    require('TestSetup').nock();
+    require('./TestSetup').database();
+    require('./TestSetup').client();
+    require('./TestSetup').nock();
 
     describe("Home page", function() {
         it("should welcome in html", function* () {
