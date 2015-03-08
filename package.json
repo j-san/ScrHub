@@ -4,7 +4,7 @@
   "scripts": {
     "postinstall": "borrower install",
     "start": "nodemon --watch src --watch server.js",
-    "test": "npm outdated && npm run jshint && npm run mocha",
+    "test": "npm outdated --depth 0 && npm run jshint && npm run mocha",
     "mocha": "NODE_ENV=test istanbul cover _mocha && istanbul check-coverage --statements 60",
     "build": "borrower build",
     "jshint": "jshint src test"
@@ -41,6 +41,7 @@
     "co-mocha": "latest",
     "co-supertest": "latest",
     "istanbul": "git://github.com/gotwarlost/istanbul.git#harmony",
+    "jshint": "^2.6.3",
     "nock": "latest",
     "nodemon": "^1.3.7",
     "should": "latest",
