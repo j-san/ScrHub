@@ -1,7 +1,6 @@
 require('co-mocha');
 
-var mongoose = require('mongoose'),
-    q = require('q');
+var mongoose = require('mongoose');
 
 var Story = require('../src/models/Story');
 
@@ -44,7 +43,7 @@ describe("Story Model", function() {
         s.should.have.property('priority', 0);
     });
 
-    it("should load stories from array", function(done) {
+    it("should load stories from array", function *() {
 
         var s1 = new Story({
             id: 1,
@@ -64,29 +63,25 @@ describe("Story Model", function() {
             difficulty: 21
         });
 
-        q.all([
-            q.ninvoke(s1, "save"),
-            q.ninvoke(s2, "save"),
-            q.ninvoke(s3, "save")
-        ]).then(function () {
-            var stories = [{
-                id: 1
-            }, {
-                id: 3
-            }, {
-                id: 42
-            }];
-            Story.loadStories(stories)
-                    .then(function(stories) {
-                        stories.should.have.lengthOf(3);
-                        stories[0].should.have.property('businessValue', 5);
-                        stories[1].should.not.have.property('businessValue');
-                        stories[2].should.have.property('businessValue', 7);
-                        done();
-                    }).fail(function (err) {
-                        done(err);
-                    });
-        });
+        yield [
+            s1.save(),
+            s2.save(),
+            s3.save()
+        ];
+
+        var stories = [{
+            id: 1
+        }, {
+            id: 3
+        }, {
+            id: 42
+        }];
+        stories = yield Story.loadStories(stories);
+
+        stories.should.have.lengthOf(3);
+        stories[0].should.have.property('businessValue', 5);
+        stories[1].should.not.have.property('businessValue');
+        stories[2].should.have.property('businessValue', 7);
     });
 
      after(function(done) {

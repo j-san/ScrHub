@@ -1,18 +1,18 @@
 var mongoose = require('mongoose'),
-    _ = require('underscore'),
-    q = require('q'),
-    StorySchema = new mongoose.Schema({
-        _id: Number,
-        number: Number,
-        project: String,
-        difficulty: Number,
-        businessValue: Number
-    },{
-        toObject: {
-            virtuals: true
-        }
-    }),
-    Story;
+    _ = require('underscore');
+
+
+var StorySchema = new mongoose.Schema({
+    _id: Number,
+    number: Number,
+    project: String,
+    difficulty: Number,
+    businessValue: Number
+},{
+    toObject: {
+        virtuals: true
+    }
+});
 
 StorySchema.virtual('priority').get(function () {
     var priority;
@@ -36,21 +36,18 @@ StorySchema.method('toGithubObject', function () {
 });
 
 StorySchema.static('loadStories', function (stories) {
-    var promises = [];
-    stories.forEach(function (story) {
-        promises.push(Story.findById(story.id)
+    return stories.map(function (story) {
+        return Story.findById(story.id)
             .exec().then(function (fetchedStory) {
                 if (fetchedStory) {
                     return _.extend(story, fetchedStory.toObject());
                 } else {
                     return story;
                 }
-            })
-        );
+            });
     });
-    return q.all(promises);
 });
 
-Story = mongoose.model('Story', StorySchema);
+var Story = mongoose.model('Story', StorySchema);
 module.exports = Story;
 
